@@ -57,6 +57,9 @@ npm run build
 
 # 2. Upload build output directly into the backend public folder on Hostinger
 scp -P 65002 -r dist/assets dist/images dist/index.html dist/favicon.svg dist/icons.svg u244089748@145.79.210.59:/home/u244089748/domains/peru-crocodile-804063.hostingersite.com/site/backend/public/
+
+# 3. Fix uploaded static asset permissions on Hostinger
+ssh -p 65002 u244089748@145.79.210.59 "chmod -R u=rwX,go=rX /home/u244089748/domains/peru-crocodile-804063.hostingersite.com/site/backend/public/assets /home/u244089748/domains/peru-crocodile-804063.hostingersite.com/site/backend/public/images"
 ```
 
 ---
