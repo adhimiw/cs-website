@@ -1,0 +1,81 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: climbsphere-backend-app
+    restart: unless-stopped
+    volumes:
+      - .:/var/www/html
+      - climbsphere-vendor:/var/www/html/vendor
+    environment:
+      - APP_ENV=local
+      - COMPOSER_MEMORY_LIMIT=-1
+      - COMPOSER_AUDIT=0
+    networks:
+      - climbsphere-network
+    depends_on:
+      db:
+        condition: service_healthy
+
+  web:
+    image: nginx:alpine
+    container_name: climbsphere-backend-web
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/var/www/html
+      - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - climbsphere-network
+    depends_on:
+      - app
+
+  db:
+    image: mysql:8.0
+    container_name: climbsphere-backend-db
+    restart: unless-stopped
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_DATABASE: climbsphere
+      MYSQL_USER: climbsphere
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: secret
+    volumes:
+      - climbsphere-db-data:/var/lib/mysql
+    networks:
+      - climbsphere-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "climbsphere", "-psecret"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  queue:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: climbsphere-backend-queue
+    restart: unless-stopped
+    volumes:
+      - .:/var/www/html
+      - climbsphere-vendor:/var/www/html/vendor
+    environment:
+      - COMPOSER_MEMORY_LIMIT=-1
+      - COMPOSER_AUDIT=0
+    command: php artisan queue:work --verbose --tries=3 --timeout=90
+    networks:
+      - climbsphere-network
+    depends_on:
+      db:
+        condition: service_healthy
+
+networks:
+  climbsphere-network:
+    driver: bridge
+
+volumes:
+  climbsphere-db-data:
+  climbsphere-vendor:

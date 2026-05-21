@@ -1,0 +1,15 @@
+.App {
+  overflow-x: hidden;
+  min-height: 100vh;
+  background: var(--background);
+}
+
+section[id] {
+  scroll-margin-top: 90px;
+}
+
+@media (max-width: 768px) {
+  section[id] {
+    scroll-margin-top: 70px;
+  }
+}

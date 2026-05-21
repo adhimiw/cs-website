@@ -1,0 +1,262 @@
+.services-page {
+  background-color: var(--background);
+  color: var(--text-secondary);
+}
+
+/* Page Header */
+.page-header {
+  background-color: #ffffff;
+  padding: 50px 0 20px;
+  text-align: center;
+  color: var(--text-primary);
+}
+
+.page-title {
+  font-size: clamp(32px, 4vw, 42px);
+  color: var(--text-primary);
+  font-weight: 800;
+  margin-bottom: 0;
+  letter-spacing: -0.5px;
+}
+
+/* Services Sections */
+.services-accordion-section {
+  background-color: var(--background);
+  padding: 70px 0;
+}
+
+.partner-section-bg {
+  background-color: var(--section-soft);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.services-section-header {
+  margin-bottom: 35px;
+  max-width: 700px;
+}
+
+.services-group-title {
+  font-size: clamp(26px, 3.5vw, 34px);
+  color: var(--text-primary);
+  font-weight: 800;
+  margin-top: 6px;
+}
+
+/* Accordion Wrapper */
+.accordion-wrapper {
+  border-top: 1px solid rgba(0, 25, 76, 0.06);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Accordion Item */
+.accordion-item {
+  border-bottom: 1px solid rgba(0, 25, 76, 0.06);
+  background-color: transparent;
+  border-radius: 20px;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  margin-bottom: 0px;
+  overflow: hidden;
+}
+
+.accordion-item:hover {
+  background-color: rgba(0, 85, 255, 0.005);
+}
+
+/* Active Item rounded card style */
+.accordion-item.active-item {
+  border-bottom-color: transparent;
+  box-shadow: 0 12px 30px rgba(0, 25, 76, 0.02);
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+/* Subtle Color Coding for each active service */
+.accordion-item.active-item.color-1 {
+  background-color: #eef2ff; /* Soft lavender-blue */
+}
+
+.accordion-item.active-item.color-2 {
+  background-color: #edf5f1; /* Soft sage-green */
+}
+
+.accordion-item.active-item.color-3 {
+  background-color: #f3e4e6; /* Soft warm rose-beige (the reference screenshot color) */
+}
+
+.accordion-item.active-item.color-4 {
+  background-color: #fff5f0; /* Soft peach-cream */
+}
+
+.accordion-item.active-item.color-5 {
+  background-color: #f5f0fa; /* Soft lilac-grey */
+}
+
+/* Accordion Header */
+.accordion-header {
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  gap: 20px;
+  align-items: start;
+  padding: 35px 24px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.item-number {
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(0, 25, 76, 0.4);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  padding-top: 8px; /* Perfectly aligned to the top baseline of the title */
+}
+
+.accordion-item.active-item .item-number {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.item-main-header h3 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(22px, 2.8vw, 32px);
+  font-weight: 500; /* Medium weight matching Dribbble screenshot */
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.25;
+  letter-spacing: -0.3px;
+}
+
+.item-tags {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(0, 25, 76, 0.5);
+  margin-top: 8px;
+  letter-spacing: 0.2px;
+}
+
+/* Accordion Body */
+.accordion-body {
+  max-height: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+              opacity 0.3s ease,
+              visibility 0.4s;
+}
+
+.accordion-body.show-body {
+  max-height: 500px;
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Split layout content inside body */
+.accordion-body-content {
+  display: grid;
+  grid-template-columns: 1fr 280px; /* Text on left, active image on right */
+  gap: 40px;
+  padding: 0 24px 35px 80px; /* Left padding matches title offset (60px + 20px gap) */
+  align-items: start;
+}
+
+.body-text-col {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+}
+
+.service-description {
+  font-size: 15px;
+  line-height: 1.7;
+  color: rgba(0, 25, 76, 0.7);
+  max-width: 100%;
+  margin-bottom: 24px;
+  text-align: justify;
+  font-weight: 400;
+}
+
+/* Discuss Project Pill Button */
+.btn-discuss {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--text-primary);
+  color: var(--text-primary);
+  background: transparent;
+  padding: 12px 30px;
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  margin-top: 10px;
+}
+
+.btn-discuss:hover {
+  background-color: var(--text-primary);
+  color: #ffffff;
+}
+
+/* Active Image Column style */
+.body-image-col {
+  width: 280px;
+  height: 240px; /* Increased height to prevent cropping out heads/faces */
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 25, 76, 0.05);
+}
+
+.service-active-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 15%; /* Prioritize top section of image where faces/heads are located */
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.body-image-col:hover .service-active-image {
+  transform: scale(1.05);
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .accordion-header {
+    padding: 25px 15px;
+  }
+  
+  .accordion-body-content {
+    grid-template-columns: 1fr; /* Stack text and image vertically */
+    gap: 24px;
+    padding: 0 15px 25px 80px;
+  }
+  
+  .body-image-col {
+    width: 100%;
+    height: 200px;
+  }
+}
+
+@media (max-width: 575px) {
+  .accordion-header {
+    grid-template-columns: 40px 1fr;
+    gap: 15px;
+    padding: 20px 10px;
+  }
+  
+  .item-number {
+    padding-top: 6px;
+  }
+  
+  .accordion-body-content {
+    padding: 0 10px 20px 10px; /* Reset left margin for readability */
+  }
+  
+  .btn-discuss {
+    width: 100%;
+    justify-content: center;
+  }
+}
