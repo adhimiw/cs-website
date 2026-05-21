@@ -14,6 +14,8 @@ return new class extends Migration
             $table->string('author');
             $table->string('image')->nullable();
             $table->integer('rating')->default(5);
+            $table->string('designation')->nullable();
+            $table->string('relationship')->nullable();
             $table->timestamps();
         });
     }

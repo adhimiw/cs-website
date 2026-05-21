@@ -139,6 +139,15 @@ export default function ServicesPage() {
                           alt={service.title} 
                           className="service-active-image" 
                           onError={(e) => {
+                            const currentSrc = e.target.src;
+                            if (currentSrc && !currentSrc.includes('/images/')) {
+                              const filename = currentSrc.substring(currentSrc.lastIndexOf('/') + 1);
+                              if (filename) {
+                                e.target.src = `/images/${filename}`;
+                                return;
+                              }
+                            }
+                            e.target.onerror = null;
                             e.target.src = 'https://via.placeholder.com/150';
                           }}
                         />
@@ -196,6 +205,15 @@ export default function ServicesPage() {
                           alt={service.title} 
                           className="service-active-image" 
                           onError={(e) => {
+                            const currentSrc = e.target.src;
+                            if (currentSrc && !currentSrc.includes('/images/')) {
+                              const filename = currentSrc.substring(currentSrc.lastIndexOf('/') + 1);
+                              if (filename) {
+                                e.target.src = `/images/${filename}`;
+                                return;
+                              }
+                            }
+                            e.target.onerror = null;
                             e.target.src = 'https://via.placeholder.com/150';
                           }}
                         />

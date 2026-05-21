@@ -34,6 +34,8 @@ export default function Testimonials() {
         text: t.text,
         author: t.author,
         image: t.image ? (t.image.startsWith('http') ? t.image : `${apiHost}${t.image}`) : '/images/testimonial-avatar.png',
+        designation: t.designation,
+        relationship: t.relationship,
       }))
     : staticTestimonials;
 
@@ -64,7 +66,15 @@ export default function Testimonials() {
                 }}
               />
               <span />
-              <h3>{testimonial.author}</h3>
+              <div className="testimonial-author-info">
+                <h3>{testimonial.author}</h3>
+                {testimonial.designation && (
+                  <div className="testimonial-designation">{testimonial.designation}</div>
+                )}
+                {testimonial.relationship && (
+                  <div className="testimonial-relationship">{testimonial.relationship}</div>
+                )}
+              </div>
             </div>
           </article>
         ))}
