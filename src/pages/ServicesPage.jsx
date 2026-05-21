@@ -122,11 +122,6 @@ export default function ServicesPage() {
                       <div className="item-title-row">
                         <h3>{service.title}</h3>
                       </div>
-                      {service.tags && service.tags.length > 0 && (
-                        <div className="item-tags">
-                          {service.tags.join('  •  ')}
-                        </div>
-                      )}
                     </div>
                   </div>
 
@@ -184,11 +179,6 @@ export default function ServicesPage() {
                       <div className="item-title-row">
                         <h3>{service.title}</h3>
                       </div>
-                      {service.tags && service.tags.length > 0 && (
-                        <div className="item-tags">
-                          {service.tags.join('  •  ')}
-                        </div>
-                      )}
                     </div>
                   </div>
 
