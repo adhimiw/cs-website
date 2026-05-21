@@ -56,8 +56,7 @@ npm install
 npm run build
 
 # 2. Upload build output directly into the backend public folder on Hostinger
-# Replace <hostinger_user> and <hostinger_ip> with the actual Hostinger SSH username and IP.
-scp -P 65002 -r dist/* <hostinger_user>@<hostinger_ip>:/home/<hostinger_user>/domains/peru-crocodile-804063.hostingersite.com/site/backend/public/
+scp -P 65002 -r dist/assets dist/images dist/index.html dist/favicon.svg dist/icons.svg u244089748@145.79.210.59:/home/u244089748/domains/peru-crocodile-804063.hostingersite.com/site/backend/public/
 ```
 
 ---
@@ -67,7 +66,7 @@ scp -P 65002 -r dist/* <hostinger_user>@<hostinger_ip>:/home/<hostinger_user>/do
 Verify or export the following directories in your Hostinger SSH session:
 
 ```bash
-HOSTINGER_USER=<hostinger_user>
+HOSTINGER_USER=u244089748
 DOMAIN_ROOT="/home/$HOSTINGER_USER/domains/peru-crocodile-804063.hostingersite.com"
 SITE_DIR="$DOMAIN_ROOT/site"
 BACKEND_DIR="$SITE_DIR/backend"
@@ -127,7 +126,7 @@ cat > "$PUBLIC_DIR/.htaccess" <<'HTA'
     RewriteRule ^ - [L]
 
     # Route backend modules to Laravel router
-    RewriteCond %{REQUEST_URI} ^/(api|admin|sanctum|storage|livewire|analytics)(/|$) [NC]
+    RewriteCond %{REQUEST_URI} ^/(api|admin|sanctum|storage|livewire|livewire-[^/]+|filament|analytics)(/|$) [NC]
     RewriteRule ^ index.php [L]
 
     # Fallback to React SPA router for all other client routes
@@ -202,17 +201,25 @@ Perform the configuration setup and seed initial database content:
 ```bash
 cd "$BACKEND_DIR"
 
+# Hostinger CLI may default to PHP 8.2 even when the website is set to PHP 8.3.
+# Use the PHP 8.3 binary explicitly for Laravel 13 commands.
+PHP_BIN=/opt/alt/php83/usr/bin/php
+
 # Install production dependencies
-composer install --no-dev --optimize-autoloader --no-interaction
+$PHP_BIN "$(which composer)" install --no-dev --optimize-autoloader --no-interaction
+
+# Publish Filament and Livewire browser assets
+$PHP_BIN artisan filament:assets
+$PHP_BIN artisan livewire:publish --assets
 
 # Create database tables
-php artisan migrate --force
+$PHP_BIN artisan migrate --force
 
 # Seed dynamic site pages, services, testimonials, blogs, and settings
-php artisan db:seed --force
+$PHP_BIN artisan db:seed --force
 
 # Create symbolic link for public upload assets
-php artisan storage:link
+$PHP_BIN artisan storage:link
 
 # Set storage folder permissions
 chmod -R 775 storage bootstrap/cache
@@ -225,7 +232,7 @@ chmod -R 775 storage bootstrap/cache
 To log into the admin panel at `https://peru-crocodile-804063.hostingersite.com/admin`:
 
 ```bash
-php artisan make:filament-user
+/opt/alt/php83/usr/bin/php artisan make:filament-user
 ```
 
 Follow the prompts to enter the name, email, and password.
@@ -237,14 +244,15 @@ Follow the prompts to enter the name, email, and password.
 Clear and cache config and routing definitions for optimized request processing:
 
 ```bash
-php artisan config:clear
-php artisan route:clear
-php artisan view:clear
+/opt/alt/php83/usr/bin/php artisan config:clear
+/opt/alt/php83/usr/bin/php artisan route:clear
+/opt/alt/php83/usr/bin/php artisan view:clear
 
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
+/opt/alt/php83/usr/bin/php artisan config:cache
+/opt/alt/php83/usr/bin/php artisan view:cache
 ```
+
+Do not run `route:cache` on this shared-hosting setup until the admin panel is verified. Livewire serves JavaScript through Laravel routes, and route caching can cause Livewire JavaScript requests to return a 404 HTML page.
 
 ---
 

@@ -1,4 +1,6 @@
 <IfModule mod_rewrite.c>
+    DirectoryIndex index.html index.php
+
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes
     </IfModule>
@@ -13,13 +15,15 @@
     RewriteCond %{HTTP:x-xsrf-token} .
     RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:X-XSRF-Token}]
 
-    # Redirect Trailing Slashes If Not A Folder...
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteCond %{REQUEST_URI} (.+)/$
-    RewriteRule ^ %1 [L,R=301]
+    # Serve existing public files/folders directly.
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
 
-    # Send Requests To Front Controller...
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteCond %{REQUEST_FILENAME} !-f
+    # Route Laravel and Filament/Livewire endpoints through Laravel.
+    RewriteCond %{REQUEST_URI} ^/(api|admin|sanctum|storage|livewire|livewire-[^/]+|filament|analytics)(/|$) [NC]
     RewriteRule ^ index.php [L]
+
+    # Fallback to React SPA router for client routes.
+    RewriteRule ^ index.html [L]
 </IfModule>
