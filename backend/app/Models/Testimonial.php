@@ -11,7 +11,5 @@ class Testimonial extends Model
         'author',
         'image',
         'rating',
-        'designation',
-        'relationship',
     ];
 }

@@ -36,8 +36,6 @@ class TestimonialResource extends Resource
                             ->minValue(1)
                             ->maxValue(5)
                             ->required(),
-                        Forms\Components\TextInput::make('designation'),
-                        Forms\Components\TextInput::make('relationship'),
                         Forms\Components\FileUpload::make('image')
                             ->image()
                             ->directory('testimonials')
@@ -59,10 +57,6 @@ class TestimonialResource extends Resource
                 Tables\Columns\TextColumn::make('author')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('designation')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('relationship')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('rating')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('text')
