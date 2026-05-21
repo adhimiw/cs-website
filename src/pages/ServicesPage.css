@@ -37,9 +37,11 @@
 }
 
 .services-group-title {
-  font-size: clamp(26px, 3.5vw, 34px);
+  font-family: var(--font-heading);
+  font-size: clamp(34px, 3.1vw, 44px);
   color: var(--text-primary);
   font-weight: 800;
+  line-height: 1.2;
   margin-top: 6px;
 }
 
@@ -106,29 +108,29 @@
 
 .item-number {
   font-size: 14px;
-  font-weight: 500;
-  color: rgba(0, 25, 76, 0.4);
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 600;
+  color: rgba(0, 25, 76, 0.45);
+  font-family: var(--font-body);
   padding-top: 8px; /* Perfectly aligned to the top baseline of the title */
 }
 
 .accordion-item.active-item .item-number {
   color: var(--text-primary);
-  font-weight: 600;
+  font-weight: 800;
 }
 
 .item-main-header h3 {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-heading);
   font-size: clamp(22px, 2.8vw, 32px);
-  font-weight: 500; /* Medium weight matching Dribbble screenshot */
+  font-weight: 800; /* Bold weight matching the home page service titles */
   color: var(--text-primary);
   margin: 0;
-  line-height: 1.25;
-  letter-spacing: -0.3px;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
 }
 
 .item-tags {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-body);
   font-size: 13px;
   font-weight: 500;
   color: rgba(0, 25, 76, 0.5);
@@ -168,9 +170,10 @@
 }
 
 .service-description {
-  font-size: 15px;
+  font-family: var(--font-body);
+  font-size: 16px;
   line-height: 1.7;
-  color: rgba(0, 25, 76, 0.7);
+  color: var(--text-secondary);
   max-width: 100%;
   margin-bottom: 24px;
   text-align: justify;
@@ -182,17 +185,17 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--text-primary);
+  border: 2px solid var(--text-primary);
   color: var(--text-primary);
   background: transparent;
   padding: 12px 30px;
   border-radius: 50px;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 1px;
   transition: all 0.3s ease;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-body);
   margin-top: 10px;
 }
 
