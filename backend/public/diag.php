@@ -68,6 +68,10 @@ try {
         $laravel_db_status = "Failed: " . $e->getMessage();
     }
     
+    $sessions_dir = dirname(__DIR__) . '/storage/framework/sessions';
+    $sessions_dir_writable = is_writable($sessions_dir);
+    $sessions_dir_exists = file_exists($sessions_dir);
+    
     $laravel_env_details = [
         'APP_NAME' => config('app.name'),
         'APP_ENV' => config('app.env'),
@@ -79,6 +83,8 @@ try {
         'SESSION_PATH' => config('session.path'),
         'SESSION_DOMAIN' => config('session.domain') ?? 'null',
         'FILESYSTEM_DISK' => config('filesystems.default'),
+        'SESSION_DIR_EXISTS' => $sessions_dir_exists ? 'true' : 'false',
+        'SESSION_DIR_WRITABLE' => $sessions_dir_writable ? 'true' : 'false',
     ];
 } catch (\Exception $e) {
     $laravel_status = "Failed to boot Laravel: " . $e->getMessage();
