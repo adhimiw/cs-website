@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { getApiUrl } from '../context/CMSContext';
 import './ContactPage.css';
 
 export default function ContactPage() {
@@ -11,6 +12,8 @@ export default function ContactPage() {
   });
 
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,15 +23,42 @@ export default function ContactPage() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Simulate API form submission
-    console.log('Contact form submitted:', formData);
-    setSubmitted(true);
-    setFormData({ name: '', phone: '', email: '', message: '' });
-    setTimeout(() => {
-      setSubmitted(false);
-    }, 5000);
+    setSubmitting(true);
+    setError(null);
+    try {
+      const response = await fetch(getApiUrl('/api/contact'), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          subject: 'Contact Page Inquiry',
+          message: formData.message || 'No message provided.'
+        })
+      });
+
+      const resData = await response.json();
+      if (!response.ok) {
+        throw new Error(resData.message || 'Failed to submit contact form.');
+      }
+
+      setSubmitted(true);
+      setFormData({ name: '', phone: '', email: '', message: '' });
+      setTimeout(() => {
+        setSubmitted(false);
+      }, 5000);
+    } catch (err) {
+      console.error('Contact submission error:', err);
+      setError(err.message || 'An error occurred. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -125,6 +155,12 @@ export default function ContactPage() {
               </div>
             )}
 
+            {error && (
+              <div className="submission-error-alert">
+                {error}
+              </div>
+            )}
+
             <form className="contact-actual-form" onSubmit={handleSubmit}>
               <div className="form-field-group">
                 <label htmlFor="contact-name">Name <span className="required-star">*</span></label>
@@ -177,8 +213,8 @@ export default function ContactPage() {
                 ></textarea>
               </div>
 
-              <button type="submit" className="contact-submit-btn">
-                Submit
+              <button type="submit" className="contact-submit-btn" disabled={submitting}>
+                {submitting ? 'Submitting...' : 'Submit'}
               </button>
             </form>
           </div>

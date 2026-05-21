@@ -4,30 +4,59 @@ namespace App\AI\Agents;
 
 use Laravel\Ai\Contracts\Agent;
 use Laravel\Ai\Contracts\HasStructuredOutput;
+use Laravel\Ai\Contracts\HasTools;
+use Laravel\Ai\Contracts\Conversational;
+use App\AI\Tools\ClimbSphereKnowledgeSearch;
 use Laravel\Ai\Promptable;
 use Laravel\Ai\Messages\Message;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
 use App\Models\ChatSession;
 
-class LeadChatAgent implements Agent, HasStructuredOutput
+class LeadChatAgent implements Agent, HasStructuredOutput, Conversational
 {
     use Promptable;
 
     protected ?ChatSession $chatSession = null;
+    protected ?string $retrievedContext = null;
 
-    public function __construct(?ChatSession $chatSession = null)
+    public function __construct(?ChatSession $chatSession = null, ?string $retrievedContext = null)
     {
         $this->chatSession = $chatSession;
+        $this->retrievedContext = $retrievedContext;
     }
 
     public function instructions(): string
     {
-        return "You are the friendly, professional lead qualification assistant for ClimbSphere, an agency specializing in web development, mobile apps, and custom software. " .
+        $instructions = "You are the friendly, professional lead qualification assistant for ClimbSphere, an agency specializing in web development, mobile apps, and custom software. " .
                "Your objectives:\n" .
                "1. Engage in friendly conversation, answering questions about ClimbSphere's services (e.g., custom web portals, mobile apps, SaaS, UI/UX, AI integrations).\n" .
                "2. Qualify the visitor as a potential lead by progressively collecting: name, email, phone, company, project type/idea, budget, and timeline.\n" .
                "3. Be natural and conversational. DO NOT dump all questions at once. Ask questions one at a time when appropriate.\n" .
                "4. Once you have at least the visitor's name, email, and a basic project plan or idea, mark the lead as qualified. Once qualified, let them know that the team will reach out via email within 24 hours.";
+
+        // Retrieve existing lead details from DB to keep the conversation stateful and prevent details loss
+        $existingLead = null;
+        if ($this->chatSession) {
+            $existingLead = \App\Models\Lead::where('chat_session_id', $this->chatSession->id)->first();
+        }
+
+        if ($existingLead) {
+            $knownDetails = [];
+            foreach (['name', 'email', 'phone', 'company', 'project_type', 'plan_or_idea', 'budget', 'timeline'] as $field) {
+                if ($existingLead->{$field} !== '' && $existingLead->{$field} !== null) {
+                    $knownDetails[] = "- " . ucfirst(str_replace('_', ' ', $field)) . ": " . $existingLead->{$field};
+                }
+            }
+            if (!empty($knownDetails)) {
+                $instructions .= "\n\nAlready captured details about this visitor (DO NOT ask for these again. Make sure to keep returning these same values in the 'extracted' output to prevent losing them):\n" . implode("\n", $knownDetails);
+            }
+        }
+
+        if ($this->retrievedContext) {
+            $instructions .= "\n\nUse the following factual context retrieved from ClimbSphere's database to answer the visitor's questions accurately:\n" . $this->retrievedContext;
+        }
+
+        return $instructions;
     }
 
     public function messages(): array
@@ -36,10 +65,17 @@ class LeadChatAgent implements Agent, HasStructuredOutput
             return [];
         }
 
-        // Return preceding messages sorted by chronological order (excluding system messages if you wish)
-        return $this->chatSession->messages()
+        $messages = $this->chatSession->messages()
             ->orderBy('id', 'asc')
-            ->get()
+            ->get();
+
+        // Since the current user message is already saved in the database before calling prompt(),
+        // we exclude the last user message to avoid duplicate consecutive user messages.
+        if ($messages->isNotEmpty() && $messages->last()->role === 'user') {
+            $messages->pop();
+        }
+
+        return $messages
             ->map(function ($m) {
                 return new Message($m->role, $m->content);
             })

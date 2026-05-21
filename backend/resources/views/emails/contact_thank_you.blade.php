@@ -30,7 +30,7 @@
         </div>
         <div class="footer">
             <p>&copy; {{ date('Y') }} ClimbSphere. All rights reserved.</p>
-            <p>Need immediate support? Email us at <a href="mailto:hello@climbsphere.com">hello@climbsphere.com</a>.</p>
+            <p>Need immediate support? Email us at <a href="mailto:{{ config('mail.admin_recipient', 'devloper@adhithanr.space') }}">{{ config('mail.admin_recipient', 'devloper@adhithanr.space') }}</a>.</p>
         </div>
     </div>
 </body>

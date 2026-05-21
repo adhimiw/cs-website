@@ -1,76 +1,92 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { useCMS, getApiUrl } from '../context/CMSContext';
 import './Services.css';
 
-const services = [
+const serviceIcons = {
+  'Digital Transformation': (
+    <svg viewBox="0 0 64 64" aria-hidden="true">
+      <path d="M32 47v7M24 54h16M32 12v7M20 17l5 5M44 17l-5 5" />
+      <path d="M23 34a9 9 0 1 1 18 0c0 5-4 7-5 10h-8c-1-3-5-5-5-10Z" />
+      <path d="M27 48h10" />
+    </svg>
+  ),
+  'Service Desk & Ticketing': (
+    <svg viewBox="0 0 64 64" aria-hidden="true">
+      <path d="M18 22h28v18H18z" />
+      <path d="M24 22v-6h16v6M24 46h16M32 40v6" />
+      <path d="m22 32 6 5 14-11" />
+    </svg>
+  ),
+  'HR Technology': (
+    <svg viewBox="0 0 64 64" aria-hidden="true">
+      <circle cx="32" cy="22" r="8" />
+      <path d="M18 50c2-9 8-14 14-14s12 5 14 14" />
+      <path d="M16 34c-5 1-8 5-9 11M48 34c5 1 8 5 9 11" />
+    </svg>
+  ),
+  'Project Management': (
+    <svg viewBox="0 0 64 64" aria-hidden="true">
+      <path d="M20 44c-8-7-9-19-2-27 7-7 19-8 27-1" />
+      <path d="M44 20h11V9" />
+      <path d="M44 20c7 8 7 20 0 27-7 7-19 8-27 1" />
+      <path d="M20 44H9v11" />
+    </svg>
+  ),
+  'Professional Services': (
+    <svg viewBox="0 0 64 64" aria-hidden="true">
+      <rect x="12" y="20" width="40" height="28" rx="2" fill="none" stroke="currentColor" strokeWidth="2.5" />
+      <path d="M22 20v-6h20v6" fill="none" stroke="currentColor" strokeWidth="2.5" />
+      <circle cx="32" cy="34" r="5" fill="none" stroke="currentColor" strokeWidth="2.5" />
+      <path d="M42 34h6M16 34h6" fill="none" stroke="currentColor" strokeWidth="2.5" />
+    </svg>
+  ),
+  'Product Partnerships': (
+    <svg viewBox="0 0 64 64" aria-hidden="true">
+      <circle cx="22" cy="32" r="6" fill="none" stroke="currentColor" strokeWidth="2.5" />
+      <circle cx="42" cy="32" r="6" fill="none" stroke="currentColor" strokeWidth="2.5" />
+      <path d="M28 32h8" fill="none" stroke="currentColor" strokeWidth="2.5" />
+      <path d="M16 38c0 5 4 8 8 8h16c4 0 8-3 8-8" fill="none" stroke="currentColor" strokeWidth="2.5" />
+    </svg>
+  ),
+};
+
+const defaultServices = [
   {
     title: 'Digital Transformation',
     image: '/images/service-digital-transformation.webp',
-    icon: (
-      <svg viewBox="0 0 64 64" aria-hidden="true">
-        <path d="M32 47v7M24 54h16M32 12v7M20 17l5 5M44 17l-5 5" />
-        <path d="M23 34a9 9 0 1 1 18 0c0 5-4 7-5 10h-8c-1-3-5-5-5-10Z" />
-        <path d="M27 48h10" />
-      </svg>
-    ),
+    description: 'Accelerating business outcomes with strategic technology decisions and seamless execution',
+    icon: serviceIcons['Digital Transformation'],
   },
   {
     title: 'Service Desk & Ticketing',
     image: '/images/service-dashboard.webp',
-    icon: (
-      <svg viewBox="0 0 64 64" aria-hidden="true">
-        <path d="M18 22h28v18H18z" />
-        <path d="M24 22v-6h16v6M24 46h16M32 40v6" />
-        <path d="m22 32 6 5 14-11" />
-      </svg>
-    ),
+    description: 'Customer-centricity and AI-powered automation that turns every interaction into an opportunity for meaningful engagement and customer delight.',
+    icon: serviceIcons['Service Desk & Ticketing'],
   },
   {
     title: 'HR Technology',
     image: '/images/service-hr.webp',
-    icon: (
-      <svg viewBox="0 0 64 64" aria-hidden="true">
-        <circle cx="32" cy="22" r="8" />
-        <path d="M18 50c2-9 8-14 14-14s12 5 14 14" />
-        <path d="M16 34c-5 1-8 5-9 11M48 34c5 1 8 5 9 11" />
-      </svg>
-    ),
+    description: 'Human-centric design at the core of our design principles delivers exceptional employee experience through integrated systems, workflows and AI enablement.',
+    icon: serviceIcons['HR Technology'],
   },
   {
     title: 'Project Management',
     image: '/images/service-dashboard.webp',
-    icon: (
-      <svg viewBox="0 0 64 64" aria-hidden="true">
-        <path d="M20 44c-8-7-9-19-2-27 7-7 19-8 27-1" />
-        <path d="M44 20h11V9" />
-        <path d="M44 20c7 8 7 20 0 27-7 7-19 8-27 1" />
-        <path d="M20 44H9v11" />
-      </svg>
-    ),
+    description: 'Risk Management in ClimbSphere helps businesses identify, assess and control potential risks effectively.',
+    icon: serviceIcons['Project Management'],
   },
   {
     title: 'Professional Services',
     image: '/images/service_professional.png',
-    icon: (
-      <svg viewBox="0 0 64 64" aria-hidden="true">
-        <rect x="12" y="20" width="40" height="28" rx="2" fill="none" stroke="currentColor" strokeWidth="2.5" />
-        <path d="M22 20v-6h20v6" fill="none" stroke="currentColor" strokeWidth="2.5" />
-        <circle cx="32" cy="34" r="5" fill="none" stroke="currentColor" strokeWidth="2.5" />
-        <path d="M42 34h6M16 34h6" fill="none" stroke="currentColor" strokeWidth="2.5" />
-      </svg>
-    ),
+    description: 'Scale your customer wins with end-to-end professional services excellence.',
+    icon: serviceIcons['Professional Services'],
   },
   {
     title: 'Product Partnerships',
     image: '/images/service_partnerships.png',
-    icon: (
-      <svg viewBox="0 0 64 64" aria-hidden="true">
-        <circle cx="22" cy="32" r="6" fill="none" stroke="currentColor" strokeWidth="2.5" />
-        <circle cx="42" cy="32" r="6" fill="none" stroke="currentColor" strokeWidth="2.5" />
-        <path d="M28 32h8" fill="none" stroke="currentColor" strokeWidth="2.5" />
-        <path d="M16 38c0 5 4 8 8 8h16c4 0 8-3 8-8" fill="none" stroke="currentColor" strokeWidth="2.5" />
-      </svg>
-    ),
+    description: 'A well designed partner ecosystem multiplies your reach, strengthens your product and creates shared value.',
+    icon: serviceIcons['Product Partnerships'],
   },
 ];
 
@@ -108,13 +124,89 @@ function ChevronRightIcon() {
   );
 }
 
+
 export default function Services() {
+  const { services: cmsServices } = useCMS();
   const [isVisible, setIsVisible] = useState(false);
   const [autoplay, setAutoplay] = useState(true);
   const sectionRef = useRef(null);
   const carouselRef = useRef(null);
 
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    message: ''
+  });
+  const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setError(null);
+    try {
+      const response = await fetch(getApiUrl('/api/contact'), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          subject: 'Digital Maturity Assessment Form',
+          message: formData.message || 'No additional details provided.'
+        })
+      });
+
+      const resData = await response.json();
+      if (!response.ok) {
+        throw new Error(resData.message || 'Failed to submit digital maturity assessment form.');
+      }
+
+      setSubmitted(true);
+      setFormData({ name: '', phone: '', email: '', message: '' });
+      setTimeout(() => {
+        setSubmitted(false);
+      }, 5000);
+    } catch (err) {
+      console.error('Digital Maturity Assessment form error:', err);
+      setError(err.message || 'An error occurred. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const apiHost = window.location.hostname === 'localhost' ? 'http://localhost:8000' : '';
+
+  const displayServices = cmsServices && cmsServices.length > 0
+    ? cmsServices.map(s => ({
+        title: s.title,
+        description: s.description,
+        image: s.image ? (s.image.startsWith('http') || s.image.startsWith('/images') ? s.image : `${apiHost}${s.image}`) : '/images/service-digital-transformation.webp',
+        icon: serviceIcons[s.title] || (
+          <svg viewBox="0 0 64 64" aria-hidden="true">
+            <path d="M32 47v7M24 54h16M32 12v7M20 17l5 5M44 17l-5 5" />
+            <path d="M23 34a9 9 0 1 1 18 0c0 5-4 7-5 10h-8c-1-3-5-5-5-10Z" />
+            <path d="M27 48h10" />
+          </svg>
+        )
+      }))
+    : defaultServices;
+
   useEffect(() => {
+    const currentSection = sectionRef.current;
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -123,12 +215,12 @@ export default function Services() {
       },
       { threshold: 0.15 }
     );
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
+    if (currentSection) {
+      observer.observe(currentSection);
     }
     return () => {
-      if (sectionRef.current) {
-        observer.unobserve(sectionRef.current);
+      if (currentSection) {
+        observer.unobserve(currentSection);
       }
     };
   }, []);
@@ -202,7 +294,7 @@ export default function Services() {
             onTouchEnd={() => setAutoplay(true)}
           >
             <div className="services-carousel-track">
-              {services.map((service, index) => (
+              {displayServices.map((service, index) => (
                 <article
                   key={service.title}
                   className="service-card"
@@ -213,6 +305,7 @@ export default function Services() {
                   <div className="service-overlay">
                     <div className="service-icon">{service.icon}</div>
                     <h3>{service.title}</h3>
+                    <p className="service-card-desc">{service.description}</p>
                   </div>
                 </article>
               ))}
@@ -248,30 +341,65 @@ export default function Services() {
             </Link>
           </div>
 
-          <form className="overview-form" onSubmit={(event) => event.preventDefault()}>
+          <form className="overview-form" onSubmit={handleSubmit}>
+            {submitted && (
+              <div className="submission-success-alert" style={{ background: '#d1e7dd', color: '#0f5132', padding: '15px 20px', borderRadius: 'var(--radius-md)', marginBottom: '20px', fontSize: '15px', fontWeight: '600', border: '1px solid #badbcc', width: '100%' }}>
+                Thank you! Your request has been sent successfully. We will get back to you shortly.
+              </div>
+            )}
+            {error && (
+              <div className="submission-error-alert" style={{ background: '#f8d7da', color: '#842029', padding: '15px 20px', borderRadius: 'var(--radius-md)', marginBottom: '20px', fontSize: '15px', fontWeight: '600', border: '1px solid #f5c2c7', width: '100%' }}>
+                {error}
+              </div>
+            )}
             <div className="overview-form-group">
               <label>
                 Name <span className="required">*</span>
               </label>
-              <input type="text" required />
+              <input 
+                type="text" 
+                name="name" 
+                value={formData.name} 
+                onChange={handleInputChange} 
+                required 
+              />
             </div>
             <div className="overview-form-group">
               <label>
                 Phone <span className="required">*</span>
               </label>
-              <input type="tel" required />
+              <input 
+                type="tel" 
+                name="phone" 
+                value={formData.phone} 
+                onChange={handleInputChange} 
+                required 
+              />
             </div>
             <div className="overview-form-group">
               <label>
                 Email <span className="required">*</span>
               </label>
-              <input type="email" required />
+              <input 
+                type="email" 
+                name="email" 
+                value={formData.email} 
+                onChange={handleInputChange} 
+                required 
+              />
             </div>
             <div className="overview-form-group">
               <label>Message</label>
-              <textarea rows="3" />
+              <textarea 
+                name="message" 
+                value={formData.message} 
+                onChange={handleInputChange} 
+                rows="3" 
+              />
             </div>
-            <button type="submit" className="overview-form-submit">Submit</button>
+            <button type="submit" className="overview-form-submit" disabled={submitting}>
+              {submitting ? 'Submitting...' : 'Submit'}
+            </button>
           </form>
         </div>
       </section>

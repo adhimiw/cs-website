@@ -46,8 +46,13 @@ class ChatController extends Controller
             'content' => $validated['message'],
         ]);
 
-        // Prompt Agent with message history context
-        $agent = new LeadChatAgent($chatSession);
+        // Retrieve context using the ClimbSphereKnowledgeSearch tool (Pre-Retrieval RAG)
+        $searcher = new \App\AI\Tools\ClimbSphereKnowledgeSearch();
+        $context = $searcher->handle(new \Laravel\Ai\Tools\Request(['query' => $validated['message']]));
+        $retrievedContext = !str_contains($context, 'No matching records found') ? $context : null;
+
+        // Prompt Agent with message history and retrieved context
+        $agent = new LeadChatAgent($chatSession, $retrievedContext);
         $response = $agent->prompt($validated['message']);
 
         // Save assistant reply & structured payload
@@ -60,29 +65,35 @@ class ChatController extends Controller
         // Update or create CRM Lead record progressively
         $extracted = $response['extracted'] ?? [];
         
-        $lead = Lead::updateOrCreate(
-            ['chat_session_id' => $chatSession->id],
-            [
-                'source_type' => 'chat',
-                'name' => $extracted['name'] ?? null,
-                'email' => $extracted['email'] ?? null,
-                'phone' => $extracted['phone'] ?? null,
-                'company' => $extracted['company'] ?? null,
-                'project_type' => $extracted['project_type'] ?? null,
-                'plan_or_idea' => $extracted['plan_or_idea'] ?? null,
-                'budget' => $extracted['budget'] ?? null,
-                'timeline' => $extracted['timeline'] ?? null,
-                'lead_status' => ($response['lead_status'] === 'qualified') ? 'qualified' : 'new',
-                'ip_address' => $chatSession->ip_address,
-                'country' => $chatSession->country,
-                'city' => $chatSession->city,
-                'referrer_url' => $chatSession->referrer_url,
-                'referrer_source' => $chatSession->referrer_source,
-                'utm_source' => $chatSession->utm_source,
-                'utm_medium' => $chatSession->utm_medium,
-                'utm_campaign' => $chatSession->utm_campaign,
-            ]
-        );
+        $lead = Lead::firstOrNew(['chat_session_id' => $chatSession->id]);
+        $lead->source_type = 'chat';
+        
+        // Progressive updates (only overwrite if LLM returned a non-null, non-empty value)
+        foreach (['name', 'email', 'phone', 'company', 'project_type', 'plan_or_idea', 'budget', 'timeline'] as $field) {
+            if (isset($extracted[$field]) && $extracted[$field] !== '' && $extracted[$field] !== null) {
+                $lead->{$field} = $extracted[$field];
+            }
+        }
+        
+        // Status resolution (keep qualified if already qualified)
+        $newStatus = ($response['lead_status'] === 'qualified') ? 'qualified' : 'new';
+        if ($lead->lead_status === 'qualified' || $newStatus === 'qualified') {
+            $lead->lead_status = 'qualified';
+        } else {
+            $lead->lead_status = 'new';
+        }
+        
+        // Sync session details
+        $lead->ip_address = $chatSession->ip_address;
+        $lead->country = $chatSession->country;
+        $lead->city = $chatSession->city;
+        $lead->referrer_url = $chatSession->referrer_url;
+        $lead->referrer_source = $chatSession->referrer_source;
+        $lead->utm_source = $chatSession->utm_source;
+        $lead->utm_medium = $chatSession->utm_medium;
+        $lead->utm_campaign = $chatSession->utm_campaign;
+        
+        $lead->save();
 
         // Handle notifications if qualified
         $isNewlyQualified = ($response['lead_status'] === 'qualified') && !$chatSession->is_qualified;
@@ -101,7 +112,7 @@ class ChatController extends Controller
 
             // Queue notification email to internal team
             try {
-                $adminEmail = config('mail.admin_recipient', 'hello@climbsphere.com');
+                $adminEmail = config('mail.admin_recipient', 'devloper@adhithanr.space');
                 Mail::to($adminEmail)->queue(new \App\Mail\LeadCapturedMail($lead));
             } catch (\Exception $e) {
                 report($e);

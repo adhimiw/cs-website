@@ -40,7 +40,7 @@
         </div>
         <div class="footer">
             <p>&copy; {{ date('Y') }} ClimbSphere. All rights reserved.</p>
-            <p>Need to add more details? Reply directly to this email or contact us at <a href="mailto:hello@climbsphere.com">hello@climbsphere.com</a>.</p>
+            <p>Need to add more details? Reply directly to this email or contact us at <a href="mailto:{{ config('mail.admin_recipient', 'devloper@adhithanr.space') }}">{{ config('mail.admin_recipient', 'devloper@adhithanr.space') }}</a>.</p>
         </div>
     </div>
 </body>

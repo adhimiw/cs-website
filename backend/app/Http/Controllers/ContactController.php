@@ -78,7 +78,7 @@ class ContactController extends Controller
         }
 
         try {
-            $adminEmail = config('mail.admin_recipient', 'hello@climbsphere.com');
+            $adminEmail = config('mail.admin_recipient', 'devloper@adhithanr.space');
             Mail::to($adminEmail)->queue(new NewContactReceivedMail($submission));
             $submission->update(['admin_notified' => true]);
         } catch (\Exception $e) {

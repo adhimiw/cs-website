@@ -6,34 +6,27 @@ import { useCMS } from '../context/CMSContext';
 const businessServices = [
   {
     num: '01',
-    title: 'Digital Maturity Assessment',
-    image: '/images/digital-maturity-assessment.webp',
-    tags: ['Capabilities', 'Strategy', 'Transformation Roadmap'],
-    description: "The right digital investment starts with clear assessment and allocation. ClimbSphere's structured assessment evaluates your capabilities across six dimensions — Strategy, Technology, Processes, People, Customer Experience and Governance — replacing guesswork with evidence-based roadmaps."
-  },
-  {
-    num: '02',
     title: 'Digital Transformation',
     image: '/images/service-digital-transformation.webp',
     tags: ['Discover', 'Design', 'Deliver & Drive'],
     description: "Meaningful transformation happens when technology serves business strategy. ClimbSphere's Discover, Design, Deliver, Drive cycle aligns people, processes, and platforms for measurable outcomes, accelerating your evolution with focus and momentum."
   },
   {
-    num: '03',
+    num: '02',
     title: 'HR Technology',
     image: '/images/service-hr.webp',
     tags: ['Talent Selection', 'Analytics', 'Employee Experience'],
     description: "A connected, intelligent HR ecosystem empowers your people teams to attract, retain and grow talent with clarity and confidence. ClimbSphere optimizes talent management, analytics and employee experience through seamless platform selection, implementation and adoption."
   },
   {
-    num: '04',
+    num: '03',
     title: 'Project Management',
     image: '/images/service-dashboard.webp',
     tags: ['Structured Agility', 'Agile & Hybrid', 'Governance'],
     description: "ClimbSphere brings structured agility to every engagement, blending Agile, Waterfall, or Hybrid methodologies with hands-on governance and transparent reporting — keeping your initiatives on track, on budget and aligned to the goals that matter most."
   },
   {
-    num: '05',
+    num: '04',
     title: 'Service Desk & Ticketing',
     image: '/images/service-dashboard.webp',
     tags: ['Ticketing Support', 'Intelligent Automation', 'SLA Governance'],
