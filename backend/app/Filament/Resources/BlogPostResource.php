@@ -50,6 +50,7 @@ class BlogPostResource extends Resource
                     ->schema([
                         Forms\Components\FileUpload::make('image')
                             ->image()
+                            ->disk('public')
                             ->directory('blogs')
                             ->visibility('public'),
                         Forms\Components\TextInput::make('author')

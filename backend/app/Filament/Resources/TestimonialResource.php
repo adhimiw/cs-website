@@ -38,6 +38,7 @@ class TestimonialResource extends Resource
                             ->required(),
                         Forms\Components\FileUpload::make('image')
                             ->image()
+                            ->disk('public')
                             ->directory('testimonials')
                             ->visibility('public'),
                         Forms\Components\Textarea::make('text')

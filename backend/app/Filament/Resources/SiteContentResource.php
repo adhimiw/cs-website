@@ -47,6 +47,7 @@ class SiteContentResource extends Resource
                             ->reactive(),
                         Forms\Components\FileUpload::make('value')
                             ->image()
+                            ->disk('public')
                             ->directory('site_contents')
                             ->visibility('public')
                             ->visible(fn (Get $get): bool => $get('type') === 'image')
