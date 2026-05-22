@@ -1,4 +1,22 @@
 .services-page {
+  /* Brand Palette Overrides specifically for the Services Page */
+  --section-soft: #fbf9f8;
+  --dark-surface: var(--brand-brown);
+  --navy: var(--brand-brown);
+  --navy-deep: var(--brand-black);
+  --text-primary: var(--brand-black);
+  --text-secondary: #403430;
+  --text-muted: #7d706a;
+  --accent: var(--brand-blue);
+  --accent-hover: #1e6fa5;
+  --accent-soft: #ebf4fa;
+  --border: #e6e2e0;
+  --section-bg-light: #fcfbfa;
+  --section-bg-blue: #ebf4fa;
+  --success: var(--brand-green);
+  --warning: var(--brand-orange);
+  --danger: var(--brand-red);
+
   background-color: var(--background);
   color: var(--text-secondary);
 }
