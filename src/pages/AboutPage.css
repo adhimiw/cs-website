@@ -94,7 +94,7 @@
 .about-feature-item {
   display: flex;
   gap: 20px;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .feature-icon-container {
@@ -118,7 +118,7 @@
   font-size: 18px;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 6px;
+  margin-bottom: 0;
 }
 
 .feature-text p {

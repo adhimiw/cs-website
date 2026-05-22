@@ -42,7 +42,6 @@ export default function AboutPage() {
                 </div>
                 <div className="feature-text">
                   <h3>Global Reach</h3>
-                  <p>Delivering large-scale HCM and Service Desk transformation program across key regions worldwide.</p>
                 </div>
               </div>
 
@@ -57,7 +56,6 @@ export default function AboutPage() {
                 </div>
                 <div className="feature-text">
                   <h3>Proven Expertise</h3>
-                  <p>Leveraging nearly 50 years of combined experience to drive successfully outcomes for global enterprises.</p>
                 </div>
               </div>
             </div>
@@ -96,7 +94,6 @@ export default function AboutPage() {
                 </div>
                 <div className="feature-text">
                   <h3>SaaS Expertise</h3>
-                  <p>Specialized in leading SaaS platforms to deliver innovative and efficient business solutions.</p>
                 </div>
               </div>
 
@@ -111,7 +108,6 @@ export default function AboutPage() {
                 </div>
                 <div className="feature-text">
                   <h3>Scalable & Integrated</h3>
-                  <p>Building scalable and integrated systems that streamline workflows and drive operational excellence.</p>
                 </div>
               </div>
             </div>
