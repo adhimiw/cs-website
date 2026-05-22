@@ -51,41 +51,50 @@ const serviceIcons = {
   ),
 };
 
+const homeServiceDescriptions = {
+  'Digital Transformation': 'Accelerating business outcomes with strategic technology decisions and seamless execution',
+  'HR Technology': 'Human-centric design at the core of our design principles delivers exceptional employee experience through integrated systems, workflows and AI enablement.',
+  'Service Desk & Ticketing': 'Customer-centricity and AI-powered automation that turns every interaction into an opportunity for meaningful engagement and customer delight.',
+  'Project Management': 'Structured agility at our core — excelling across Agile, Waterfall, and Hybrid methodologies, we deliver what matters most.',
+  'Professional Services': 'Leveraging deep expertise in strategic account management and disciplined execution to champion customer use cases, we deliver lasting value through seamless implementation and support.',
+  'Product Partnerships': 'A well-designed partner ecosystem multiplies reach and creates shared value — we help you build partnership models that deliver real impact across every stakeholder.',
+};
+
 const defaultServices = [
   {
     title: 'Digital Transformation',
     image: '/images/service-digital-transformation.webp',
-    description: 'Accelerating business outcomes with strategic technology decisions and seamless execution',
+    description: homeServiceDescriptions['Digital Transformation'],
     icon: serviceIcons['Digital Transformation'],
   },
   {
     title: 'Service Desk & Ticketing',
     image: '/images/service-dashboard.webp',
-    description: 'Customer-centricity and AI-powered automation that turns every interaction into an opportunity for meaningful engagement and customer delight.',
+    description: homeServiceDescriptions['Service Desk & Ticketing'],
     icon: serviceIcons['Service Desk & Ticketing'],
   },
   {
     title: 'HR Technology',
     image: '/images/service-hr.webp',
-    description: 'Human-centric design at the core of our design principles delivers exceptional employee experience through integrated systems, workflows and AI enablement.',
+    description: homeServiceDescriptions['HR Technology'],
     icon: serviceIcons['HR Technology'],
   },
   {
     title: 'Project Management',
     image: '/images/service-dashboard.webp',
-    description: 'Structured agility at our core — excelling across Agile, Waterfall, and Hybrid methodologies, we deliver what matters most.',
+    description: homeServiceDescriptions['Project Management'],
     icon: serviceIcons['Project Management'],
   },
   {
     title: 'Professional Services',
     image: '/images/service_professional.png',
-    description: 'Leveraging deep expertise in strategic account management and disciplined execution to champion customer use cases, we deliver lasting value through seamless implementation and support.',
+    description: homeServiceDescriptions['Professional Services'],
     icon: serviceIcons['Professional Services'],
   },
   {
     title: 'Product Partnerships',
     image: '/images/service_partnerships.png',
-    description: 'A well-designed partner ecosystem multiplies reach and creates shared value — we help you build partnership models that deliver real impact across every stakeholder.',
+    description: homeServiceDescriptions['Product Partnerships'],
     icon: serviceIcons['Product Partnerships'],
   },
 ];
@@ -234,7 +243,7 @@ export default function Services() {
   const displayServices = cmsServices && cmsServices.length > 0
     ? cmsServices.map(s => ({
         title: s.title,
-        description: s.description,
+        description: homeServiceDescriptions[s.title] || s.description,
         image: s.image ? (s.image.startsWith('http') || s.image.startsWith('/images') ? s.image : `${apiHost}${s.image}`) : '/images/service-digital-transformation.webp',
         icon: serviceIcons[s.title] || (
           <svg viewBox="0 0 64 64" aria-hidden="true">
