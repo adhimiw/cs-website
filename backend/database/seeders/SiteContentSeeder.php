@@ -155,7 +155,7 @@ class SiteContentSeeder extends Seeder
         $services = [
             [
                 'title' => 'Digital Transformation',
-                'description' => "Meaningful transformation happens when technology serves business strategy. ClimbSphere's Discover, Design,Deliver,Drive cycle aligns people, processes, and platforms for measurable outcomes, accelerating your evolution with focus and momentum",
+                'description' => "Accelerating business outcomes with strategic technology decisions and seamless execution",
                 'image' => 'services/service-digital-transformation.webp',
                 'tags' => ['Discover', 'Design', 'Deliver & Drive'],
                 'type' => 'business',
@@ -163,7 +163,7 @@ class SiteContentSeeder extends Seeder
             ],
             [
                 'title' => 'HR Technology',
-                'description' => "A connected, intelligent HR ecosystem empowers your people teams to attract, retain and grow talent with clarity and confidence. ClimbSphere optimizes talent management, analytics and employee experience through seamless platform selection, implementation and adoption.",
+                'description' => "Human-centric design at the core of our design principles delivers exceptional employee experience through integrated systems, workflows and AI enablement.",
                 'image' => 'services/service-hr.webp',
                 'tags' => ['Talent Selection', 'Analytics', 'Employee Experience'],
                 'type' => 'business',
@@ -171,7 +171,7 @@ class SiteContentSeeder extends Seeder
             ],
             [
                 'title' => 'Project Management',
-                'description' => "ClimbSphere brings structured agility to every engagement, blending Agile, Waterfall, or Hybrid methodologies with hands on governance and transparent reporting keeping your initiatives on track, on budget and aligned to the goals that matter most.",
+                'description' => "Structured agility at our core — excelling across Agile, Waterfall, and Hybrid methodologies, we deliver what matters most.",
                 'image' => 'services/service-dashboard.webp',
                 'tags' => ['Structured Agility', 'Agile & Hybrid', 'Governance'],
                 'type' => 'business',
@@ -179,7 +179,7 @@ class SiteContentSeeder extends Seeder
             ],
             [
                 'title' => 'Service Desk & Ticketing',
-                'description' => "A well designed service desk drives productivity, strengthens trust and elevates IT's role as a strategic business partner. ClimbSphere designs and deploys efficient ticketing, self service portals, intelligent automation and SLAdriven governance that turns support operations into a competitive advantage.",
+                'description' => "Customer-centricity and AI-powered automation that turns every interaction into an opportunity for meaningful engagement and customer delight.",
                 'image' => 'services/service-dashboard.webp',
                 'tags' => ['Ticketing Support', 'Intelligent Automation', 'SLA Governance'],
                 'type' => 'business',
@@ -187,7 +187,7 @@ class SiteContentSeeder extends Seeder
             ],
             [
                 'title' => 'Professional Services',
-                'description' => "Scale your customer wins with end-to-end professional services excellence.ClimbSphere combines strategic key account management, disciplined project execution and seamless implementation to drive adoption, expansion and reference success across your portfolio replacing guesswork with evidence based roadmaps.",
+                'description' => "Leveraging deep expertise in strategic account management and disciplined execution to champion customer use cases, we deliver lasting value through seamless implementation and support.",
                 'image' => 'services/about-expertise.jpeg',
                 'tags' => ['Strategic Accounts', 'Project Execution', 'Portfolio Adoption'],
                 'type' => 'partner',
@@ -195,7 +195,7 @@ class SiteContentSeeder extends Seeder
             ],
             [
                 'title' => 'Product Partnerships',
-                'description' => "A well designed partner ecosystem multiplies your reach, strengthens your product and creates shared value across every stakeholder. ClimbSphere helps you design and operationalize partnership models that deliver genuine three way impact for your organization, your partners and the end customer.",
+                'description' => "A well-designed partner ecosystem multiplies reach and creates shared value — we help you build partnership models that deliver real impact across every stakeholder.",
                 'image' => 'services/about-saas.jpeg',
                 'tags' => ['Ecosystem Design', 'Partnership Models', 'Shared Value'],
                 'type' => 'partner',

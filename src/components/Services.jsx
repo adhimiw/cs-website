@@ -73,19 +73,19 @@ const defaultServices = [
   {
     title: 'Project Management',
     image: '/images/service-dashboard.webp',
-    description: 'Risk Management in ClimbSphere helps businesses identify, assess and control potential risks effectively.',
+    description: 'Structured agility at our core — excelling across Agile, Waterfall, and Hybrid methodologies, we deliver what matters most.',
     icon: serviceIcons['Project Management'],
   },
   {
     title: 'Professional Services',
     image: '/images/service_professional.png',
-    description: 'Scale your customer wins with end-to-end professional services excellence.',
+    description: 'Leveraging deep expertise in strategic account management and disciplined execution to champion customer use cases, we deliver lasting value through seamless implementation and support.',
     icon: serviceIcons['Professional Services'],
   },
   {
     title: 'Product Partnerships',
     image: '/images/service_partnerships.png',
-    description: 'A well designed partner ecosystem multiplies your reach, strengthens your product and creates shared value.',
+    description: 'A well-designed partner ecosystem multiplies reach and creates shared value — we help you build partnership models that deliver real impact across every stakeholder.',
     icon: serviceIcons['Product Partnerships'],
   },
 ];
