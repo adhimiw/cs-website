@@ -1,24 +1,32 @@
 @import url('https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap');
 
 :root {
+  /* Brand Palette */
+  --brand-green: #4ea82b;
+  --brand-red: #d93e2b;
+  --brand-orange: #e59a31;
+  --brand-blue: #287fbc;
+  --brand-black: #140704;
+  --brand-brown: #401b0a;
+
   --background: #ffffff;
   --surface: #ffffff;
-  --section-soft: #f7faff;
-  --dark-surface: #001f5f;
-  --navy: #001f5f;
-  --navy-deep: #001747;
-  --text-primary: #00194c;
-  --text-secondary: #334770;
-  --text-muted: #69727d;
-  --accent: #0055ff;
-  --accent-hover: #0048d8;
-  --accent-soft: #e8f0ff;
-  --border: #e3e3e3;
-  --section-bg-light: #f8f9fa;
-  --section-bg-blue: #e6eeff;
-  --success: #198754;
-  --warning: #ffb900;
-  --danger: #dc3545;
+  --section-soft: #fbf9f8;
+  --dark-surface: var(--brand-brown);
+  --navy: var(--brand-brown);
+  --navy-deep: var(--brand-black);
+  --text-primary: var(--brand-black);
+  --text-secondary: #403430;
+  --text-muted: #7d706a;
+  --accent: var(--brand-blue);
+  --accent-hover: #1e6fa5;
+  --accent-soft: #ebf4fa;
+  --border: #e6e2e0;
+  --section-bg-light: #fcfbfa;
+  --section-bg-blue: #ebf4fa;
+  --success: var(--brand-green);
+  --warning: var(--brand-orange);
+  --danger: var(--brand-red);
 
   --font-heading: 'Urbanist', sans-serif;
   --font-body: 'Urbanist', sans-serif;

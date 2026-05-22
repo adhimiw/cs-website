@@ -2,7 +2,7 @@
   padding: 85px 0;
   display: flex;
   align-items: center;
-  background-color: #020d26; /* Premium dark navy */
+  background-color: var(--navy-deep); /* Premium dark background */
   background-image: url('/images/callback-bg-shape.png');
   background-repeat: no-repeat;
   background-position: right center;
@@ -83,7 +83,7 @@
 }
 
 .callback-form input:focus {
-  box-shadow: 0 0 0 3px rgba(0, 85, 255, 0.35);
+  box-shadow: 0 0 0 3px rgba(40, 127, 188, 0.35);
 }
 
 .callback-form button {

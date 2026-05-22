@@ -74,25 +74,37 @@
   margin-bottom: 12px;
 }
 
-/* Subtle Color Coding for each active service */
+@media (min-width: 901px) {
+  .accordion-item.active-item {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    grid-template-areas: 
+      "header image"
+      "body   image";
+    gap: 0 40px;
+    padding: 0 24px;
+  }
+}
+
+/* Subtle Color Coding for each active service using soft brand tints */
 .accordion-item.active-item.color-1 {
-  background-color: #eef2ff; /* Soft lavender-blue */
+  background-color: #ebf4fa; /* Soft brand blue tint */
 }
 
 .accordion-item.active-item.color-2 {
-  background-color: #edf5f1; /* Soft sage-green */
+  background-color: #edf6e9; /* Soft brand green tint */
 }
 
 .accordion-item.active-item.color-3 {
-  background-color: #f3e4e6; /* Soft warm rose-beige (the reference screenshot color) */
+  background-color: #fcf3e5; /* Soft brand orange tint */
 }
 
 .accordion-item.active-item.color-4 {
-  background-color: #fff5f0; /* Soft peach-cream */
+  background-color: #fae8e6; /* Soft brand red tint */
 }
 
 .accordion-item.active-item.color-5 {
-  background-color: #f5f0fa; /* Soft lilac-grey */
+  background-color: #f6ece9; /* Soft brand brown tint */
 }
 
 /* Accordion Header */
@@ -104,6 +116,13 @@
   padding: 35px 24px;
   cursor: pointer;
   user-select: none;
+}
+
+@media (min-width: 901px) {
+  .accordion-item.active-item .accordion-header {
+    grid-area: header;
+    padding: 35px 0 10px 0;
+  }
 }
 
 .item-number {
@@ -154,13 +173,17 @@
   visibility: visible;
 }
 
-/* Split layout content inside body */
+@media (min-width: 901px) {
+  .accordion-item.active-item .accordion-body {
+    grid-area: body;
+    padding: 0 0 35px 80px;
+  }
+}
+
+/* Layout content inside body */
 .accordion-body-content {
-  display: grid;
-  grid-template-columns: 1fr 280px; /* Text on left, active image on right */
-  gap: 40px;
-  padding: 0 24px 35px 80px; /* Left padding matches title offset (60px + 20px gap) */
-  align-items: start;
+  display: block;
+  padding: 0;
 }
 
 .body-text-col {
@@ -171,13 +194,13 @@
 
 .service-description {
   font-family: var(--font-body);
-  font-size: 16px;
-  line-height: 1.7;
+  font-size: 1.15rem; /* Increased font size for product descriptions */
+  line-height: 1.8; /* Premium line height for readability */
   color: var(--text-secondary);
   max-width: 100%;
   margin-bottom: 24px;
   text-align: justify;
-  font-weight: 400;
+  font-weight: 500; /* Slightly heavier font weight for clarity */
 }
 
 /* Discuss Project Pill Button */
@@ -205,12 +228,31 @@
 }
 
 /* Active Image Column style */
-.body-image-col {
+.accordion-image-col {
   width: 280px;
-  height: 240px; /* Increased height to prevent cropping out heads/faces */
+  height: 240px;
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid rgba(0, 25, 76, 0.05);
+  display: none;
+  opacity: 0;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  transform: translateY(10px);
+}
+
+.accordion-image-col.show-image {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (min-width: 901px) {
+  .accordion-image-col.show-image {
+    grid-area: image;
+    align-self: start;
+    margin-top: 35px;
+    margin-bottom: 35px;
+  }
 }
 
 .service-active-image {
@@ -221,7 +263,7 @@
   transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.body-image-col:hover .service-active-image {
+.accordion-image-col:hover .service-active-image {
   transform: scale(1.05);
 }
 
@@ -231,14 +273,14 @@
     padding: 25px 15px;
   }
   
-  .accordion-body-content {
-    grid-template-columns: 1fr; /* Stack text and image vertically */
-    gap: 24px;
+  .accordion-body {
     padding: 0 15px 25px 80px;
   }
   
-  .body-image-col {
-    width: 100%;
+  .accordion-image-col.show-image {
+    display: block;
+    width: calc(100% - 80px);
+    margin: 0 0 25px 80px;
     height: 200px;
   }
 }
@@ -254,8 +296,13 @@
     padding-top: 6px;
   }
   
-  .accordion-body-content {
-    padding: 0 10px 20px 10px; /* Reset left margin for readability */
+  .accordion-body {
+    padding: 0 10px 20px 55px; /* Adjusted offset for mobile readability */
+  }
+  
+  .accordion-image-col.show-image {
+    width: calc(100% - 55px);
+    margin: 0 0 20px 55px;
   }
   
   .btn-discuss {

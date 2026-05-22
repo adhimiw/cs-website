@@ -1,5 +1,5 @@
 .footer {
-  background-color: #001747;
+  background-color: var(--navy-deep);
   background-image: url('/images/footer-bg.jpg');
   background-size: cover;
   background-position: center top;

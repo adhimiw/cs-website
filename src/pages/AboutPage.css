@@ -105,13 +105,13 @@
   align-items: center;
   justify-content: center;
   background: transparent;
-  color: #0055ff;
+  color: var(--accent);
 }
 
 .about-feature-svg {
   width: 100%;
   height: 100%;
-  color: #0055ff;
+  color: var(--accent);
 }
 
 .feature-text h3 {

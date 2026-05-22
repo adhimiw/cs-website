@@ -23,8 +23,8 @@
   display: inline-block;
   font-size: 12px;
   font-weight: 700;
-  color: #0055ff;
-  background-color: #e6eeff;
+  color: var(--accent);
+  background-color: var(--accent-soft);
   padding: 6px 16px;
   border-radius: 30px;
   text-transform: uppercase;
@@ -76,7 +76,7 @@
   position: absolute;
   top: 20px;
   left: 20px;
-  background-color: #0055ff;
+  background-color: var(--accent);
   color: #ffffff;
   font-size: 13px;
   font-weight: 700;
@@ -101,12 +101,12 @@
 }
 
 .blog-title a {
-  color: #001f5f;
+  color: var(--navy);
   transition: color var(--transition-fast);
 }
 
 .blog-title a:hover {
-  color: #0055ff;
+  color: var(--accent);
 }
 
 .blog-excerpt {
@@ -173,7 +173,7 @@
 }
 
 .blog-author a:hover {
-  color: #0055ff;
+  color: var(--accent);
 }
 
 .blog-date {
@@ -184,7 +184,7 @@
 }
 
 .blog-date svg {
-  color: #0055ff;
+  color: var(--accent);
   fill: none;
   stroke: currentColor;
   stroke-width: 2;
