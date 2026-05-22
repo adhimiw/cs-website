@@ -222,18 +222,6 @@ class SiteContentSeeder extends Seeder
         // 4. Seed Dynamic Testimonials
         $testimonials = [
             [
-                'text' => 'ClimbSphere offers an excellent user experience with smooth navigation and powerful features for businesses looking to streamline operations efficiently.',
-                'author' => 'Priya Sharma',
-                'image' => 'testimonials/testimonial-avatar.png',
-                'rating' => 5,
-            ],
-            [
-                'text' => 'Great platform with useful tools for management and collaboration. It has significantly improved our workflow and productivity.',
-                'author' => 'Rahul',
-                'image' => 'testimonials/testimonial-avatar.png',
-                'rating' => 5,
-            ],
-            [
                 'text' => "I got the chance to work with Manoj on couple of projects in Singapore, where he played the role of a Functional and QA lead. He did excel in his assigned role at the institution and customers confided in him more than anyone else in the team. But another, more commendable quality is his exceptional Managerial skills - some of the key qualities that I had seen in him was to start with a defined project scope, yet be flexible to incorporate key items provided the timeline is not impacted, impressive quality to go along with the team and ability to get the work done \"on-time & within budget\", something that he most probably would've inherited it from his previous role as an officer in Air Force. End result - happy upper management and delighted customers. He definitely would be an asset to whichever organization, he works with. Wish you all the very best, Manoj !!",
                 'author' => 'Sandeep Mishra',
                 'image' => 'testimonials/testimonial-avatar.png',
@@ -254,7 +242,7 @@ class SiteContentSeeder extends Seeder
         ];
 
         // Clean up deleted testimonials
-        Testimonial::where('author', 'Robert')->delete();
+        Testimonial::whereIn('author', ['Robert', 'Priya Sharma', 'Rahul'])->delete();
 
         foreach ($testimonials as $t) {
             Testimonial::updateOrCreate(

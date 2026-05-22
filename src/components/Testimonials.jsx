@@ -3,13 +3,18 @@ import { useCMS } from '../context/CMSContext';
 
 const staticTestimonials = [
   {
-    text: 'ClimbSphere offers an excellent user experience with smooth navigation and powerful features for businesses looking to streamline operations efficiently.',
-    author: 'Priya Sharma',
+    text: "I got the chance to work with Manoj on couple of projects in Singapore, where he played the role of a Functional and QA lead. He did excel in his assigned role at the institution and customers confided in him more than anyone else in the team. But another, more commendable quality is his exceptional Managerial skills - some of the key qualities that I had seen in him was to start with a defined project scope, yet be flexible to incorporate key items provided the timeline is not impacted, impressive quality to go along with the team and ability to get the work done \"on-time & within budget\", something that he most probably would've inherited it from his previous role as an officer in Air Force. End result - happy upper management and delighted customers. He definitely would be an asset to whichever organization, he works with. Wish you all the very best, Manoj !!",
+    author: 'Sandeep Mishra',
     image: '/images/testimonial-avatar.png',
   },
   {
-    text: 'Great platform with useful tools for management and collaboration. It has significantly improved our workflow and productivity.',
-    author: 'Rahul',
+    text: "During the five years I have worked with Manoj, seldom did he need much intervention or guidance to be fully successful with his projects. His communication skills, both in terms of the English language and in the art of good project communication, were excellent. His attitude is one of \"can do\" regardless of the challenges faced and this is one of the characteristics that made project teams embrace his leadership. I would be very fortunate to have Manoj on any of my projects again in the future.",
+    author: 'Lynn Duffy',
+    image: '/images/testimonial-avatar.png',
+  },
+  {
+    text: "Manoj is a great person to work with. We have worked together in multiple projects from my early days in Citagus. Manoj was a great Manager and a great person to work with. His expert functional knowledge in HR was always that extra advantage we had in the projects. He had a laser sharp focus on the deliverables and was always able to maintain the client and the team in high spirits. He is a kind of person who can pull out projects of any nature and come out with flying colors. Looking forward to working with you again Manoj .....",
+    author: 'Anoop Joseph',
     image: '/images/testimonial-avatar.png',
   },
 ];
