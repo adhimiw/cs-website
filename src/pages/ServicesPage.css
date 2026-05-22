@@ -127,10 +127,7 @@
 
 /* Accordion Header */
 .accordion-header {
-  display: grid;
-  grid-template-columns: 60px 1fr;
-  gap: 20px;
-  align-items: start;
+  display: block;
   padding: 35px 24px;
   cursor: pointer;
   user-select: none;
@@ -143,18 +140,7 @@
   }
 }
 
-.item-number {
-  font-size: 14px;
-  font-weight: 600;
-  color: rgba(0, 25, 76, 0.45);
-  font-family: var(--font-body);
-  padding-top: 8px; /* Perfectly aligned to the top baseline of the title */
-}
-
-.accordion-item.active-item .item-number {
-  color: var(--text-primary);
-  font-weight: 800;
-}
+/* Number styles removed */
 
 .item-main-header h3 {
   font-family: var(--font-heading);
@@ -194,7 +180,7 @@
 @media (min-width: 901px) {
   .accordion-item.active-item .accordion-body {
     grid-area: body;
-    padding: 0 0 35px 80px;
+    padding: 0 0 35px 0;
   }
 }
 
@@ -292,35 +278,29 @@
   }
   
   .accordion-body {
-    padding: 0 15px 25px 80px;
+    padding: 0 15px 25px 15px;
   }
   
   .accordion-image-col.show-image {
     display: block;
-    width: calc(100% - 80px);
-    margin: 0 0 25px 80px;
+    width: calc(100% - 30px);
+    margin: 0 0 25px 15px;
     height: 200px;
   }
 }
 
 @media (max-width: 575px) {
   .accordion-header {
-    grid-template-columns: 40px 1fr;
-    gap: 15px;
     padding: 20px 10px;
   }
   
-  .item-number {
-    padding-top: 6px;
-  }
-  
   .accordion-body {
-    padding: 0 10px 20px 55px; /* Adjusted offset for mobile readability */
+    padding: 0 10px 20px 10px;
   }
   
   .accordion-image-col.show-image {
-    width: calc(100% - 55px);
-    margin: 0 0 20px 55px;
+    width: calc(100% - 20px);
+    margin: 0 0 20px 10px;
   }
   
   .btn-discuss {

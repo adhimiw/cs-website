@@ -117,7 +117,6 @@ export default function ServicesPage() {
                      role="button"
                      aria-expanded={isOpen}
                   >
-                    <span className="item-number">{service.num}</span>
                     <div className="item-main-header">
                       <div className="item-title-row">
                         <h3>{service.title}</h3>
@@ -184,7 +183,6 @@ export default function ServicesPage() {
                     role="button"
                     aria-expanded={isOpen}
                   >
-                    <span className="item-number">{service.num}</span>
                     <div className="item-main-header">
                       <div className="item-title-row">
                         <h3>{service.title}</h3>
