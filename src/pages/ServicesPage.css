@@ -84,6 +84,14 @@
   background-color: rgba(0, 85, 255, 0.005);
 }
 
+.services-accordion-section:not(.partner-section-bg) .accordion-item:not(.active-item):hover {
+  background-color: rgba(0, 31, 95, 0.04); /* Soft business (#001f5f) tint */
+}
+
+.partner-section-bg .accordion-item:not(.active-item):hover {
+  background-color: rgba(40, 127, 188, 0.04); /* Soft technology (#287fbc) tint */
+}
+
 /* Active Item rounded card style */
 .accordion-item.active-item {
   border-bottom-color: transparent;
@@ -104,18 +112,19 @@
   }
 }
 
-/* Subtle Color Coding for each active service using soft brand tints */
+/* Color Coding for active services using solid brand colors with white text */
 .accordion-item.active-item.color-1 {
-  background-color: #ebf4fa; /* Soft brand blue tint */
+  background-color: #001f5f; /* Business Services Color (#001f5f - Header Blue) */
+  color: #ffffff;
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
 .accordion-item.active-item.color-2 {
-  background-color: #edf6e9; /* Soft brand green tint */
+  background-color: #287fbc; /* Technology Partners Color (#287fbc) */
+  color: #ffffff;
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
-.accordion-item.active-item.color-3 {
-  background-color: #fcf3e5; /* Soft brand orange tint */
-}
 
 .accordion-item.active-item.color-4 {
   background-color: #fae8e6; /* Soft brand red tint */
@@ -124,6 +133,39 @@
 .accordion-item.active-item.color-5 {
   background-color: #f6ece9; /* Soft brand brown tint */
 }
+
+/* Ensure child elements use white text when active */
+.accordion-item.active-item.color-1 .item-main-header h3,
+.accordion-item.active-item.color-2 .item-main-header h3 {
+  color: #ffffff;
+  transition: color 0.4s ease;
+}
+
+.accordion-item.active-item.color-1 .service-description,
+.accordion-item.active-item.color-2 .service-description {
+  color: rgba(255, 255, 255, 0.95);
+  transition: color 0.4s ease;
+}
+
+/* Discuss Project Button active styles */
+.accordion-item.active-item.color-1 .btn-discuss,
+.accordion-item.active-item.color-2 .btn-discuss {
+  border-color: #ffffff;
+  color: #ffffff;
+}
+
+.accordion-item.active-item.color-1 .btn-discuss:hover {
+  background-color: #ffffff;
+  color: #001f5f;
+  border-color: #ffffff;
+}
+
+.accordion-item.active-item.color-2 .btn-discuss:hover {
+  background-color: #ffffff;
+  color: #287fbc;
+  border-color: #ffffff;
+}
+
 
 /* Accordion Header */
 .accordion-header {
@@ -198,7 +240,7 @@
 
 .service-description {
   font-family: var(--font-body);
-  font-size: 1.15rem; /* Increased font size for product descriptions */
+  font-size: 1.25rem; /* Increased font size for product descriptions */
   line-height: 1.8; /* Premium line height for readability */
   color: var(--text-secondary);
   max-width: 100%;

@@ -395,52 +395,64 @@ export default function Services() {
               </div>
             )}
             <div className="overview-form-group">
-              <label>
+              <label htmlFor="maturity-name">
                 Name <span className="required">*</span>
               </label>
               <input 
+                id="maturity-name"
                 type="text" 
                 name="name" 
                 value={formData.name} 
                 onChange={handleInputChange} 
+                placeholder="e.g. Jane Doe"
+                autoComplete="name"
                 required 
               />
             </div>
             <div className="overview-form-group">
-              <label>
+              <label htmlFor="maturity-phone">
                 Phone <span className="required">*</span>
               </label>
               <input 
+                id="maturity-phone"
                 type="tel" 
                 name="phone" 
                 value={formData.phone} 
                 onChange={handleInputChange} 
+                placeholder="e.g. +1 (555) 000-0000"
+                autoComplete="tel"
                 required 
               />
             </div>
             <div className="overview-form-group">
-              <label>
+              <label htmlFor="maturity-email">
                 Email <span className="required">*</span>
               </label>
               <input 
+                id="maturity-email"
                 type="email" 
                 name="email" 
                 value={formData.email} 
                 onChange={handleInputChange} 
+                placeholder="e.g. jane@example.com"
+                autoComplete="email"
+                spellCheck={false}
                 required 
               />
             </div>
             <div className="overview-form-group">
-              <label>Message</label>
+              <label htmlFor="maturity-message">Message</label>
               <textarea 
+                id="maturity-message"
                 name="message" 
                 value={formData.message} 
                 onChange={handleInputChange} 
+                placeholder="e.g. Tell us about your digital goals…"
                 rows="3" 
               />
             </div>
             <button type="submit" className="overview-form-submit" disabled={submitting}>
-              {submitting ? 'Submitting...' : 'Submit'}
+              {submitting ? 'Submitting…' : 'Submit'}
             </button>
           </form>
         </div>

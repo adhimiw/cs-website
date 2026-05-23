@@ -170,7 +170,8 @@ export default function ContactPage() {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  placeholder="Your full name"
+                  placeholder="e.g. Jane Doe"
+                  autoComplete="name"
                   required 
                 />
               </div>
@@ -183,7 +184,8 @@ export default function ContactPage() {
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
-                  placeholder="Your contact number"
+                  placeholder="e.g. +1 (555) 000-0000"
+                  autoComplete="tel"
                   required 
                 />
               </div>
@@ -196,7 +198,9 @@ export default function ContactPage() {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="Your email address"
+                  placeholder="e.g. jane@example.com"
+                  autoComplete="email"
+                  spellCheck={false}
                   required 
                 />
               </div>
@@ -209,12 +213,12 @@ export default function ContactPage() {
                   value={formData.message}
                   onChange={handleChange}
                   rows="5" 
-                  placeholder="Tell us about your requirements"
+                  placeholder="e.g. Tell us about your requirements…"
                 ></textarea>
               </div>
 
               <button type="submit" className="contact-submit-btn" disabled={submitting}>
-                {submitting ? 'Submitting...' : 'Submit'}
+                {submitting ? 'Submitting…' : 'Submit'}
               </button>
             </form>
           </div>

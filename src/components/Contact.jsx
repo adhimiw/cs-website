@@ -85,29 +85,33 @@ export default function Contact() {
             <input 
               type="text" 
               name="name"
-              placeholder="Name *" 
+              placeholder="Name (e.g. Jane Doe) *" 
               value={formData.name}
               onChange={handleInputChange}
+              autoComplete="name"
               required 
             />
             <input 
               type="email" 
               name="email"
-              placeholder="E-mail *" 
+              placeholder="E-mail (e.g. jane@example.com) *" 
               value={formData.email}
               onChange={handleInputChange}
+              autoComplete="email"
+              spellCheck={false}
               required 
             />
             <input 
               type="tel" 
               name="phone"
-              placeholder="Phone *" 
+              placeholder="Phone (e.g. +1 555 000 0000) *" 
               value={formData.phone}
               onChange={handleInputChange}
+              autoComplete="tel"
               required 
             />
             <button type="submit" disabled={submitting}>
-              {submitting ? 'SENDING...' : 'SEND NOW'}
+              {submitting ? 'SENDING…' : 'SEND NOW'}
             </button>
           </form>
         </div>

@@ -122,17 +122,16 @@ export default function ChatbotWidget() {
         {/* Header */}
         <div className="chatbot-header">
           <div className="chatbot-info">
-            <div className="chatbot-avatar">CS</div>
+            <div className="chatbot-avatar">
+              <img src="/images/climbsphere-cs-only.png" alt="ClimbSphere CS Logo" />
+            </div>
             <div className="chatbot-title">
               <h4>ClimbSphere AI</h4>
-              <div className="chatbot-status">
-                <span className="status-dot"></span>
-                <span>Online & Ready</span>
-              </div>
+              <p>Digital chatbot interface.</p>
             </div>
           </div>
           <button className="chatbot-close" onClick={toggleChat} aria-label="Close chat">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
               <line x1="18" y1="6" x2="6" y2="18"></line>
               <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
@@ -156,22 +155,24 @@ export default function ChatbotWidget() {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Input area */}
-        <form onSubmit={handleSend} className="chatbot-input-area">
-          <input
-            type="text"
-            placeholder="Type your message here..."
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            disabled={isTyping}
-          />
-          <button type="submit" className="chatbot-send" disabled={!input.trim() || isTyping}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <line x1="22" y1="2" x2="11" y2="13"></line>
-              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-            </svg>
-          </button>
-        </form>
+        {/* Input Area */}
+        <div className="chatbot-input-wrapper">
+          <form onSubmit={handleSend} className="chatbot-input-pill">
+            <input
+              type="text"
+              placeholder="Chat here.."
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              disabled={isTyping}
+            />
+
+            <button type="submit" className="chatbot-send-btn" disabled={!input.trim() || isTyping}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );

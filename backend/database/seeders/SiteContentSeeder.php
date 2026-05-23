@@ -205,6 +205,7 @@ class SiteContentSeeder extends Seeder
 
         // Clean up deleted services
         Service::where('title', 'Digital Maturity Assessment')->delete();
+        Service::where('type', 'design')->delete();
 
         foreach ($services as $service) {
             Service::updateOrCreate(

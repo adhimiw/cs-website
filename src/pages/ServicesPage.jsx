@@ -51,10 +51,11 @@ const partnerServices = [
   }
 ];
 
+
 export default function ServicesPage() {
   const { services } = useCMS();
   const [activeBusiness, setActiveBusiness] = useState(0); // Default to first open
-  const [activePartner, setActivePartner] = useState(0); // Default to first open
+  const [activePartner, setActivePartner] = useState(-1); // Default to closed
 
   const handleToggleBusiness = (index) => {
     setActiveBusiness(activeBusiness === index ? -1 : index);
@@ -62,6 +63,13 @@ export default function ServicesPage() {
 
   const handleTogglePartner = (index) => {
     setActivePartner(activePartner === index ? -1 : index);
+  };
+
+  const handleKeyDown = (e, toggleFn, index) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      toggleFn(index);
+    }
   };
 
   const apiHost = window.location.hostname === 'localhost' ? 'http://localhost:8000' : '';
@@ -86,6 +94,7 @@ export default function ServicesPage() {
       }))
     : partnerServices;
 
+
   return (
     <div className="services-page">
       {/* Page Header Banner */}
@@ -109,12 +118,14 @@ export default function ServicesPage() {
               return (
                 <div 
                   key={service.num} 
-                  className={`accordion-item ${isOpen ? `active-item color-${(index % 5) + 1}` : ''}`}
+                  className={`accordion-item ${isOpen ? 'active-item color-1' : ''}`}
                 >
                   <div 
                      className="accordion-header" 
                      onClick={() => handleToggleBusiness(index)}
+                     onKeyDown={(e) => handleKeyDown(e, handleToggleBusiness, index)}
                      role="button"
+                     tabIndex={0}
                      aria-expanded={isOpen}
                   >
                     <div className="item-main-header">
@@ -129,7 +140,7 @@ export default function ServicesPage() {
                       <div className="body-text-col">
                         <p className="service-description">{service.description}</p>
                         <Link to="/contact-us" className="btn-discuss">
-                          DISCUSS PROJECT
+                          BOOK AN APPOINTMENT
                         </Link>
                       </div>
                     </div>
@@ -165,7 +176,6 @@ export default function ServicesPage() {
       <section className="services-accordion-section partner-section-bg section-padding-sm">
         <div className="container">
           <div className="services-section-header">
-            <span className="sub-title">Collaborations</span>
             <h2 className="services-group-title">For Technology Partners</h2>
           </div>
 
@@ -175,12 +185,14 @@ export default function ServicesPage() {
               return (
                 <div 
                   key={service.num} 
-                  className={`accordion-item ${isOpen ? `active-item color-${(index % 5) + 1}` : ''}`}
+                  className={`accordion-item ${isOpen ? 'active-item color-2' : ''}`}
                 >
                   <div 
                     className="accordion-header" 
                     onClick={() => handleTogglePartner(index)}
+                    onKeyDown={(e) => handleKeyDown(e, handleTogglePartner, index)}
                     role="button"
+                    tabIndex={0}
                     aria-expanded={isOpen}
                   >
                     <div className="item-main-header">
@@ -195,7 +207,7 @@ export default function ServicesPage() {
                       <div className="body-text-col">
                         <p className="service-description">{service.description}</p>
                         <Link to="/contact-us" className="btn-discuss">
-                          DISCUSS PROJECT
+                          BOOK AN APPOINTMENT
                         </Link>
                       </div>
                     </div>
@@ -226,6 +238,8 @@ export default function ServicesPage() {
           </div>
         </div>
       </section>
+
+
     </div>
   );
 }
