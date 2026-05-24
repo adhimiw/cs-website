@@ -110,29 +110,7 @@ def run_audit():
                 print(f"    [FAIL] {err}")
                 failed_checks.append(err)
 
-            # Audit AEO Featured Snippet Callout (Direct Answer Box)
-            callout = page.locator(".aeo-answer-callout")
-            if callout.count() > 0:
-                text_locator = callout.locator(".callout-text")
-                if text_locator.count() > 0:
-                    current_answer = text_locator.first.inner_text().strip()
-                    print(f"  - AEO Quick Answer Callout: '{current_answer}'")
-                    if current_answer != data["quick_answer"]:
-                        err = f"AEO Quick Answer mismatch on {page_key}. Expected: '{data['quick_answer']}', Got: '{current_answer}'"
-                        print(f"    [FAIL] {err}")
-                        failed_checks.append(err)
-                    else:
-                        print("    [PASS] AEO Callout box displays correct factual direct answer")
-                else:
-                    err = f"AEO callout text element not found on {page_key}"
-                    print(f"    [FAIL] {err}")
-                    failed_checks.append(err)
-            else:
-                err = f"AEO quick answer callout container (.aeo-answer-callout) missing on {page_key}"
-                print(f"    [FAIL] {err}")
-                failed_checks.append(err)
-
-            # Audit JSON-LD Schema (AEO/GEO Structured Data)
+            # Audit JSON-LD Schema (AEO/GEO Structured Data) - still injected invisibly in <head>
             schema_script = page.locator(f"script#aeo-faq-schema-{page_key}")
             if schema_script.count() > 0:
                 script_text = schema_script.first.inner_text().strip()

@@ -3,7 +3,8 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 const CMSContext = createContext(null);
 
 export const getApiUrl = (path) => {
-  const origin = window.location.hostname === 'localhost' ? 'http://localhost:8000' : '';
+  const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  const origin = isLocal ? 'http://localhost:8000' : '';
   return `${origin}${path}`;
 };
 

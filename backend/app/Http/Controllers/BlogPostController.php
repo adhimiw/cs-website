@@ -17,9 +17,7 @@ class BlogPostController extends Controller
             $this->seedDefaults();
         }
 
-        $posts = BlogPost::orderBy('published_at', 'desc')
-            ->orWhereNull('published_at')
-            ->get();
+        $posts = BlogPost::orderBy('published_at', 'desc')->get();
         return response()->json($posts);
     }
 
@@ -51,10 +49,10 @@ class BlogPostController extends Controller
             'title' => $validated['title'],
             'slug' => $slug,
             'content' => $validated['content'],
-            'image' => $validated['image'] ?: '/images/blog_post_01.png',
-            'author' => $validated['author'] ?: 'Admin',
-            'published_at' => $validated['published_at'] ?: now(),
-            'seo_meta' => $validated['seo_meta'] ?: [],
+            'image' => $validated['image'] ?? '/images/blog_post_01.png',
+            'author' => $validated['author'] ?? 'Admin',
+            'published_at' => $validated['published_at'] ?? now(),
+            'seo_meta' => $validated['seo_meta'] ?? [],
         ]);
 
         return response()->json($post, 201);

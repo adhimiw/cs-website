@@ -54,7 +54,7 @@ const partnerServices = [
 
 
 export default function ServicesPage() {
-  const { services, getCMSContent } = useCMS();
+  const { services } = useCMS();
   const [activeBusiness, setActiveBusiness] = useState(0); // Default to first open
   const [activePartner, setActivePartner] = useState(-1); // Default to closed
 
@@ -95,8 +95,6 @@ export default function ServicesPage() {
       }))
     : partnerServices;
 
-  const quickAnswer = getCMSContent ? getCMSContent('services.aeo.quick_answer', null) : null;
-
   return (
     <div className="services-page">
       <SEO pageKey="services" />
@@ -107,17 +105,6 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {quickAnswer && (
-        <div className="container" style={{ marginTop: '20px', marginBottom: '-20px' }}>
-          <div className="aeo-answer-callout">
-            <div className="callout-header">
-              <span className="callout-badge">Quick Answer</span>
-              <span className="callout-info">Direct facts for voice search and AI</span>
-            </div>
-            <p className="callout-text">{quickAnswer}</p>
-          </div>
-        </div>
-      )}
 
 
       {/* For Businesses Section */}
