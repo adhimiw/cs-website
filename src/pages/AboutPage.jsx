@@ -1,17 +1,34 @@
 import { Link } from 'react-router-dom';
+import SEO from '../components/SEO';
 import './AboutPage.css';
 import { useCMS } from '../context/CMSContext';
 
 export default function AboutPage() {
   const { getCMSContent } = useCMS();
+  const quickAnswer = getCMSContent('about.aeo.quick_answer', null);
+
   return (
     <div className="about-page">
+      <SEO pageKey="about" />
       {/* Page Header Banner */}
       <section className="page-header">
         <div className="container">
           <h1 className="page-title">About Us</h1>
         </div>
       </section>
+
+      {quickAnswer && (
+        <div className="container" style={{ marginTop: '20px', marginBottom: '-20px' }}>
+          <div className="aeo-answer-callout">
+            <div className="callout-header">
+              <span className="callout-badge">Quick Answer</span>
+              <span className="callout-info">Direct facts for voice search and AI</span>
+            </div>
+            <p className="callout-text">{quickAnswer}</p>
+          </div>
+        </div>
+      )}
+
 
       {/* Who We Are Section */}
       <section className="who-we-are-section">

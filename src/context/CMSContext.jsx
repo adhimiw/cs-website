@@ -7,6 +7,25 @@ export const getApiUrl = (path) => {
   return `${origin}${path}`;
 };
 
+export const getBlogImageUrl = (imagePath) => {
+  if (!imagePath) return '/images/blog_post_01.png';
+  if (imagePath.startsWith('http') || imagePath.startsWith('/images/')) {
+    return imagePath;
+  }
+  if (
+    imagePath.startsWith('blogs/') ||
+    imagePath.startsWith('testimonials/') ||
+    imagePath.startsWith('services/') ||
+    imagePath.startsWith('site_contents/')
+  ) {
+    return getApiUrl('/storage/' + imagePath);
+  }
+  if (imagePath.includes('/')) {
+    return getApiUrl('/storage/' + imagePath);
+  }
+  return getApiUrl('/storage/blogs/' + imagePath);
+};
+
 export const CMSProvider = ({ children }) => {
   const [data, setData] = useState({ contents: {}, settings: {}, services: [], blogs: [], testimonials: [] });
   const [loading, setLoading] = useState(true);

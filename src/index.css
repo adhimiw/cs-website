@@ -218,3 +218,49 @@ button {
     padding: 60px 0;
   }
 }
+
+/* AEO Featured Snippet Callout */
+.aeo-answer-callout {
+  background: var(--section-bg-blue);
+  border-left: 5px solid var(--accent);
+  border-radius: 0 12px 12px 0;
+  padding: 20px 24px;
+  margin: 40px auto;
+  box-shadow: var(--shadow-md);
+  text-align: left;
+}
+
+.aeo-answer-callout .callout-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.aeo-answer-callout .callout-badge {
+  background-color: var(--accent);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.aeo-answer-callout .callout-info {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.aeo-answer-callout .callout-text {
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: var(--text-primary);
+  font-weight: 700;
+  margin: 0;
+  text-align: justify;
+}

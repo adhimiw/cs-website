@@ -1,9 +1,13 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getApiUrl } from '../context/CMSContext';
+import { getApiUrl, useCMS } from '../context/CMSContext';
+import SEO from '../components/SEO';
 import './ContactPage.css';
 
 export default function ContactPage() {
+  const { getCMSContent } = useCMS();
+  const quickAnswer = getCMSContent ? getCMSContent('contact.aeo.quick_answer', null) : null;
+
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -63,12 +67,26 @@ export default function ContactPage() {
 
   return (
     <div className="contact-page">
+      <SEO pageKey="contact" />
       {/* Page Header Banner */}
       <section className="page-header">
         <div className="container">
           <h1 className="page-title">Contact Us</h1>
         </div>
       </section>
+
+      {quickAnswer && (
+        <div className="container" style={{ marginTop: '20px', marginBottom: '-20px' }}>
+          <div className="aeo-answer-callout">
+            <div className="callout-header">
+              <span className="callout-badge">Quick Answer</span>
+              <span className="callout-info">Direct facts for voice search and AI</span>
+            </div>
+            <p className="callout-text">{quickAnswer}</p>
+          </div>
+        </div>
+      )}
+
 
       {/* Contact Cards Section */}
       <section className="contact-cards-section">

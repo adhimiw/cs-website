@@ -1,18 +1,21 @@
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { getApiUrl, getBlogImageUrl } from '../context/CMSContext';
 import './Blog.css';
 
-const posts = [
+const defaultPosts = [
   {
     title: "Workday's Last Workday? The Goliath Has Heard This Before",
     excerpt: "A Practitioner's Take On The A16z Thesis, The CHRO's Crossroads, And What",
     date: 'May 8, 2026',
-    href: 'https://climbsphere.whydev.co.in/workday-ai-disruption/',
+    slug: 'workday-ai-disruption',
     image: '/images/blog_post_01.png',
   },
   {
-    title: 'Why Great Software Often Fails Great People: Lessons From The',
+    title: 'Why Great Software Often Fails Great People: Lessons From The Post-Demo Paradox',
     excerpt: 'It Is Entirely Possible To Fall In Love With An HCM Product',
     date: 'May 8, 2026',
-    href: 'https://climbsphere.whydev.co.in/post-demo-paradox-hr-tech/',
+    slug: 'post-demo-paradox-hr-tech',
     image: '/images/blog_post_02.jpg',
   },
 ];
@@ -29,6 +32,30 @@ function CalendarIcon() {
 }
 
 export default function Blog() {
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchPosts() {
+      try {
+        const res = await fetch(getApiUrl('/api/blogs'));
+        if (!res.ok) throw new Error('Failed to fetch blogs');
+        const data = await res.json();
+        if (data && data.length > 0) {
+          setPosts(data);
+        } else {
+          setPosts(defaultPosts);
+        }
+      } catch (err) {
+        console.error('Error fetching blogs, using defaults:', err);
+        setPosts(defaultPosts);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchPosts();
+  }, []);
+
   return (
     <section className="blog" id="blog">
       <div className="container">
@@ -37,39 +64,51 @@ export default function Blog() {
           <h2 className="section-title">Read Our Latest Updates</h2>
         </div>
 
-        <div className="blog-grid">
-          {posts.map((post, index) => (
-            <article 
-              key={post.title} 
-              className="blog-card"
-              data-aos="fade-up"
-              data-aos-delay={300 + index * 200}
-            >
-              <div className="blog-thumb">
-                <a href={post.href}>
-                  <img src={post.image} alt={post.title} />
-                </a>
-                <span className="blog-tag">Blog</span>
-              </div>
-              <div className="blog-content">
-                <h3 className="blog-title">
-                  <a href={post.href}>{post.title}</a>
-                </h3>
-                <p className="blog-excerpt">{post.excerpt}</p>
-                <div className="blog-meta">
-                  <div className="blog-author">
-                    <span className="blog-admin" aria-hidden="true" />
-                    <a href="https://climbsphere.whydev.co.in/author/admin/">Admin</a>
-                  </div>
-                  <span className="blog-date">
-                    <CalendarIcon />
-                    {post.date}
-                  </span>
+        {loading ? (
+          <div className="text-center" style={{ padding: '40px 0', fontSize: '18px', color: 'var(--text-secondary)' }}>
+            Loading blog posts...
+          </div>
+        ) : (
+          <div className="blog-grid">
+            {posts.map((post, index) => (
+              <article 
+                key={post.slug || post.title} 
+                className="blog-card"
+                data-aos="fade-up"
+                data-aos-delay={300 + index * 200}
+              >
+                <div className="blog-thumb">
+                  <Link to={`/blog/${post.slug}`}>
+                    <img src={getBlogImageUrl(post.image)} alt={post.title} />
+                  </Link>
+                  <span className="blog-tag">Blog</span>
                 </div>
-              </div>
-            </article>
-          ))}
-        </div>
+                <div className="blog-content">
+                  <h3 className="blog-title">
+                    <Link to={`/blog/${post.slug}`}>{post.title}</Link>
+                  </h3>
+                  <p className="blog-excerpt">
+                    {post.excerpt || (post.content ? post.content.replace(/<[^>]*>/g, '').substring(0, 120) + '...' : '')}
+                  </p>
+                  <div className="blog-meta">
+                    <div className="blog-author">
+                      <span className="blog-admin" aria-hidden="true" />
+                      <span>{post.author || 'Admin'}</span>
+                    </div>
+                    <span className="blog-date">
+                      <CalendarIcon />
+                      {post.published_at ? new Date(post.published_at).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                      }) : post.date || 'May 8, 2026'}
+                    </span>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

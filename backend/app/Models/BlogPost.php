@@ -13,9 +13,11 @@ class BlogPost extends Model
         'image',
         'author',
         'published_at',
+        'seo_meta',
     ];
 
     protected $casts = [
         'published_at' => 'datetime',
+        'seo_meta' => 'array',
     ];
 }

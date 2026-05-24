@@ -12,6 +12,8 @@ import Home from './pages/Home';
 import AboutPage from './pages/AboutPage';
 import ServicesPage from './pages/ServicesPage';
 import BlogPage from './pages/BlogPage';
+import BlogReadingPage from './pages/BlogReadingPage';
+import BlogEditorPage from './pages/BlogEditorPage';
 import ContactPage from './pages/ContactPage';
 
 import './App.css';
@@ -53,6 +55,8 @@ function App() {
           <Route path="/services" element={<ServicesPage />} />
           <Route path="/our-services" element={<ServicesPage />} />
           <Route path="/blog" element={<BlogPage />} />
+          <Route path="/blog/:slug" element={<BlogReadingPage />} />
+          <Route path="/blog-editor" element={<BlogEditorPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/contact-us" element={<ContactPage />} />
         </Routes>

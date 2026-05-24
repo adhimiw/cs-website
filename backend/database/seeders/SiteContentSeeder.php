@@ -106,6 +106,154 @@ class SiteContentSeeder extends Seeder
                 'value' => 'Meet the experienced professionals driving transformation and innovation',
                 'type' => 'textarea',
             ],
+
+            // SEO, AEO, GEO Meta - Home Page
+            [
+                'page' => 'home',
+                'section' => 'seo',
+                'key' => 'title',
+                'value' => 'ClimbSphere | B2B Business Transformation & HR Tech Consulting',
+                'type' => 'text',
+            ],
+            [
+                'page' => 'home',
+                'section' => 'seo',
+                'key' => 'description',
+                'value' => 'ClimbSphere specializes in B2B digital transformation, HCM/HR Tech adoption, Service Desk ticketing systems, and program governance. Partnering to deliver scale and impact.',
+                'type' => 'textarea',
+            ],
+            [
+                'page' => 'home',
+                'section' => 'seo',
+                'key' => 'keywords',
+                'value' => 'digital transformation, HCM consulting, HR Tech adoption, service desk ticketing, project management, Chennai, B2B consulting',
+                'type' => 'text',
+            ],
+            [
+                'page' => 'home',
+                'section' => 'aeo',
+                'key' => 'quick_answer',
+                'value' => 'ClimbSphere is an enterprise B2B technology consulting agency based in Chennai, India. Specializing in digital transformation, HCM/HR Technology implementations, Service Desk ticketing setups, and agile program governance, ClimbSphere replaces manual guesswork with structured, evidence-based roadmaps.',
+                'type' => 'textarea',
+            ],
+            [
+                'page' => 'home',
+                'section' => 'aeo',
+                'key' => 'faqs',
+                'value' => '[{"question":"What services does ClimbSphere offer?","answer":"ClimbSphere offers B2B services including Digital Maturity Assessments, HR Technology selection and adoption, Service Desk & Ticketing optimization, and Agile/Hybrid Project Management governance."},{"question":"Who are ClimbSphere\'s leaders?","answer":"ClimbSphere is led by Consulting Directors Manoj Cheruvathoor and Ranjit Kumar, along with Managing Partner Barath Silvester, bringing nearly 50 years of combined global enterprise experience."}]',
+                'type' => 'html',
+            ],
+
+            // SEO, AEO, GEO Meta - About Page
+            [
+                'page' => 'about',
+                'section' => 'seo',
+                'key' => 'title',
+                'value' => 'About Us | ClimbSphere Technologies',
+                'type' => 'text',
+            ],
+            [
+                'page' => 'about',
+                'section' => 'seo',
+                'key' => 'description',
+                'value' => 'With nearly 50 years of combined global experience, ClimbSphere leads large-scale HCM and Service Desk transformation programs across India, North America, Europe, APAC, and the Middle East.',
+                'type' => 'textarea',
+            ],
+            [
+                'page' => 'about',
+                'section' => 'seo',
+                'key' => 'keywords',
+                'value' => 'Manoj Cheruvathoor, Ranjit Kumar, Barath Silvester, climbsphere team, HCM transformation, enterprise SaaS, global delivery',
+                'type' => 'text',
+            ],
+            [
+                'page' => 'about',
+                'section' => 'aeo',
+                'key' => 'quick_answer',
+                'value' => 'ClimbSphere is a B2B transformation agency led by Manoj Cheruvathoor, Ranjit Kumar, and Barath Silvester. The leadership team has nearly 50 years of combined global experience delivering large-scale HCM, Service Desk, and operations transformation programs across major international markets.',
+                'type' => 'textarea',
+            ],
+            [
+                'page' => 'about',
+                'section' => 'aeo',
+                'key' => 'faqs',
+                'value' => '[{"question":"What is the background of ClimbSphere\'s directors?","answer":"ClimbSphere\'s team has nearly 50 years of combined experience. Manoj Cheruvathoor is a functional and QA lead with military discipline. Ranjit Kumar is a business and integration leader. Barath Silvester has 18+ years of operations leadership experience."}]',
+                'type' => 'html',
+            ],
+
+            // SEO, AEO, GEO Meta - Services Page
+            [
+                'page' => 'services',
+                'section' => 'seo',
+                'key' => 'title',
+                'value' => 'Our Services | ClimbSphere Technologies',
+                'type' => 'text',
+            ],
+            [
+                'page' => 'services',
+                'section' => 'seo',
+                'key' => 'description',
+                'value' => 'Explore ClimbSphere\'s core B2B services, including Digital Maturity Assessments, HR Technology adoption, Service Desk ticketing systems, and Agile/Hybrid Project Management governance.',
+                'type' => 'textarea',
+            ],
+            [
+                'page' => 'services',
+                'section' => 'seo',
+                'key' => 'keywords',
+                'value' => 'Digital Maturity Assessment, HR technology platform selection, ticketing system SLA, enterprise project governance, product partnerships',
+                'type' => 'text',
+            ],
+            [
+                'page' => 'services',
+                'section' => 'aeo',
+                'key' => 'quick_answer',
+                'value' => 'ClimbSphere offers core services across two segments. For businesses, we provide Digital Maturity Assessments, Digital Transformation strategy, HR Technology platform selection, Service Desk ticketing setups, and Project Management. For technology partners, we provide Product Partnerships and Professional Services.',
+                'type' => 'textarea',
+            ],
+            [
+                'page' => 'services',
+                'section' => 'aeo',
+                'key' => 'faqs',
+                'value' => '[{"question":"What is the ClimbSphere Transformation Framework?","answer":"The ClimbSphere Transformation Framework consists of three phases: 1) Clarity (identifying what to fix first via digital maturity assessments), 2) Transform (structured, senior-led implementation), and 3) Sustain (adoption and config improvements post-go-live)."}]',
+                'type' => 'html',
+            ],
+
+            // SEO, AEO, GEO Meta - Contact Page
+            [
+                'page' => 'contact',
+                'section' => 'seo',
+                'key' => 'title',
+                'value' => 'Contact Us | ClimbSphere Technologies',
+                'type' => 'text',
+            ],
+            [
+                'page' => 'contact',
+                'section' => 'seo',
+                'key' => 'description',
+                'value' => 'Contact the ClimbSphere team at sales@climbsphere.ai or visit our office at Eldorado Building, Nungambakkam, Chennai, to discuss your B2B transformation needs.',
+                'type' => 'textarea',
+            ],
+            [
+                'page' => 'contact',
+                'section' => 'seo',
+                'key' => 'keywords',
+                'value' => 'contact climbsphere, climbsphere chennai address, climbsphere email, climbsphere phone number',
+                'type' => 'text',
+            ],
+            [
+                'page' => 'contact',
+                'section' => 'aeo',
+                'key' => 'quick_answer',
+                'value' => 'You can contact ClimbSphere by emailing sales@climbsphere.ai or calling +91 861 048 6636. Their corporate office is located at 1E, 1st Floor, Eldorado Building, Nungambakkam, Chennai - 600034, Tamil Nadu, India.',
+                'type' => 'textarea',
+            ],
+            [
+                'page' => 'contact',
+                'section' => 'aeo',
+                'key' => 'faqs',
+                'value' => '[{"question":"How can I book an appointment with ClimbSphere?","answer":"You can email sales@climbsphere.ai, call +91 861 048 6636, or submit the contact form on our website to schedule a discovery call."}]',
+                'type' => 'html',
+            ],
         ];
 
         foreach ($contents as $content) {
@@ -129,7 +277,7 @@ class SiteContentSeeder extends Seeder
             ],
             [
                 'key' => 'address',
-                'value' => '1E, 1st Floor, Eldorado Building, Nungambakkam, Chennai – 600034',
+                'value' => '1E, 1st Floor, Eldorado Building, Nungambakkam, Chennai - 600034',
                 'type' => 'text',
             ],
             [
@@ -171,7 +319,7 @@ class SiteContentSeeder extends Seeder
             ],
             [
                 'title' => 'Project Management',
-                'description' => "ClimbSphere brings structured agility to every engagement, blending Agile, Waterfall, or Hybrid methodologies with hands-on governance and transparent reporting — keeping your initiatives on track, on budget and aligned to the goals that matter most.",
+                'description' => "ClimbSphere brings structured agility to every engagement, blending Agile, Waterfall, or Hybrid methodologies with hands-on governance and transparent reporting - keeping your initiatives on track, on budget and aligned to the goals that matter most.",
                 'image' => 'services/service-dashboard.webp',
                 'tags' => ['Structured Agility', 'Agile & Hybrid', 'Governance'],
                 'type' => 'business',
@@ -261,20 +409,21 @@ class SiteContentSeeder extends Seeder
             ['slug' => 'workday-ai-disruption'],
             [
                 'title' => "Workday's Last Workday? The Goliath Has Heard This Before",
-                'content' => '<p><strong>A practitioner’s take on the a16z thesis, the CHRO’s crossroads, and what really determines the fate of HCM’s reigning giant</strong></p>
+                'content' => <<<'HTML'
+<p><strong>A practitioner's take on the a16z thesis, the CHRO's crossroads, and what really determines the fate of HCM's reigning giant</strong></p>
 <p>There is a moment in enterprise software history when a confident analyst fires a signal flare into the night and everyone pretending not to see the fire has to look up.</p>
-<p>That moment arrived on April 28, 2026, when Andreessen Horowitz published “Workday’s Last Workday?” A pointed thesis by Joe Schmidt that quickly travelled across HR and enterprise tech circles. Beyond the headline, it did something rare: it named the structural anatomy of Workday’s dominance, exposed its brittleness in the AI era, and invited founders to attack what a16z called the last large enterprise software category without a serious AI native challenger.</p>
+<p>That moment arrived on April 28, 2026, when Andreessen Horowitz published "Workday's Last Workday?" A pointed thesis by Joe Schmidt that quickly travelled across HR and enterprise tech circles. Beyond the headline, it did something rare: it named the structural anatomy of Workday's dominance, exposed its brittleness in the AI era, and invited founders to attack what a16z called the last large enterprise software category without a serious AI native challenger.</p>
 <p>This is not a hot take. It is a battle map.</p>
-<h3>Let’s begin with the knot.</h3>
-<p>Imagine a CHRO at a large enterprise. She spent two years of political capital convincing the CFO and CEO to approve the Workday renewal. She sat through the 14 month implementation, managed the change, attended Rising, and came back with a roadmap full of agent capabilities marked “coming soon.”</p>
-<p>Now her CEO forwards her the a16z article with one line: “Have you seen this?”</p>
+<h3>Let's begin with the knot.</h3>
+<p>Imagine a CHRO at a large enterprise. She spent two years of political capital convincing the CFO and CEO to approve the Workday renewal. She sat through the 14 month implementation, managed the change, attended Rising, and came back with a roadmap full of agent capabilities marked "coming soon."</p>
+<p>Now her CEO forwards her the a16z article with one line: "Have you seen this?"</p>
 <p>She has never been questioned about this before not in twenty years of HR leadership, and certainly not three months after going live on a system she staked her credibility on.</p>
 <p>How Workday became untouchable?</p>
 <p>To understand why this question matters now, we need to remember why it did not matter before.</p>
-<p>“For a CHRO in 2008, Workday felt futuristic. A live demo where org relationships moved like a graph and reports could be built without calling IT was not a minor usability gain; it was a new operating experience. Its graph-object data model made employees, roles, compensation, and business processes discoverable and reportable in a way legacy systems rarely did “</p>
+<p>"For a CHRO in 2008, Workday felt futuristic. A live demo where org relationships moved like a graph and reports could be built without calling IT was not a minor usability gain; it was a new operating experience. Its graph-object data model made employees, roles, compensation, and business processes discoverable and reportable in a way legacy systems rarely did "</p>
 <p>That was enough to create CHRO FOMO. At every HR conference, the signal was clear: HR had found its Salesforce moment.</p>
-<p>But Workday’s moat was never just the product. It was the ecosystem gravity around the product. a16z argued that Workday’s real lock-in came from three things: a proprietary configuration layer, a services cartel, and multi-year contracts. More than 10,500 certified consultants work on Workday worldwide, and implementations often take 6 to 18 months and cost $300K to $1M+.</p>
-<p>That created an asymmetry of scrutiny. The CHRO owned the buying decision. Other CXOs were episodic passengers — present during performance and compensation cycles, absent for most of the year. The system did not need to impress the CFO on a Tuesday in July because the CFO was never in it on a Tuesday in July.</p>
+<p>But Workday's moat was never just the product. It was the ecosystem gravity around the product. a16z argued that Workday's real lock-in came from three things: a proprietary configuration layer, a services cartel, and multi-year contracts. More than 10,500 certified consultants work on Workday worldwide, and implementations often take 6 to 18 months and cost $300K to $1M+.</p>
+<p>That created an asymmetry of scrutiny. The CHRO owned the buying decision. Other CXOs were episodic passengers - present during performance and compensation cycles, absent for most of the year. The system did not need to impress the CFO on a Tuesday in July because the CFO was never in it on a Tuesday in July.</p>
 <p>That arrangement worked elegantly for fifteen years.</p>
 <h2>Why the narrative is being tested</h2>
 <p>The a16z piece does not say Workday built a bad product. It says the conditions that allowed a good product to be enough are gone.</p>
@@ -283,19 +432,21 @@ class SiteContentSeeder extends Seeder
 <p>Third, the CHRO herself is exposed. The modern CHRO is expected to lead technology-enabled change, build the business case, and show ROI on HR tech adoption. For the first time, the pressure for a better HR system may come from outside HR: from a sharper CXO, from impatient users, and from enterprise AI programs that demand more than annual-cycle efficiency.</p>
 <h3>Why Workday still holds real advantage</h3>
 <p>This is where the disruption story needs discipline. Workday is not a sitting target.</p>
-<p>It still manages more than 10,000 organizations and tens of millions of workers, and a16z itself acknowledges how sticky the platform remains because of its contracts, implementation complexity, and partner ecosystem. Workday also retains meaningful market leadership in large enterprise cloud HCM, with estimates placing it at 25–30% share in North America.</p>
-<p>Its biggest advantage may be data. Workday’s transaction footprint gives it access to one of the richest HR and finance datasets in enterprise software, which matters enormously in an AI race where context and workflow depth can matter more than model novelty. On top of that, the Finance HR bundle remains a fortress. Facing an AI native startup that builds a clever HCM layer, very few are building a general ledger, financial close engine, and workforce planning stack at the same time.</p>
+<p>It still manages more than 10,000 organizations and tens of millions of workers, and a16z itself acknowledges how sticky the platform remains because of its contracts, implementation complexity, and partner ecosystem. Workday also retains meaningful market leadership in large enterprise cloud HCM, with estimates placing it at 25-30% share in North America.</p>
+<p>Its biggest advantage may be data. Workday's transaction footprint gives it access to one of the richest HR and finance datasets in enterprise software, which matters enormously in an AI race where context and workflow depth can matter more than model novelty. On top of that, the Finance HR bundle remains a fortress. Facing an AI native startup that builds a clever HCM layer, very few are building a general ledger, financial close engine, and workforce planning stack at the same time.</p>
 <p>The switching cost is also misunderstood. This is not a simple rip and replace exercise. It is years of audit trails, compensation history, legal entity structures, payroll dependencies, and embedded business processes. In large enterprises, that is institutional memory, not just software configuration.</p>
 <h3>What Workday is doing right now</h3>
 <p>Workday is also not taking AI lightly.</p>
-<p>Its response centres on Illuminate, which the company positions as a model and execution layer built on Workday’s own transaction stream, not merely a chat interface on top of legacy workflows. The broader strategy includes AI agents, partner connectivity, and integrations that let enterprise AI stacks work with Workday data rather than route around it.</p>
+<p>Its response centres on Illuminate, which the company positions as a model and execution layer built on Workday's own transaction stream, not merely a chat interface on top of legacy workflows. The broader strategy includes AI agents, partner connectivity, and integrations that let enterprise AI stacks work with Workday data rather than route around it.</p>
 <p>That said, the criticism is not without merit. The gap between announcing AI capabilities and getting them broadly adopted creates room for challengers. The same ecosystem that helped Workday win especially service partners who profit from implementation complexity can slow the pace of reinvention. Workday is trying to transform through a channel that benefited from the old model.</p>
 <p>That is the real tension.</p>
 <h3>What happens next</h3>
-<p>If Workday gets this right, the outcome is bigger than one company. A stable transition matters for customers, partners, and the wider enterprise ecosystem built around Workday’s installed base. A successful shift would preserve years of ecosystem investment while making the platform more AI ready, rather than forcing enterprises into chaotic re implementations before the challengers are mature enough to carry that weight.</p>
-<p>The honest prediction is this: this is probably not Workday’s last workday. But it may be the last decade in which its supremacy goes uncontested.</p>
+<p>If Workday gets this right, the outcome is bigger than one company. A stable transition matters for customers, partners, and the wider enterprise ecosystem built around Workday's installed base. A successful shift would preserve years of ecosystem investment while making the platform more AI ready, rather than forcing enterprises into chaotic re implementations before the challengers are mature enough to carry that weight.</p>
+<p>The honest prediction is this: this is probably not Workday's last workday. But it may be the last decade in which its supremacy goes uncontested.</p>
 <p>And that CHRO with the forwarded email now has a choice. She can defend the renewal on sunk cost and switching risk, and she may still win that argument once more. Or she can get ahead of the question her CEO will ask every quarter from here: are we running HR on a system of record, or on a system ready for the AI-native enterprise?</p>
-<p>The product’s rudder has activated. The question now is whether the hand on the wheel is fast enough.</p>',
+<p>The product's rudder has activated. The question now is whether the hand on the wheel is fast enough.</p>
+HTML
+,
                 'image' => 'blogs/blog_post_01.png',
                 'author' => 'admin',
                 'published_at' => '2026-05-08 00:00:00',
@@ -306,43 +457,44 @@ class SiteContentSeeder extends Seeder
             ['slug' => 'post-demo-paradox-hr-tech'],
             [
                 'title' => 'Why Great Software Often Fails Great People: Lessons from the Indian HCM Landscape',
-                'content' => '<p><strong>It is entirely possible to fall in love with an HCM product during a high-energy demo and still deeply regret the investment shortly after go live.</strong></p>
-<p>This “Post Demo Paradox” is now a defining feature of India’s HR tech ecosystem.</p>
+                'content' => <<<'HTML'
+<p><strong>It is entirely possible to fall in love with an HCM product during a high-energy demo and still deeply regret the investment shortly after go live.</strong></p>
+<p>This "Post Demo Paradox" is now a defining feature of India's HR tech ecosystem.</p>
 <p>Capable platforms. Modern interfaces. Scalable architecture. Yet a pervasive execution gap exists between the persuasive pre sales experience and the frustrating post go-live reality leaving CHROs and IT directors grappling with misaligned expectations and eroded trust.</p>
 <p>This is not a failure of individual product features. It is a systemic structural gap in the Indian SaaS landscape.</p>
-<h3>The Myth of the “Identical Box”</h3>
-<p>Standardization is often heralded as the ultimate vehicle for scaling digital HR processes. By industrializing common patterns, software providers attempt to reconcile an organization’s “native process proclivity” their inherent way of operating with a scalable digital model.</p>
+<h3>The Myth of the "Identical Box"</h3>
+<p>Standardization is often heralded as the ultimate vehicle for scaling digital HR processes. By industrializing common patterns, software providers attempt to reconcile an organization's "native process proclivity" their inherent way of operating with a scalable digital model.</p>
 <p>But business systems cannot be treated as interchangeable commodities.</p>
-<p>Consider how differently two organizations experience something as deceptively simple as “Payroll” or “Leave Management”:</p>
+<p>Consider how differently two organizations experience something as deceptively simple as "Payroll" or "Leave Management":</p>
 <p><strong>The Multi-Entity Enterprise:</strong> Navigates complex compliance, rigid approval hierarchies, and multi layered statutory nuances across geographies.</p>
 <p><strong>The Fast-Growing Startup:</strong> Requires rapid cycle policy iteration, agile compensation models, and high speed workflows that evolve month to month.</p>
-<p>On a slide, they both need “Payroll.” In reality, they are completely different worlds.</p>
-<p>“When implementation treats every customer as a clone of a reference model, contextual friction is inevitable. Employees feel the system is working against them and HR carries the blame.”</p>
+<p>On a slide, they both need "Payroll." In reality, they are completely different worlds.</p>
+<p>"When implementation treats every customer as a clone of a reference model, contextual friction is inevitable. Employees feel the system is working against them and HR carries the blame."</p>
 <p>Human contextual behaviour is not a customisation request. It is a product requirement.</p>
-<h3>The “Wedding vs. Marriage” Gap</h3>
+<h3>The "Wedding vs. Marriage" Gap</h3>
 <p>In the SaaS lifecycle, pre-sales functions much like a wedding planner they stage the perfect day, ensure every stakeholder feels heard, and create a magical vision of the future.</p>
 <p>But the marriage only truly begins after the contract is signed.</p>
 <p>That is when professional services, implementation teams, and customer success must take over. And this is precisely where the most costly mistake in Indian SaaS repeatedly occurs:</p>
-<p>“The rich context gathered during evaluation business goals, constraints, stakeholder dynamics, edge cases never properly reaches implementation or support. Customer insights die in the gap between departments.”</p>
+<p>"The rich context gathered during evaluation business goals, constraints, stakeholder dynamics, edge cases never properly reaches implementation or support. Customer insights die in the gap between departments."</p>
 <p>Chased by quarterly targets and fragmented by operational silos, organizations abandon the very intelligence that justified the Customer Acquisition Cost (CAC) long before it can contribute to Lifetime Value (LTV).</p>
 <p>Customers who experienced high-touch attentiveness during pre-sales are suddenly thrust into a mechanistic, ticket-driven reality. The software may be technically sound. But the organisation around the software is not orchestrated and trust collapses.</p>
 <h3>Navigating the PLG vs. Delight Conundrum</h3>
 <p>SaaS founders today face a strategic tension between Product Led Growth (PLG) and Customer Delight. Focusing exclusively on PLG and acquisition metrics can produce impressive dashboards full of new logos, but ignoring delight leads to churn and turns influential HR leaders into vocal detractors. Conversely, over rotating toward bespoke delight without a growth strategy results in a niche service business that lacks the leverage to scale.</p>
-<p>The solution is to align the organization around a “North Star” of sustainable customer value, which bridges these two objectives:</p>
+<p>The solution is to align the organization around a "North Star" of sustainable customer value, which bridges these two objectives:</p>
 <p><strong>A Product of Merit:</strong> A platform that grows based on inherent value and ease of adoption.</p>
 <p><strong>A Support Ecosystem:</strong> A delivery framework designed to help customers realize value within their specific, messy contextual realities.</p>
-<h3>The Discipline of the “Un-Glamorous” Operating Model</h3>
-<p>To operationalize this North Star, successful companies move beyond “magic” features and commit to a disciplined, un-glamorous operating model. This methodology is the actual mechanism that transforms a product into a solution through three critical pillars:</p>
+<h3>The Discipline of the "Un-Glamorous" Operating Model</h3>
+<p>To operationalize this North Star, successful companies move beyond "magic" features and commit to a disciplined, un-glamorous operating model. This methodology is the actual mechanism that transforms a product into a solution through three critical pillars:</p>
 <p><strong>Framework & Methodology:</strong> Rigorous stages and artefacts discovery documents, implementation playbooks, success metrics with explicit ownership across sales, pre-sales, professional services, and customer success.</p>
 <p><strong>Partnership Networks:</strong> Not a loose vendor directory. A high fidelity ecosystem of partners with deep domain expertise in HR operations and organisational change management.</p>
 <p><strong>Incentive Alignment:</strong> Move beyond deal closing commissions. Reward teams and partners for referenceable success stories, renewals, and measurable customer outcomes not just signatures.</p>
-<p>“This un-glamorous, disciplined operating model is the secret engine behind what the market perceives as overnight success.”</p>
-<h3>Why Free Dinners Can’t Buy Trust</h3>
-<p>Scroll through any HR WhatsApp group or LinkedIn feed in any Indian metro city. You’ll find a free dinner, high-tea, or HR tech event almost every alternate week.</p>
-<p>“There are more HR Tech events than events across all other HR functions combined.”</p>
+<p>"This un-glamorous, disciplined operating model is the secret engine behind what the market perceives as overnight success."</p>
+<h3>Why Free Dinners Can't Buy Trust</h3>
+<p>Scroll through any HR WhatsApp group or LinkedIn feed in any Indian metro city. You'll find a free dinner, high-tea, or HR tech event almost every alternate week.</p>
+<p>"There are more HR Tech events than events across all other HR functions combined."</p>
 <p>These events can drive awareness. They look great on VC update decks. But if the underlying customer experience is broken, they become accelerants of damage spreading awareness of a poor product faster than marketing can recover.</p>
 <p>The HR fraternity is close knit. Highly vocal. And relatively impatient because their work is always under pressure from employees and leadership simultaneously.</p>
-<p>When an HCM product underperforms, HR professionals don’t suffer in silence. They talk. And they talk to each other.</p>
+<p>When an HCM product underperforms, HR professionals don't suffer in silence. They talk. And they talk to each other.</p>
 <p>Real community building looks very different:</p>
 <p><strong>Thoughtful Engagement:</strong> Prioritising end-user and HR ops teams, not just executive optics.</p>
 <p><strong>Authentic Advocacy:</strong> Real success stories, not polished case studies.</p>
@@ -355,8 +507,10 @@ class SiteContentSeeder extends Seeder
 <p>Treat negative feedback as vital data, not a PR problem.</p>
 <p>Re-wire their operating models around the actual customer journey.</p>
 <p>Back their product with founder intent and leaders willing to commit to the long game.</p>
-<p>“In an era of feature parity, the question for every HR and IT leader is no longer about the strength of the software’s features it is about the depth of the partnership behind it.”</p>
-<p>Trust compounds. Relationships scale. The rest is noise.</p>',
+<p>"In an era of feature parity, the question for every HR and IT leader is no longer about the strength of the software's features it is about the depth of the partnership behind it."</p>
+<p>Trust compounds. Relationships scale. The rest is noise.</p>
+HTML
+,
                 'image' => 'blogs/blog_post_02.jpg',
                 'author' => 'admin',
                 'published_at' => '2026-05-08 00:00:00',

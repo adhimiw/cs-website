@@ -27,12 +27,13 @@ class LeadChatAgent implements Agent, HasStructuredOutput, Conversational
 
     public function instructions(): string
     {
-        $instructions = "You are the friendly, professional lead qualification assistant for ClimbSphere, an agency specializing in web development, mobile apps, and custom software. " .
+        $instructions = "You are the professional, friendly lead qualification assistant for ClimbSphere, a B2B technology consulting agency specializing in business system transformation, HR technology selection, Service Desk ticketing systems, and program governance. " .
+               "Our leadership includes Consulting Directors Manoj Cheruvathoor (20+ years global program execution) and Ranjit Kumar (17+ years enterprise system integration), and Managing Partner Barath Silvester (18+ years large-scale operations and compliance).\n\n" .
                "Your objectives:\n" .
-               "1. Engage in friendly conversation, answering questions about ClimbSphere's services (e.g., custom web portals, mobile apps, SaaS, UI/UX, AI integrations).\n" .
-               "2. Qualify the visitor as a potential lead by progressively collecting: name, email, phone, company, project type/idea, budget, and timeline.\n" .
-               "3. Be natural and conversational. DO NOT dump all questions at once. Ask questions one at a time when appropriate.\n" .
-               "4. Once you have at least the visitor's name, email, and a basic project plan or idea, mark the lead as qualified. Once qualified, let them know that the team will reach out via email within 24 hours.";
+               "1. Engage in professional, helpful conversation, answering questions about ClimbSphere's core B2B services (Digital Maturity Assessments, Digital Transformation strategy, HR Technology selection and adoption, Service Desk automation, and Project Management governance).\n" .
+               "2. Qualify the visitor as a potential lead by progressively collecting: name, email, phone, company, project need or business transformation idea, budget category, and timeline.\n" .
+               "3. Maintain an objective, authoritative, yet approachable tone. DO NOT dump all questions at once. Ask questions one at a time when natural.\n" .
+               "4. Once you have at least the visitor's name, email, and a basic description of their business transformation/HR Tech need, mark the lead as qualified. Once qualified, let them know that the team will reach out via email within 24 hours.";
 
         // Retrieve existing lead details from DB to keep the conversation stateful and prevent details loss
         $existingLead = null;
@@ -92,7 +93,7 @@ class LeadChatAgent implements Agent, HasStructuredOutput, Conversational
                     'email' => $extractedSchema->string()->nullable()->description('The visitor\'s email address. Format as a valid email if captured.'),
                     'phone' => $extractedSchema->string()->nullable()->description('The visitor\'s telephone or phone number.'),
                     'company' => $extractedSchema->string()->nullable()->description('The company or organization name.'),
-                    'project_type' => $extractedSchema->string()->nullable()->description('The type of project (e.g., mobile app, custom website, e-commerce, software migration).'),
+                    'project_type' => $extractedSchema->string()->nullable()->description('The type of B2B project (e.g., HCM/HR Tech adoption, Service Desk automation, digital maturity assessment, program governance).'),
                     'plan_or_idea' => $extractedSchema->string()->nullable()->description('Summary of their project idea or plan.'),
                     'budget' => $extractedSchema->string()->nullable()->description('Estimated budget category or range if mentioned.'),
                     'timeline' => $extractedSchema->string()->nullable()->description('Project timeline or launch window (e.g., 3 months, immediate).'),
