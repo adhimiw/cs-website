@@ -126,6 +126,6 @@ return [
     |
     */
 
-    'admin_recipient' => env('MAIL_ADMIN_RECIPIENT', 'devloper@adhithanr.space'),
+    'admin_recipient' => env('MAIL_ADMIN_RECIPIENT', 'sales@climbsphere.ai'),
 
 ];

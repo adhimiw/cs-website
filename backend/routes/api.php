@@ -11,7 +11,7 @@ Route::middleware([
     \App\Http\Middleware\TrackVisitor::class,
 ])->group(function () {
     Route::get('/contents', [ContentController::class, 'index']);
-    Route::post('/chat', [ChatController::class, 'chat'])->middleware('throttle:60,1');
+    Route::post('/chat', [ChatController::class, 'chat'])->middleware('throttle:200,1');
     Route::post('/contact', [ContactController::class, 'submit'])->middleware('throttle:20,1');
 });
 

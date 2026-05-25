@@ -191,7 +191,7 @@ class ChatController extends Controller
 
             // Queue notification email to internal team
             try {
-                $adminEmail = config('mail.admin_recipient', 'devloper@adhithanr.space');
+                $adminEmail = config('mail.admin_recipient', 'sales@climbsphere.ai');
                 Mail::to($adminEmail)->queue(new \App\Mail\LeadCapturedMail($lead));
                 $lead->update(['admin_notified_at' => now()]);
             } catch (\Exception $e) {
@@ -779,7 +779,7 @@ class ChatController extends Controller
                 ];
             case 'E4':
                 return [
-                    'reply' => "I'm an AI assistant for ClimbSphere, we're available 24/7.",
+                    'reply' => "I'm an AI assistant for ClimbSphere, we're available 24/7. You can contact our sales team at sales@climbsphere.ai during regular business hours.",
                     'extracted' => $defaultExtracted,
                     'lead_status' => 'new',
                     'send_ack_email' => false,

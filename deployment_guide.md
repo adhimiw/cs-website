@@ -1,6 +1,6 @@
 # Project Deployment and Configuration Guide
 
-Domain: https://peru-crocodile-804063.hostingersite.com
+Domain: https://climbsphere.ai/
 Repository: https://github.com/adhimiw/cs-website.git
 
 This guide explains how to build the React frontend, deploy the Laravel backend, initialize the database, and configure API and email integration in a Hostinger shared-hosting environment.
@@ -31,7 +31,7 @@ ssh-keyscan github.com >> ~/.ssh/known_hosts
 chmod 600 ~/.ssh/known_hosts
 
 # Navigate to the domain folder and create the site directory
-cd ~/domains/peru-crocodile-804063.hostingersite.com/
+cd ~/domains/climbsphere.ai/
 mkdir -p site
 cd site
 
@@ -56,10 +56,10 @@ npm install
 npm run build
 
 # 2. Upload build output directly into the backend public folder on Hostinger
-scp -P 65002 -r dist/assets dist/images dist/index.html dist/favicon.svg dist/icons.svg u244089748@145.79.210.59:/home/u244089748/domains/peru-crocodile-804063.hostingersite.com/site/backend/public/
+scp -P 65002 -r dist/assets dist/images dist/index.html dist/favicon.svg dist/icons.svg u567332684@145.79.210.220:/home/u567332684/domains/climbsphere.ai/site/backend/public/
 
 # 3. Fix uploaded static asset permissions on Hostinger
-ssh -p 65002 u244089748@145.79.210.59 "chmod -R u=rwX,go=rX /home/u244089748/domains/peru-crocodile-804063.hostingersite.com/site/backend/public/assets /home/u244089748/domains/peru-crocodile-804063.hostingersite.com/site/backend/public/images"
+ssh -p 65002 u567332684@145.79.210.220 "chmod -R u=rwX,go=rX /home/u567332684/domains/climbsphere.ai/site/backend/public/assets /home/u567332684/domains/climbsphere.ai/site/backend/public/images"
 ```
 
 ---
@@ -69,8 +69,8 @@ ssh -p 65002 u244089748@145.79.210.59 "chmod -R u=rwX,go=rX /home/u244089748/dom
 Verify or export the following directories in your Hostinger SSH session:
 
 ```bash
-HOSTINGER_USER=u244089748
-DOMAIN_ROOT="/home/$HOSTINGER_USER/domains/peru-crocodile-804063.hostingersite.com"
+HOSTINGER_USER=u567332684
+DOMAIN_ROOT="/home/$HOSTINGER_USER/domains/climbsphere.ai"
 SITE_DIR="$DOMAIN_ROOT/site"
 BACKEND_DIR="$SITE_DIR/backend"
 PUBLIC_DIR="$BACKEND_DIR/public"
@@ -158,7 +158,7 @@ APP_NAME="ClimbSphere"
 APP_ENV=production
 APP_KEY=base64:replace_with_generated_app_key
 APP_DEBUG=false
-APP_URL=https://peru-crocodile-804063.hostingersite.com
+APP_URL=https://climbsphere.ai/
 
 APP_LOCALE=en
 APP_FALLBACK_LOCALE=en
@@ -178,7 +178,7 @@ CACHE_STORE=file
 SESSION_DRIVER=database
 SESSION_LIFETIME=120
 SESSION_SECURE_COOKIE=true
-SESSION_DOMAIN=.peru-crocodile-804063.hostingersite.com
+SESSION_DOMAIN=.climbsphere.ai
 
 # SMTP Mail Settings
 MAIL_MAILER=smtp
@@ -236,7 +236,7 @@ chmod -R 775 storage bootstrap/cache
 
 ## 9. Create Filament Administrative User
 
-To log into the admin panel at `https://peru-crocodile-804063.hostingersite.com/admin`:
+To log into the admin panel at `https://climbsphere.ai//admin`:
 
 ```bash
 /opt/alt/php83/usr/bin/php artisan make:filament-user
@@ -292,7 +292,7 @@ Email sending is queued via the `database` queue driver. On Hostinger, there's n
 
 **Option A — cron job (recommended):** Add this to your Hostinger cron panel (runs every minute, processes one job):
 ```
-* * * * * /opt/alt/php83/usr/bin/php /home/u244089748/domains/peru-crocodile-804063.hostingersite.com/site/backend/artisan queue:work --stop-when-empty --queue=default >> /dev/null 2>&1
+* * * * * /opt/alt/php83/usr/bin/php /home/u567332684/domains/climbsphere.ai/site/backend/artisan queue:work --stop-when-empty --queue=default >> /dev/null 2>&1
 ```
 
 **Option B — manual SSH (for testing):**
@@ -308,5 +308,5 @@ Deployment completed:
 
 Deployment completed:
 
-* Public portal: https://peru-crocodile-804063.hostingersite.com
-* Control center: https://peru-crocodile-804063.hostingersite.com/admin
+* Public portal: https://climbsphere.ai/
+* Control center: https://climbsphere.ai/admin
