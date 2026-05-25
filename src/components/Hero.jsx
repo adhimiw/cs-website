@@ -36,8 +36,6 @@ export default function Hero() {
           </Link>
         </div>
         <div className="hero-visual" data-aos="fade-left" data-aos-delay="400">
-          <span className="hero-ring" aria-hidden="true" />
-          <span className="hero-dots" aria-hidden="true" />
           <img
             src={imageUrl}
             alt="ClimbSphere consultant"
