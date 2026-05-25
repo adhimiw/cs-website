@@ -10,28 +10,50 @@ const businessServices = [
     title: 'Digital Transformation',
     image: '/images/service-digital-transformation.webp',
     tags: ['Discover', 'Design', 'Deliver & Drive'],
-    description: "Meaningful transformation happens when technology serves business strategy. ClimbSphere's Discover, Design, Deliver, Drive cycle aligns people, processes, and platforms for measurable outcomes, accelerating your evolution with focus and momentum."
+    description: "Meaningful transformation happens when technology serves business strategy. ClimbSphere's Discover, Design, Deliver, Drive cycle aligns people, processes, and platforms for measurable outcomes, accelerating your evolution with focus and momentum.",
+    bullet_points: [
+      'Business case and ROI framework from day one',
+      'Process re-engineering and automation opportunity mapping',
+      'Platform-agnostic technology selection advisory',
+    ]
   },
   {
     num: '02',
     title: 'HR Technology',
     image: '/images/service-hr.webp',
     tags: ['Talent Selection', 'Analytics', 'Employee Experience'],
-    description: "A connected, intelligent HR ecosystem empowers your people teams to attract, retain and grow talent with clarity and confidence. ClimbSphere optimizes talent management, analytics and employee experience through seamless platform selection, implementation and adoption."
+    description: "A connected, intelligent HR ecosystem empowers your people teams to attract, retain and grow talent with clarity and confidence. ClimbSphere optimizes talent management, analytics and employee experience through seamless platform selection, implementation and adoption.",
+    bullet_points: [
+      'HR technology landscape assessment and gap analysis',
+      'Vendor-neutral platform evaluation and selection',
+      'End-to-end implementation, data migration, and integration',
+    ]
   },
   {
     num: '03',
     title: 'Project Management',
     image: '/images/service-dashboard.webp',
     tags: ['Structured Agility', 'Agile & Hybrid', 'Governance'],
-    description: "ClimbSphere brings structured agility to every engagement, blending Agile, Waterfall, or Hybrid methodologies with hands-on governance and transparent reporting — keeping your initiatives on track, on budget and aligned to the goals that matter most."
+    description: "ClimbSphere brings structured agility to every engagement, blending Agile, Waterfall, or Hybrid methodologies with hands-on governance and transparent reporting — keeping your initiatives on track, on budget and aligned to the goals that matter most.",
+    bullet_points: [
+      'Project scoping, charter development, and stakeholder alignment',
+      'Sprint or milestone planning with real-time dashboards',
+      'Risk management and escalation protocols',
+      'Post-project reviews with lessons-learned documentation',
+    ]
   },
   {
     num: '04',
     title: 'Service Desk & Ticketing',
     image: '/images/service-dashboard.webp',
     tags: ['Ticketing Support', 'Intelligent Automation', 'SLA Governance'],
-    description: "A well designed service desk drives productivity, strengthens trust and elevates IT's role as a strategic business partner. ClimbSphere designs and deploys efficient ticketing, self service portals, intelligent automation and SLA-driven governance that turns support operations into a competitive advantage."
+    description: "A well designed service desk drives productivity, strengthens trust and elevates IT's role as a strategic business partner. ClimbSphere designs and deploys efficient ticketing, self service portals, intelligent automation and SLA-driven governance that turns support operations into a competitive advantage.",
+    bullet_points: [
+      'Service catalog design with SLA frameworks',
+      'Incident, problem, and change management process setup',
+      'Self-service portal and knowledge base creation',
+      'AI-assisted ticket routing and resolution',
+    ]
   }
 ];
 
@@ -41,14 +63,23 @@ const partnerServices = [
     title: 'Professional Services',
     image: '/images/about-expertise.jpeg',
     tags: ['Strategic Accounts', 'Project Execution', 'Portfolio Adoption'],
-    description: "Scale your customer wins with end-to-end professional services excellence. ClimbSphere combines strategic key account management, disciplined project execution and seamless implementation to drive adoption, expansion and reference success across your portfolio replacing guesswork with evidence based roadmaps."
+    description: "Scale your customer wins with end-to-end professional services excellence. ClimbSphere combines strategic key account management, disciplined project execution and seamless implementation to drive adoption, expansion and reference success across your portfolio replacing guesswork with evidence based roadmaps.",
+    bullet_points: [
+      'Unified account growth + delivery ownership',
+      'Razor focus on project success rate with proactive support',
+      'Joint expansion roadmaps and health scorecards',
+    ]
   },
   {
     num: '02',
     title: 'Product Partnerships',
     image: '/images/about-saas.jpeg',
     tags: ['Ecosystem Design', 'Partnership Models', 'Shared Value'],
-    description: "A well designed partner ecosystem multiplies your reach, strengthens your product and creates shared value across every stakeholder. ClimbSphere helps you design and operationalize partnership models that deliver genuine three way impact for your organization, your partners and the end customer."
+    description: "A well designed partner ecosystem multiplies your reach, strengthens your product and creates shared value across every stakeholder. ClimbSphere helps you design and operationalize partnership models that deliver genuine three way impact for your organization, your partners and the end customer.",
+    bullet_points: [
+      'Product Affiliation and marketing',
+      'Joint solution design and integration planning',
+    ]
   }
 ];
 
@@ -81,7 +112,8 @@ export default function ServicesPage() {
         title: s.title,
         image: s.image ? (s.image.startsWith('http') ? s.image : `${apiHost}${s.image}`) : '/images/digital-maturity-assessment.webp',
         tags: s.tags || [],
-        description: s.description
+        description: s.description,
+        bullet_points: s.bullet_points || []
       }))
     : businessServices;
 
@@ -91,7 +123,8 @@ export default function ServicesPage() {
         title: s.title,
         image: s.image ? (s.image.startsWith('http') ? s.image : `${apiHost}${s.image}`) : '/images/about-expertise.jpeg',
         tags: s.tags || [],
-        description: s.description
+        description: s.description,
+        bullet_points: s.bullet_points || []
       }))
     : partnerServices;
 
@@ -142,6 +175,13 @@ export default function ServicesPage() {
                     <div className="accordion-body-content">
                       <div className="body-text-col">
                         <p className="service-description">{service.description}</p>
+                        {service.bullet_points && service.bullet_points.length > 0 && (
+                          <ul className="service-bullet-points">
+                            {service.bullet_points.map((point, i) => (
+                              <li key={i}>{point}</li>
+                            ))}
+                          </ul>
+                        )}
                         <Link to="/contact-us" className="btn-discuss">
                           BOOK AN APPOINTMENT
                         </Link>
@@ -210,6 +250,13 @@ export default function ServicesPage() {
                     <div className="accordion-body-content">
                       <div className="body-text-col">
                         <p className="service-description">{service.description}</p>
+                        {service.bullet_points && service.bullet_points.length > 0 && (
+                          <ul className="service-bullet-points">
+                            {service.bullet_points.map((point, i) => (
+                              <li key={i}>{point}</li>
+                            ))}
+                          </ul>
+                        )}
                         <Link to="/contact-us" className="btn-discuss">
                           BOOK AN APPOINTMENT
                         </Link>

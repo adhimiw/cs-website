@@ -308,6 +308,11 @@ class SiteContentSeeder extends Seeder
                 'tags' => ['Discover', 'Design', 'Deliver & Drive'],
                 'type' => 'business',
                 'order' => 1,
+                'bullet_points' => [
+                    'Business case and ROI framework from day one',
+                    'Process re-engineering and automation opportunity mapping',
+                    'Platform-agnostic technology selection advisory',
+                ],
             ],
             [
                 'title' => 'HR Technology',
@@ -316,6 +321,11 @@ class SiteContentSeeder extends Seeder
                 'tags' => ['Talent Selection', 'Analytics', 'Employee Experience'],
                 'type' => 'business',
                 'order' => 2,
+                'bullet_points' => [
+                    'HR technology landscape assessment and gap analysis',
+                    'Vendor-neutral platform evaluation and selection',
+                    'End-to-end implementation, data migration, and integration',
+                ],
             ],
             [
                 'title' => 'Project Management',
@@ -324,6 +334,12 @@ class SiteContentSeeder extends Seeder
                 'tags' => ['Structured Agility', 'Agile & Hybrid', 'Governance'],
                 'type' => 'business',
                 'order' => 3,
+                'bullet_points' => [
+                    'Project scoping, charter development, and stakeholder alignment',
+                    'Sprint or milestone planning with real-time dashboards',
+                    'Risk management and escalation protocols',
+                    'Post-project reviews with lessons-learned documentation',
+                ],
             ],
             [
                 'title' => 'Service Desk & Ticketing',
@@ -332,6 +348,12 @@ class SiteContentSeeder extends Seeder
                 'tags' => ['Ticketing Support', 'Intelligent Automation', 'SLA Governance'],
                 'type' => 'business',
                 'order' => 4,
+                'bullet_points' => [
+                    'Service catalog design with SLA frameworks',
+                    'Incident, problem, and change management process setup',
+                    'Self-service portal and knowledge base creation',
+                    'AI-assisted ticket routing and resolution',
+                ],
             ],
             [
                 'title' => 'Professional Services',
@@ -340,6 +362,11 @@ class SiteContentSeeder extends Seeder
                 'tags' => ['Strategic Accounts', 'Project Execution', 'Portfolio Adoption'],
                 'type' => 'partner',
                 'order' => 5,
+                'bullet_points' => [
+                    'Unified account growth + delivery ownership',
+                    'Razor focus on project success rate with proactive support',
+                    'Joint expansion roadmaps and health scorecards',
+                ],
             ],
             [
                 'title' => 'Product Partnerships',
@@ -348,6 +375,10 @@ class SiteContentSeeder extends Seeder
                 'tags' => ['Ecosystem Design', 'Partnership Models', 'Shared Value'],
                 'type' => 'partner',
                 'order' => 6,
+                'bullet_points' => [
+                    'Product Affiliation and marketing',
+                    'Joint solution design and integration planning',
+                ],
             ],
         ];
 
@@ -360,6 +391,7 @@ class SiteContentSeeder extends Seeder
                 ['title' => $service['title']],
                 [
                     'description' => $service['description'],
+                    'bullet_points' => $service['bullet_points'] ?? [],
                     'image' => $service['image'],
                     'tags' => $service['tags'],
                     'type' => $service['type'],

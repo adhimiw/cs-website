@@ -9,6 +9,7 @@ class Service extends Model
     protected $fillable = [
         'title',
         'description',
+        'bullet_points',
         'image',
         'tags',
         'type',
@@ -17,5 +18,6 @@ class Service extends Model
 
     protected $casts = [
         'tags' => 'array',
+        'bullet_points' => 'array',
     ];
 }

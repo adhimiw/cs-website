@@ -31,6 +31,7 @@ class ContentController extends Controller
                 'id' => $service->id,
                 'title' => $service->title,
                 'description' => $service->description,
+                'bullet_points' => $service->bullet_points ?? [],
                 'image' => $imageUrl,
                 'tags' => $service->tags ?? [],
                 'type' => $service->type,
