@@ -28,6 +28,9 @@ class Lead extends Model
         'utm_medium',
         'utm_campaign',
         'notes',
+        'email_queued_at',
+        'admin_notified_at',
+        'email_status',
     ];
 
     public function session(): BelongsTo

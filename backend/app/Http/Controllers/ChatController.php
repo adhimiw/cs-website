@@ -182,7 +182,9 @@ class ChatController extends Controller
             if ($lead->email && filter_var($lead->email, FILTER_VALIDATE_EMAIL)) {
                 try {
                     Mail::to($lead->email)->queue(new \App\Mail\ChatAcknowledgementMail($lead));
+                    $lead->update(['email_queued_at' => now(), 'email_status' => 'queued']);
                 } catch (\Exception $e) {
+                    $lead->update(['email_status' => 'failed']);
                     report($e);
                 }
             }
@@ -191,6 +193,7 @@ class ChatController extends Controller
             try {
                 $adminEmail = config('mail.admin_recipient', 'devloper@adhithanr.space');
                 Mail::to($adminEmail)->queue(new \App\Mail\LeadCapturedMail($lead));
+                $lead->update(['admin_notified_at' => now()]);
             } catch (\Exception $e) {
                 report($e);
             }
