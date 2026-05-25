@@ -311,7 +311,7 @@ export default function BlogReadingPage() {
       </header>
 
       <div className="blog-read-banner container">
-        <img src={getBlogImageUrl(post.image)} alt={post.title} className="blog-read-cover" />
+        <img src={getBlogImageUrl(post.image)} alt={post.title} className="blog-read-cover" loading="lazy" />
       </div>
 
       <div className="blog-read-content-container container">

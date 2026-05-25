@@ -144,6 +144,9 @@ export default function ContactPage() {
               src="/images/contact-suit.jpg" 
               alt="Contact ClimbSphere Team" 
               className="contact-main-image"
+              width="1170"
+              height="1250"
+              loading="lazy"
             />
           </div>
 

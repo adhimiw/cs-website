@@ -362,8 +362,8 @@ export default function Services() {
       >
         <div className="container overview-grid">
           <div className="overview-media">
-            <img src="/images/IDM-TECHPARK.webp" alt="Woman holding laptop" className="overview-main-img" />
-            <img src="/images/overview_img_shape.png" alt="" className="overview-shape-img" />
+            <img src="/images/IDM-TECHPARK.webp" alt="Woman holding laptop" className="overview-main-img" width="736" height="793" loading="lazy" />
+            <img src="/images/overview_img_shape.png" alt="" className="overview-shape-img" width="202" height="185" loading="lazy" />
           </div>
           
           <div className="overview-copy">
@@ -371,11 +371,11 @@ export default function Services() {
             <h2 className="overview-title">Digital Maturity Assessments</h2>
             <p className="overview-text">
               The right digital investment starts with clear assessment & allocation.
-              ClimbSphere's structured assessment evaluates your capabilities across six dimensions
+              ClimbSphere's structured assessment evaluates your capabilities across five dimensions
               Strategy, Technology, Processes, Customer Experience and Governance replacing
               guesswork with evidence based roadmaps.
             </p>
-            <Link to="/blog" className="overview-btn">
+            <Link to="/our-services" className="overview-btn">
               KNOW MORE
               <span className="overview-btn-icon">
                 <ChevronIcon />

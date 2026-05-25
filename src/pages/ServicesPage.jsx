@@ -154,6 +154,7 @@ export default function ServicesPage() {
                       src={service.image} 
                       alt={service.title} 
                       className="service-active-image" 
+                      loading="lazy"
                       onError={(e) => {
                         const currentSrc = e.target.src;
                         if (currentSrc && !currentSrc.includes('/images/')) {
@@ -221,6 +222,7 @@ export default function ServicesPage() {
                       src={service.image} 
                       alt={service.title} 
                       className="service-active-image" 
+                      loading="lazy"
                       onError={(e) => {
                         const currentSrc = e.target.src;
                         if (currentSrc && !currentSrc.includes('/images/')) {

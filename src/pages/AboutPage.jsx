@@ -25,6 +25,9 @@ export default function AboutPage() {
               src="/images/about-saas.jpeg" 
               alt="Who We Are - SaaS" 
               className="about-image-large"
+              width="736"
+              height="736"
+              loading="lazy"
             />
           </div>
           <div className="section-content">
@@ -131,6 +134,9 @@ export default function AboutPage() {
               src="/images/about-expertise.jpeg" 
               alt="Expertise in SaaS Solution" 
               className="about-image-large"
+              width="736"
+              height="736"
+              loading="lazy"
             />
           </div>
         </div>
@@ -150,7 +156,7 @@ export default function AboutPage() {
             {/* Manoj Cheruvathoor */}
             <div className="leader-card">
               <div className="leader-image-container">
-                <img src="/images/leader-manoj.webp" alt="Manoj Cheruvathoor" className="leader-img" />
+                <img src="/images/leader-manoj.webp" alt="Manoj Cheruvathoor" className="leader-img" width="300" height="300" loading="lazy" />
               </div>
               <h3>Manoj Cheruvathoor</h3>
               <p className="leader-designation">Consulting Director</p>
@@ -174,7 +180,7 @@ export default function AboutPage() {
             {/* Ranjit Kumar */}
             <div className="leader-card">
               <div className="leader-image-container">
-                <img src="/images/leader-ranjit.webp" alt="Ranjit Kumar" className="leader-img" />
+                <img src="/images/leader-ranjit.webp" alt="Ranjit Kumar" className="leader-img" width="287" height="300" loading="lazy" />
               </div>
               <h3>Ranjit Kumar</h3>
               <p className="leader-designation">Consulting Director</p>
@@ -198,7 +204,7 @@ export default function AboutPage() {
             {/* Barath Silvester */}
             <div className="leader-card">
               <div className="leader-image-container">
-                <img src="/images/leader-barath.webp" alt="Barath Silvester" className="leader-img" />
+                <img src="/images/leader-barath.webp" alt="Barath Silvester" className="leader-img" width="300" height="300" loading="lazy" />
               </div>
               <h3>Barath Silvester</h3>
               <p className="leader-designation">Managing Partner</p>

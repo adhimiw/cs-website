@@ -41,6 +41,9 @@ export default function Hero() {
           <img
             src={imageUrl}
             alt="ClimbSphere consultant"
+            width="1080"
+            height="1250"
+            fetchpriority="high"
             onError={(e) => {
               e.target.src = '/images/hero-consultant.webp';
             }}

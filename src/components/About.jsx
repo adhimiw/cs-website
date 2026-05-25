@@ -26,11 +26,17 @@ export default function About() {
             className="about-main-img"
             src="/images/about-leader.jpg"
             alt="ClimbSphere leadership"
+            width="480"
+            height="600"
+            loading="lazy"
           />
           <img
             className="about-secondary-img"
             src="/images/about-workshop.png"
             alt="Business transformation workshop"
+            width="768"
+            height="502"
+            loading="lazy"
           />
         </div>
 

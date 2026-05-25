@@ -78,6 +78,8 @@ export default function Navbar() {
             <img
               src="/images/climbsphere-logo-header.png"
               alt="ClimbSphere Technologies"
+              width="1024"
+              height="442"
             />
           </Link>
 

@@ -63,7 +63,8 @@ export default function Testimonials() {
             <div className="testimonial-author">
               <img
                 src={testimonial.image}
-                alt=""
+                alt={testimonial.author}
+                loading="lazy"
                 onError={(e) => {
                   e.target.src = '/images/testimonial-avatar.png';
                 }}

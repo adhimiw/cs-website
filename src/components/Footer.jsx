@@ -80,6 +80,9 @@ export default function Footer() {
               className="footer-logo"
               src="/images/climbsphere-logo-footer.png"
               alt="ClimbSphere Technologies"
+              width="1536"
+              height="663"
+              loading="lazy"
             />
           </div>
 

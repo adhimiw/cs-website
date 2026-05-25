@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { getApiUrl } from '../context/CMSContext';
 import './ChatbotWidget.css';
 
-const DEFAULT_WELCOME = "Hello! Welcome to ClimbSphere. I'm your virtual assistant. How can I help you today? Whether you're looking for B2B digital maturity assessments, HCM/HR Technology adoption, Service Desk automation, or program governance, I can answer your questions and help you get started!";
+const DEFAULT_WELCOME = "Hello! Welcome to ClimbSphere. I'm your virtual assistant. How can I help you today? Whether you're looking for digital maturity assessments, HCM/HR Technology adoption, Service Desk automation, or program governance, I can answer your questions and help you get started!";
 
 export default function ChatbotWidget() {
   const [isOpen, setIsOpen] = useState(false);

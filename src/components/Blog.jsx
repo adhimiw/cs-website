@@ -79,7 +79,7 @@ export default function Blog() {
               >
                 <div className="blog-thumb">
                   <Link to={`/blog/${post.slug}`}>
-                    <img src={getBlogImageUrl(post.image)} alt={post.title} />
+                    <img src={getBlogImageUrl(post.image)} alt={post.title} loading="lazy" />
                   </Link>
                   <span className="blog-tag">Blog</span>
                 </div>
