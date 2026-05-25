@@ -175,8 +175,10 @@ DB_USERNAME=<hostinger_database_user>
 DB_PASSWORD=<hostinger_database_password>
 
 CACHE_STORE=file
-SESSION_DRIVER=file
+SESSION_DRIVER=database
 SESSION_LIFETIME=120
+SESSION_SECURE_COOKIE=true
+SESSION_DOMAIN=.peru-crocodile-804063.hostingersite.com
 
 # SMTP Mail Settings
 MAIL_MAILER=smtp
@@ -190,10 +192,12 @@ MAIL_FROM_NAME="ClimbSphere Support"
 MAIL_ADMIN_RECIPIENT="<admin_recipient_email>"
 
 # AI Lead Capture Agent Configuration
-AI_PROVIDER=openai
+AI_PROVIDER=groq
 GROQ_API_KEY=<groq_api_key>
 GROQ_BASE_URL=https://api.groq.com/openai/v1
 ```
+
+> **Warning:** `SESSION_DRIVER=file` on Hostinger shared hosting causes session files to be wiped between requests, logging you out on any form save. Always use `SESSION_DRIVER=database` in production.
 
 ---
 
@@ -215,7 +219,7 @@ $PHP_BIN "$(which composer)" install --no-dev --optimize-autoloader --no-interac
 $PHP_BIN artisan filament:assets
 $PHP_BIN artisan livewire:publish --assets
 
-# Create database tables
+# Create database tables (sessions table uses Schema::hasTable guard, safe to re-run)
 $PHP_BIN artisan migrate --force
 
 # Seed dynamic site pages, services, testimonials, blogs, and settings
@@ -258,6 +262,49 @@ Clear and cache config and routing definitions for optimized request processing:
 Do not run `route:cache` on this shared-hosting setup until the admin panel is verified. Livewire serves JavaScript through Laravel routes, and route caching can cause Livewire JavaScript requests to return a 404 HTML page.
 
 ---
+
+## 11. Admin Panel — New Features
+
+After deployment, the admin panel `/admin` includes:
+
+- **Queue Monitor** (nav: Queue Monitor) — Shows pending/failed job counts, last 20 leads with email status badges (Queued/Pending), and queue worker health check.
+- **Enhanced System Logs** (nav: System Logs) — Now displays server time, uptime, PHP version, memory/disk usage. Click "Analyze with AI" to send the last 200 log lines to Groq for error diagnosis.
+
+---
+
+## 12. Log Analysis Command
+
+A terminal-based log analyzer is available on the backend:
+
+```bash
+$PHP_BIN artisan log:analyze                       # Analyze last 100 lines with Groq AI
+$PHP_BIN artisan log:analyze --lines=500            # Analyze last 500 lines
+$PHP_BIN artisan log:analyze --fix                  # Auto-apply fix commands suggested by AI
+```
+
+Requires `GROQ_API_KEY` to be set in `.env`.
+
+---
+
+## 13. Queue Worker on Shared Hosting
+
+Email sending is queued via the `database` queue driver. On Hostinger, there's no supervisor, so you must keep the worker running manually or via cron:
+
+**Option A — cron job (recommended):** Add this to your Hostinger cron panel (runs every minute, processes one job):
+```
+* * * * * /opt/alt/php83/usr/bin/php /home/u244089748/domains/peru-crocodile-804063.hostingersite.com/site/backend/artisan queue:work --stop-when-empty --queue=default >> /dev/null 2>&1
+```
+
+**Option B — manual SSH (for testing):**
+```bash
+nohup /opt/alt/php83/usr/bin/php artisan queue:work --queue=default > /dev/null 2>&1 &
+```
+
+Check pending jobs from the Queue Monitor page in the admin panel.
+
+---
+
+Deployment completed:
 
 Deployment completed:
 
