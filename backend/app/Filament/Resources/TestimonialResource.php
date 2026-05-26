@@ -54,6 +54,7 @@ class TestimonialResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('image')
+                    ->disk('public')
                     ->circular(),
                 Tables\Columns\TextColumn::make('author')
                     ->searchable()

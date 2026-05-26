@@ -59,6 +59,43 @@ class BlogPostResource extends Resource
                             ->default(now()),
                     ])
                     ->columns(3),
+
+                Section::make('SEO / AEO / GEO Metadata')
+                    ->schema([
+                        Forms\Components\TextInput::make('seo_meta.seo_title')
+                            ->label('SEO Title')
+                            ->placeholder('Defaults to blog title if empty')
+                            ->columnSpan(2),
+                        Forms\Components\TagsInput::make('seo_meta.target_keywords')
+                            ->label('Target Keywords')
+                            ->placeholder('Add keywords...')
+                            ->columnSpan(1),
+                        Forms\Components\Textarea::make('seo_meta.seo_description')
+                            ->label('SEO Meta Description')
+                            ->rows(3)
+                            ->columnSpan(3),
+                        Forms\Components\Textarea::make('seo_meta.aeo_summary')
+                            ->label('AEO Direct Answer / Summary')
+                            ->rows(4)
+                            ->columnSpanFull()
+                            ->helperText('Concise summary that directly answers the primary question of the post.'),
+                        Forms\Components\Repeater::make('seo_meta.faqs')
+                            ->label('AEO FAQ Schema')
+                            ->schema([
+                                Forms\Components\TextInput::make('question')
+                                    ->required()
+                                    ->placeholder('e.g., What is the timeline for migration?'),
+                                Forms\Components\Textarea::make('answer')
+                                    ->required()
+                                    ->rows(3)
+                                    ->placeholder('Provide a factual, clear answer...'),
+                            ])
+                            ->columnSpanFull()
+                            ->grid(2)
+                            ->itemLabel(fn (array $state): ?string => $state['question'] ?? null),
+                    ])
+                    ->columns(3)
+                    ->collapsible(),
             ]);
     }
 
@@ -67,6 +104,7 @@ class BlogPostResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('image')
+                    ->disk('public')
                     ->circular(),
                 Tables\Columns\TextColumn::make('title')
                     ->searchable()

@@ -1,9 +1,42 @@
 <x-filament-panels::page>
     <style>
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        @media (max-width: 1200px) {
+            .stats-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
         .stat-card {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background-color: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 12px;
+            padding: 20px 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             position: relative;
             overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
         }
         .stat-card::before {
             content: '';
@@ -13,16 +46,121 @@
             width: 4px;
             height: 100%;
         }
-        .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 20px -8px rgba(0, 0, 0, 0.15);
-        }
+        
         .stat-pending::before  { background: linear-gradient(to bottom, #818cf8, #4f46e5); }
         .stat-failed::before   { background: linear-gradient(to bottom, #f87171, #dc2626); }
         .stat-leads::before    { background: linear-gradient(to bottom, #34d399, #059669); }
         .stat-queued::before   { background: linear-gradient(to bottom, #60a5fa, #2563eb); }
         .stat-warning::before  { background: linear-gradient(to bottom, #fbbf24, #d97706); }
         .stat-recent::before   { background: linear-gradient(to bottom, #2dd4bf, #0d9488); }
+
+        .stat-label {
+            font-size: 0.725rem;
+            font-weight: 600;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .stat-value {
+            font-size: 1.875rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-top: 8px;
+            line-height: 1;
+        }
+
+        .panel-container {
+            background-color: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .panel-header {
+            background-color: #1f2937;
+            padding: 16px 24px;
+            border-bottom: 1px solid #374151;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .panel-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .health-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            background-color: #111827;
+        }
+        @media (max-width: 1024px) {
+            .health-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+        @media (max-width: 640px) {
+            .health-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .health-card {
+            padding: 20px;
+            border-left: 4px solid #374151;
+            border-bottom: 1px solid #1f2937;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        .health-card-ok { border-left-color: #10b981; }
+        .health-card-warning { border-left-color: #f59e0b; }
+        .health-card-error { border-left-color: #ef4444; }
+
+        .health-content {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 0;
+            flex-1: 1 1 0%;
+        }
+        .health-label {
+            font-size: 0.775rem;
+            font-weight: 600;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .health-detail {
+            font-size: 0.725rem;
+            color: #9ca3af;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
+        /* Health status colours */
+        .health-ok      { color: #10b981; }
+        .health-warning { color: #f59e0b; }
+        .health-error   { color: #ef4444; }
+
+        .action-flex {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        @media (max-width: 640px) {
+            .action-flex {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
 
         .pulse-indicator { position: relative; }
         .pulse-indicator::after {
@@ -49,81 +187,121 @@
             padding: 2px 6px;
         }
 
-        /* Health status colours */
-        .health-ok      { color: #10b981; }
-        .health-warning { color: #f59e0b; }
-        .health-error   { color: #ef4444; }
-        .health-card-ok      { border-left: 3px solid #10b981 !important; }
-        .health-card-warning { border-left: 3px solid #f59e0b !important; }
-        .health-card-error   { border-left: 3px solid #ef4444 !important; }
-
-        .dark .stat-card {
-            background-color: #111827;
-            border-color: #1f2937;
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
         }
-        .dark .stat-card:hover {
-            box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.5);
+        .leads-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        .leads-table th {
+            background-color: #1f2937;
+            color: #9ca3af;
+            font-size: 0.725rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 12px 24px;
+            border-bottom: 1px solid #374151;
+        }
+        .leads-table td {
+            padding: 16px 24px;
+            border-bottom: 1px solid #1f2937;
+            font-size: 0.85rem;
+            color: #d1d5db;
+        }
+        .leads-table tr:hover {
+            background-color: rgba(31, 41, 55, 0.5);
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .form-label {
+            font-size: 0.825rem;
+            font-weight: 500;
+            color: #d1d5db;
+        }
+        .form-input {
+            background-color: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            padding: 10px 14px;
+            color: #ffffff;
+            font-size: 0.875rem;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        .form-input:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+        .form-helper {
+            font-size: 0.725rem;
+            color: #9ca3af;
+            margin-top: 2px;
         }
     </style>
 
     <div class="space-y-6">
 
-        {{-- ─────────────────────────────────────────────────────────
-             SECTION 1 — Queue stats cards
-        ───────────────────────────────────────────────────────── --}}
-        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-            <div class="stat-card stat-pending rounded-2xl border border-gray-100 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                <dt class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Pending Jobs</dt>
-                <dd class="mt-2 text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">{{ $stats['pending_jobs'] }}</dd>
+        {{-- SECTION 1 — Queue stats cards --}}
+        <div class="stats-grid">
+            <div class="stat-card stat-pending">
+                <div class="stat-label">Pending Jobs</div>
+                <div class="stat-value">{{ $stats['pending_jobs'] }}</div>
             </div>
 
-            <div class="stat-card stat-failed rounded-2xl border border-gray-100 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                <dt class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Failed Jobs</dt>
-                <dd class="mt-2 text-3xl font-extrabold tracking-tight @if($stats['failed_jobs'] > 0) text-rose-600 dark:text-rose-400 @else text-gray-900 dark:text-white @endif">
+            <div class="stat-card stat-failed">
+                <div class="stat-label">Failed Jobs</div>
+                <div class="stat-value @if($stats['failed_jobs'] > 0) text-rose-500 @endif">
                     {{ $stats['failed_jobs'] }}
-                </dd>
+                </div>
             </div>
 
-            <div class="stat-card stat-leads rounded-2xl border border-gray-100 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                <dt class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Total Leads</dt>
-                <dd class="mt-2 text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">{{ $stats['total_leads'] }}</dd>
+            <div class="stat-card stat-leads">
+                <div class="stat-label">Total Leads</div>
+                <div class="stat-value">{{ $stats['total_leads'] }}</div>
             </div>
 
-            <div class="stat-card stat-queued rounded-2xl border border-gray-100 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                <dt class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Emails Queued</dt>
-                <dd class="mt-2 text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">{{ $stats['queued_leads'] }}</dd>
+            <div class="stat-card stat-queued">
+                <div class="stat-label">Emails Queued</div>
+                <div class="stat-value">{{ $stats['queued_leads'] }}</div>
             </div>
 
-            <div class="stat-card stat-warning rounded-2xl border border-gray-100 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                <dt class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Emails Pending</dt>
-                <dd class="mt-2 text-3xl font-extrabold tracking-tight @if($stats['pending_leads'] > 0) text-amber-600 dark:text-amber-400 @else text-gray-900 dark:text-white @endif">
+            <div class="stat-card stat-warning">
+                <div class="stat-label">Emails Pending</div>
+                <div class="stat-value @if($stats['pending_leads'] > 0) text-amber-500 @endif">
                     {{ $stats['pending_leads'] }}
-                </dd>
+                </div>
             </div>
 
-            <div class="stat-card stat-recent rounded-2xl border border-gray-100 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                <dt class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">7-Day Leads</dt>
-                <dd class="mt-2 text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">{{ $stats['recent_leads'] }}</dd>
+            <div class="stat-card stat-recent">
+                <div class="stat-label">7-Day Leads</div>
+                <div class="stat-value">{{ $stats['recent_leads'] }}</div>
             </div>
         </div>
 
-        {{-- ─────────────────────────────────────────────────────────
-             SECTION 2 — System Health Panel
-        ───────────────────────────────────────────────────────── --}}
-        <div class="rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900 overflow-hidden">
-            <div class="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 px-6 py-4">
-                <div class="flex items-center gap-2">
+        {{-- SECTION 2 — System Health Panel --}}
+        <div class="panel-container">
+            <div class="panel-header">
+                <div class="panel-title">
                     <x-filament::icon name="heroicon-o-heart" class="h-5 w-5 text-rose-500" />
-                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white">System Health</h3>
-                    <span class="text-xs text-gray-400 dark:text-gray-500">&mdash; live check every refresh</span>
+                    <span>System Health</span>
+                    <span class="text-xs text-gray-400 dark:text-gray-500 font-normal">&mdash; live check every refresh</span>
                 </div>
                 <x-filament::button wire:click="refreshData" color="gray" icon="heroicon-m-arrow-path" size="sm">
                     Refresh All
                 </x-filament::button>
             </div>
 
-            <div class="grid grid-cols-1 divide-y divide-gray-100 dark:divide-gray-800 sm:grid-cols-2 sm:divide-x sm:divide-y-0 lg:grid-cols-4 lg:divide-x lg:divide-y-0">
-                @foreach($systemHealth as $index => $health)
+            <div class="health-grid">
+                @foreach($systemHealth as $health)
                     @php
                         $statusClass = match($health['status']) {
                             'ok'      => 'health-card-ok',
@@ -137,34 +315,32 @@
                             'error'   => 'health-error',
                             default   => 'text-gray-400'
                         };
-                        $badge = match($health['status']) {
-                            'ok'      => ['color' => 'success', 'label' => 'OK'],
-                            'warning' => ['color' => 'warning', 'label' => 'WARN'],
-                            'error'   => ['color' => 'danger',  'label' => 'ERROR'],
-                            default   => ['color' => 'gray',    'label' => '?'],
+                        $badgeColor = match($health['status']) {
+                            'ok'      => 'success',
+                            'warning' => 'warning',
+                            'error'   => 'danger',
+                            default   => 'gray',
                         };
                     @endphp
-                    <div class="{{ $statusClass }} flex items-start gap-3 p-5 {{ $index >= 4 ? 'border-t border-gray-100 dark:border-gray-800 sm:border-t lg:border-t' : '' }}">
+                    <div class="health-card {{ $statusClass }}">
                         <div class="mt-0.5 flex-shrink-0">
                             <x-filament::icon name="{{ $health['icon'] }}" class="h-5 w-5 {{ $iconClass }}" />
                         </div>
-                        <div class="min-w-0 flex-1">
-                            <div class="flex items-center gap-2">
-                                <span class="text-xs font-semibold text-gray-900 dark:text-white">{{ $health['label'] }}</span>
-                                <x-filament::badge color="{{ $badge['color'] }}" size="sm">{{ $badge['label'] }}</x-filament::badge>
+                        <div class="health-content">
+                            <div class="health-label">
+                                <span>{{ $health['label'] }}</span>
+                                <x-filament::badge color="{{ $badgeColor }}" size="sm">{{ strtoupper($health['status']) }}</x-filament::badge>
                             </div>
-                            <p class="mt-0.5 text-2xs text-gray-400 dark:text-gray-500 leading-relaxed break-words">{{ $health['detail'] }}</p>
+                            <p class="health-detail">{{ $health['detail'] }}</p>
                         </div>
                     </div>
                 @endforeach
             </div>
         </div>
 
-        {{-- ─────────────────────────────────────────────────────────
-             SECTION 3 — Queue Status / Worker Panel
-        ───────────────────────────────────────────────────────── --}}
-        <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        {{-- SECTION 3 — Queue Status / Worker Panel --}}
+        <div class="panel-container" style="padding: 24px;">
+            <div class="action-flex">
                 <div class="flex items-center gap-3">
                     @if($stats['pending_jobs'] > 0)
                         <span class="pulse-indicator status-dot-warning flex h-3.5 w-3.5 rounded-full bg-amber-400 shadow-sm shadow-amber-400/50"></span>
@@ -196,7 +372,7 @@
                     <div class="flex gap-2">
                         <x-filament::icon name="heroicon-o-light-bulb" class="mt-0.5 h-5 w-5 text-amber-500" />
                         <p class="text-xs leading-relaxed text-gray-600 dark:text-gray-400">
-                            <span class="font-semibold text-gray-800 dark:text-gray-200">Shared Hosting Strategy (Hostinger):</span>
+                            <span class="font-semibold text-gray-850 dark:text-gray-250">Shared Hosting Strategy (Hostinger):</span>
                             Daemons cannot run persistently. Options:<br>
                             1) SSH: <code class="terminal-code">nohup php artisan queue:work --tries=3 > /dev/null 2>&1 &</code><br>
                             2) Cron (every minute): <code class="terminal-code">php artisan queue:work --once</code><br>
@@ -207,38 +383,62 @@
             </div>
         </div>
 
-        {{-- ─────────────────────────────────────────────────────────
-             SECTION 4 — Recent Leads Table
-        ───────────────────────────────────────────────────────── --}}
-        <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
-            <div class="flex items-center justify-between border-b border-gray-200 px-6 py-4 dark:border-gray-800">
-                <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Recent 20 CRM Leads</h3>
+        {{-- SECTION 3.5 — Test Email Sender --}}
+        <div class="panel-container" style="padding: 24px;">
+            <div class="panel-header" style="background: none; border: none; padding: 0 0 16px 0;">
+                <div class="panel-title">
+                    <x-filament::icon name="heroicon-o-paper-airplane" class="h-5 w-5 text-indigo-500" />
+                    <span>Test Email Sender</span>
+                </div>
+            </div>
+            
+            <form wire:submit.prevent="sendTestEmail" style="display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap;">
+                <div class="form-group" style="flex: 1; min-width: 250px;">
+                    <label class="form-label">Recipient Email Address</label>
+                    <input type="email" wire:model="testEmailAddress" placeholder="e.g. adhit@domain.com" class="form-input" required />
+                </div>
+                <x-filament::button type="submit" size="md">
+                    ⚡ Send Test Alert
+                </x-filament::button>
+            </form>
+            <p class="form-helper" style="margin-top: 8px;">
+                Sends a sample "New Contact Form Submission Received" alert using the <code>NewContactReceivedMail</code> template.
+            </p>
+        </div>
+
+        {{-- SECTION 4 — Recent Leads Table --}}
+        <div class="panel-container">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <x-filament::icon name="heroicon-o-user-group" class="h-5 w-5 text-indigo-500" />
+                    <span>Recent 20 CRM Leads</span>
+                </div>
                 <span class="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-400">
                     Total: {{ count($recentLeads) }}
                 </span>
             </div>
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-800">
-                    <thead class="bg-gray-50 dark:bg-gray-800/40">
+            <div class="table-responsive">
+                <table class="leads-table">
+                    <thead>
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Name</th>
-                            <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Email</th>
-                            <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Lead Status</th>
-                            <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Client Email</th>
-                            <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Admin Email</th>
-                            <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Created At</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Lead Status</th>
+                            <th>Client Email</th>
+                            <th>Admin Email</th>
+                            <th>Created At</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-150 bg-white dark:divide-gray-800 dark:bg-gray-900">
+                    <tbody>
                         @forelse($recentLeads as $lead)
-                            <tr class="transition duration-150 hover:bg-gray-50/50 dark:hover:bg-gray-800/20">
-                                <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
+                            <tr>
+                                <td style="font-weight: 600; color: #ffffff;">
                                     {{ $lead['name'] ?? '-' }}
                                 </td>
-                                <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
+                                <td>
                                     {{ $lead['email'] ?? '-' }}
                                 </td>
-                                <td class="whitespace-nowrap px-6 py-4">
+                                <td>
                                     @php
                                         $statusColor = match($lead['lead_status'] ?? 'new') {
                                             'qualified' => 'success',
@@ -246,33 +446,33 @@
                                             default     => 'warning',
                                         };
                                     @endphp
-                                    <x-filament::badge color="{{ $statusColor }}" class="px-2.5 py-1">
+                                    <x-filament::badge color="{{ $statusColor }}">
                                         {{ ucfirst($lead['lead_status'] ?? 'new') }}
                                     </x-filament::badge>
                                 </td>
-                                <td class="whitespace-nowrap px-6 py-4">
+                                <td>
                                     @php
                                         $sentColor = !empty($lead['email_queued_at']) ? 'success' : 'danger';
                                         $sentLabel = !empty($lead['email_queued_at']) ? 'Queued' : 'Pending';
                                     @endphp
-                                    <x-filament::badge color="{{ $sentColor }}" class="px-2.5 py-1">{{ $sentLabel }}</x-filament::badge>
+                                    <x-filament::badge color="{{ $sentColor }}">{{ $sentLabel }}</x-filament::badge>
                                 </td>
-                                <td class="whitespace-nowrap px-6 py-4">
+                                <td>
                                     @php
                                         $adminColor = !empty($lead['admin_notified_at']) ? 'success' : 'warning';
                                         $adminLabel = !empty($lead['admin_notified_at']) ? 'Notified' : 'Pending';
                                     @endphp
-                                    <x-filament::badge color="{{ $adminColor }}" class="px-2.5 py-1">{{ $adminLabel }}</x-filament::badge>
+                                    <x-filament::badge color="{{ $adminColor }}">{{ $adminLabel }}</x-filament::badge>
                                 </td>
-                                <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-400 dark:text-gray-500">
+                                <td style="color: #9ca3af; font-size: 0.8rem;">
                                     {{ \Carbon\Carbon::parse($lead['created_at'])->diffForHumans() }}
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="px-6 py-10 text-center text-sm text-gray-500 dark:text-gray-400">
-                                    <div class="flex flex-col items-center justify-center gap-2">
-                                        <x-filament::icon name="heroicon-o-inbox" class="h-8 w-8 text-gray-300 dark:text-gray-700" />
+                                <td colspan="6" style="text-align: center; padding: 40px;">
+                                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;">
+                                        <x-filament::icon name="heroicon-o-inbox" class="h-8 w-8 text-gray-400" />
                                         <p>No leads found in database.</p>
                                     </div>
                                 </td>

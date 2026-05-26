@@ -39,6 +39,10 @@ class ServiceResource extends Resource
                         Forms\Components\TagsInput::make('tags')
                             ->placeholder('New Tag')
                             ->columnSpanFull(),
+                        Forms\Components\TagsInput::make('bullet_points')
+                            ->label('Bullet Points')
+                            ->placeholder('New Bullet Point')
+                            ->columnSpanFull(),
                         Forms\Components\Textarea::make('description')
                             ->columnSpanFull()
                             ->required(),
@@ -65,6 +69,7 @@ class ServiceResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('image')
+                    ->disk('public')
                     ->circular(),
                 Tables\Columns\TextColumn::make('title')
                     ->searchable()

@@ -26,24 +26,76 @@ class ContactSubmissionResource extends Resource
     {
         return $schema
             ->components([
-                Section::make()
+                Section::make('Form Submission Details')
                     ->schema([
-                        Forms\Components\TextInput::make('form_name')
-                            ->disabled(),
-                        Forms\Components\TextInput::make('name')
-                            ->required(),
-                        Forms\Components\TextInput::make('email')
-                            ->email()
-                            ->required(),
-                        Forms\Components\TextInput::make('phone'),
-                        Forms\Components\TextInput::make('subject'),
-                        Forms\Components\Textarea::make('message')
-                            ->columnSpanFull()
-                            ->required(),
-                        Forms\Components\Toggle::make('thank_you_sent'),
-                        Forms\Components\Toggle::make('admin_notified'),
+                        Forms\Components\Tabs::make('Submission Info')
+                            ->tabs([
+                                Forms\Components\Tabs\Tab::make('Message Details')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('form_name')
+                                            ->disabled()
+                                            ->dehydrated(),
+                                        Forms\Components\TextInput::make('name')
+                                            ->required(),
+                                        Forms\Components\TextInput::make('email')
+                                            ->email()
+                                            ->required(),
+                                        Forms\Components\TextInput::make('phone'),
+                                        Forms\Components\TextInput::make('subject')
+                                            ->columnSpanFull(),
+                                        Forms\Components\Textarea::make('message')
+                                            ->columnSpanFull()
+                                            ->required()
+                                            ->rows(5),
+                                        Forms\Components\Toggle::make('thank_you_sent')
+                                            ->label('Thank-You Email Sent'),
+                                        Forms\Components\Toggle::make('admin_notified')
+                                            ->label('Admin Notified'),
+                                    ])
+                                    ->columns(2),
+
+                                Forms\Components\Tabs\Tab::make('Marketing & Attribution')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('referrer_source')
+                                            ->disabled()
+                                            ->dehydrated(),
+                                        Forms\Components\TextInput::make('referrer_url')
+                                            ->disabled()
+                                            ->dehydrated()
+                                            ->columnSpanFull(),
+                                        Forms\Components\TextInput::make('utm_source')
+                                            ->disabled()
+                                            ->dehydrated(),
+                                        Forms\Components\TextInput::make('utm_medium')
+                                            ->disabled()
+                                            ->dehydrated(),
+                                        Forms\Components\TextInput::make('utm_campaign')
+                                            ->disabled()
+                                            ->dehydrated(),
+                                        Forms\Components\TextInput::make('ip_address')
+                                            ->disabled()
+                                            ->dehydrated(),
+                                        Forms\Components\TextInput::make('country')
+                                            ->disabled()
+                                            ->dehydrated(),
+                                        Forms\Components\TextInput::make('city')
+                                            ->disabled()
+                                            ->dehydrated(),
+                                    ])
+                                    ->columns(3),
+
+                                Forms\Components\Tabs\Tab::make('Extra Metadata')
+                                    ->schema([
+                                        Forms\Components\KeyValue::make('payload')
+                                            ->keyLabel('Field Key')
+                                            ->valueLabel('Field Value')
+                                            ->disabled()
+                                            ->dehydrated()
+                                            ->columnSpanFull(),
+                                    ]),
+                            ])
+                            ->columnSpanFull(),
                     ])
-                    ->columns(2)
             ]);
     }
 

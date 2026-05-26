@@ -3,6 +3,8 @@
 namespace App\Filament\Pages;
 
 use App\Models\Lead;
+use App\Models\ContactSubmission;
+use App\Mail\NewContactReceivedMail;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
@@ -26,6 +28,7 @@ class QueueMonitor extends Page
     public array $recentLeads = [];
     public array $systemHealth = [];
     public $lastJobCheck = null;
+    public $testEmailAddress = '';
 
     public function mount()
     {
@@ -154,6 +157,49 @@ class QueueMonitor extends Page
             Notification::make()
                 ->success()
                 ->title('Queue is clear — no pending jobs')
+                ->send();
+        }
+    }
+
+    public function sendTestEmail()
+    {
+        $this->validate([
+            'testEmailAddress' => 'required|email',
+        ]);
+
+        try {
+            $mockSubmission = new ContactSubmission([
+                'form_name' => 'Test Email Alert Service',
+                'name' => 'Jane Miller (ClimbSphere Client Test)',
+                'email' => 'jane.miller@test-client.com',
+                'phone' => '+1 (555) 345-6789',
+                'subject' => 'Inquiry Regarding Custom CRM / AI Chatbot Integration Services',
+                'message' => "Hello team,\n\nWe would like to request a demo of the ClimbSphere AI lead qualification chatbot. Our team has a timeline of 6-8 weeks and a budget of $15,000 for the initial rollout.\n\nCould you please send over some available times to connect?\n\nSincerely,\nJane Miller\nDirector of Operations",
+                'ip_address' => '12.34.56.78',
+                'country' => 'United States',
+                'city' => 'New York',
+                'referrer_source' => 'linkedin',
+                'utm_source' => 'linkedin_outreach',
+                'utm_medium' => 'b2b_direct',
+                'utm_campaign' => 'q2_growth',
+                'thank_you_sent' => true,
+                'admin_notified' => true,
+            ]);
+
+            Mail::to($this->testEmailAddress)->send(new NewContactReceivedMail($mockSubmission));
+
+            Notification::make()
+                ->success()
+                ->title('Test email sent successfully!')
+                ->body('Check mailbox: ' . $this->testEmailAddress)
+                ->send();
+
+            $this->testEmailAddress = '';
+        } catch (\Exception $e) {
+            Notification::make()
+                ->danger()
+                ->title('Failed to send test email')
+                ->body($e->getMessage())
                 ->send();
         }
     }

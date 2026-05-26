@@ -26,33 +26,97 @@ class LeadResource extends Resource
     {
         return $schema
             ->components([
-                Section::make()
+                Section::make('CRM Lead Profile')
                     ->schema([
-                        Forms\Components\TextInput::make('name')
-                            ->required(),
-                        Forms\Components\TextInput::make('email')
-                            ->email()
-                            ->required(),
-                        Forms\Components\TextInput::make('phone'),
-                        Forms\Components\TextInput::make('company'),
-                        Forms\Components\TextInput::make('project_type'),
-                        Forms\Components\TextInput::make('budget'),
-                        Forms\Components\TextInput::make('timeline'),
-                        Forms\Components\Select::make('lead_status')
-                            ->options([
-                                'new' => 'New',
-                                'qualified' => 'Qualified',
-                                'contacted' => 'Contacted',
-                                'closed_won' => 'Closed Won',
-                                'closed_lost' => 'Closed Lost',
+                        Forms\Components\Tabs::make('Lead Information')
+                            ->tabs([
+                                Forms\Components\Tabs\Tab::make('Contact Details')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('name')
+                                            ->required(),
+                                        Forms\Components\TextInput::make('email')
+                                            ->email()
+                                            ->required(),
+                                        Forms\Components\TextInput::make('phone'),
+                                        Forms\Components\TextInput::make('company'),
+                                    ])
+                                    ->columns(2),
+
+                                Forms\Components\Tabs\Tab::make('Project Context')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('project_type')
+                                            ->placeholder('e.g., Web App / CRM Integration'),
+                                        Forms\Components\TextInput::make('budget')
+                                            ->placeholder('e.g., $10k - $20k'),
+                                        Forms\Components\TextInput::make('timeline')
+                                            ->placeholder('e.g., 3 months'),
+                                        Forms\Components\Textarea::make('plan_or_idea')
+                                            ->columnSpanFull()
+                                            ->rows(4),
+                                    ])
+                                    ->columns(3),
+
+                                Forms\Components\Tabs\Tab::make('Marketing & Attribution')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('source_type')
+                                            ->disabled()
+                                            ->dehydrated(),
+                                        Forms\Components\TextInput::make('referrer_source')
+                                            ->disabled()
+                                            ->dehydrated(),
+                                        Forms\Components\TextInput::make('referrer_url')
+                                            ->disabled()
+                                            ->dehydrated()
+                                            ->columnSpanFull(),
+                                        Forms\Components\TextInput::make('utm_source')
+                                            ->disabled()
+                                            ->dehydrated(),
+                                        Forms\Components\TextInput::make('utm_medium')
+                                            ->disabled()
+                                            ->dehydrated(),
+                                        Forms\Components\TextInput::make('utm_campaign')
+                                            ->disabled()
+                                            ->dehydrated(),
+                                        Forms\Components\TextInput::make('ip_address')
+                                            ->disabled()
+                                            ->dehydrated(),
+                                        Forms\Components\TextInput::make('country')
+                                            ->disabled()
+                                            ->dehydrated(),
+                                        Forms\Components\TextInput::make('city')
+                                            ->disabled()
+                                            ->dehydrated(),
+                                    ])
+                                    ->columns(3),
+
+                                Forms\Components\Tabs\Tab::make('CRM Logs & System Status')
+                                    ->schema([
+                                        Forms\Components\Select::make('lead_status')
+                                            ->options([
+                                                'new' => 'New',
+                                                'qualified' => 'Qualified',
+                                                'contacted' => 'Contacted',
+                                                'closed_won' => 'Closed Won',
+                                                'closed_lost' => 'Closed Lost',
+                                            ])
+                                            ->required(),
+                                        Forms\Components\TextInput::make('email_status')
+                                            ->disabled()
+                                            ->dehydrated(),
+                                        Forms\Components\DateTimePicker::make('email_queued_at')
+                                            ->disabled()
+                                            ->dehydrated(),
+                                        Forms\Components\DateTimePicker::make('admin_notified_at')
+                                            ->disabled()
+                                            ->dehydrated(),
+                                        Forms\Components\Textarea::make('notes')
+                                            ->columnSpanFull()
+                                            ->rows(3),
+                                    ])
+                                    ->columns(2),
                             ])
-                            ->required(),
-                        Forms\Components\Textarea::make('plan_or_idea')
-                            ->columnSpanFull(),
-                        Forms\Components\Textarea::make('notes')
                             ->columnSpanFull(),
                     ])
-                    ->columns(2)
             ]);
     }
 
@@ -83,6 +147,14 @@ class LeadResource extends Resource
                         'closed_won' => 'success',
                         'closed_lost' => 'danger',
                     }),
+                Tables\Columns\TextColumn::make('email_status')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'sent' => 'success',
+                        'failed' => 'danger',
+                        default => 'gray',
+                    })
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('country')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
