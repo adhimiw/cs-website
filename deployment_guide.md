@@ -180,6 +180,9 @@ SESSION_LIFETIME=120
 SESSION_SECURE_COOKIE=true
 SESSION_DOMAIN=.climbsphere.ai
 
+# Storage: bypass symlink (disabled on Hostinger) by writing directly to public_html/storage
+PUBLIC_STORAGE_PATH=/home/u567332684/domains/climbsphere.ai/public_html/storage
+
 # SMTP Mail Settings
 MAIL_MAILER=smtp
 MAIL_HOST=smtp.hostinger.com
@@ -223,10 +226,12 @@ $PHP_BIN artisan livewire:publish --assets
 $PHP_BIN artisan migrate --force
 
 # Seed dynamic site pages, services, testimonials, blogs, and settings
+# The seeder uses PUBLIC_STORAGE_PATH to copy images directly to public_html/storage/
 $PHP_BIN artisan db:seed --force
 
-# Create symbolic link for public upload assets
-$PHP_BIN artisan storage:link
+# Copy any existing storage files to public_html/storage (replaces storage:link)
+# This is needed because Hostinger disables both exec() and symlink()
+$PHP_BIN artisan storage:copy-public
 
 # Set storage folder permissions
 chmod -R 775 storage bootstrap/cache
@@ -286,25 +291,29 @@ Requires `GROQ_API_KEY` to be set in `.env`.
 
 ---
 
-## 13. Queue Worker on Shared Hosting
+## 13. Email Delivery
 
-Email sending is queued via the `database` queue driver. On Hostinger, there's no supervisor, so you must keep the worker running manually or via cron:
+Emails (contact form thank-you, lead capture notifications) are sent **synchronously** — no queue worker is needed. This avoids the Hostinger limitation of not having a persistent background worker.
 
-**Option A — cron job (recommended):** Add this to your Hostinger cron panel (runs every minute, processes one job):
+If email delivery feels slow (adds ~2-3 seconds to form submissions), you can switch to a queue-based approach later by:
+1. Changing `send()` back to `queue()` in `ContactController.php` and `ChatController.php`
+2. Setting up a cron job to process queued jobs:
 ```
 * * * * * /opt/alt/php83/usr/bin/php /home/u567332684/domains/climbsphere.ai/site/backend/artisan queue:work --stop-when-empty --queue=default >> /dev/null 2>&1
 ```
 
-**Option B — manual SSH (for testing):**
-```bash
-nohup /opt/alt/php83/usr/bin/php artisan queue:work --queue=default > /dev/null 2>&1 &
-```
-
-Check pending jobs from the Queue Monitor page in the admin panel.
-
 ---
 
-Deployment completed:
+## 14. Storage on Hostinger (No Symlinks)
+
+Hostinger disables both `exec()` and `symlink()` PHP functions. Instead of `php artisan storage:link`, we:
+
+1. Set `PUBLIC_STORAGE_PATH` in `.env` to point directly to `public_html/storage/`
+2. Laravel writes uploaded files directly there via `Storage::disk('public')`
+3. The seeder copies seeded images there automatically
+4. Run `php artisan storage:copy-public` to sync any files from `storage/app/public/` to the public directory
+
+---
 
 Deployment completed:
 

@@ -21,6 +21,7 @@
 /public/index.html
 /public/images/*.py
 /public/storage
+/public/storage-test
 /public/test_referrer.html
 /storage/*.key
 /storage/pail

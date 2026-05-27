@@ -775,30 +775,32 @@ HTML
             ]
         );
 
-        // 6. Copy seeded images from public/images directory to storage/app/public/ directories
-        // This solves the issue on Hostinger where public storage directories are not in git
+        // 6. Copy seeded images to the public disk's root directory
+        // Uses the configured PUBLIC_STORAGE_PATH env var on production (Hostinger)
+        // so files go directly to public_html/storage/ without needing a symlink
+        $publicDiskRoot = config('filesystems.disks.public.root');
         $directories = ['services', 'testimonials', 'blogs', 'site_contents'];
         foreach ($directories as $dir) {
-            $path = storage_path('app/public/' . $dir);
+            $path = $publicDiskRoot . '/' . $dir;
             if (!file_exists($path)) {
                 @mkdir($path, 0775, true);
             }
         }
 
         $imageMappings = [
-            public_path('images/service-digital-transformation.webp') => storage_path('app/public/services/service-digital-transformation.webp'),
-            public_path('images/service-hr.webp') => storage_path('app/public/services/service-hr.webp'),
-            public_path('images/service-dashboard.webp') => storage_path('app/public/services/service-dashboard.webp'),
-            public_path('images/about-expertise.jpeg') => storage_path('app/public/services/about-expertise.jpeg'),
-            public_path('images/about-saas.jpeg') => storage_path('app/public/services/about-saas.jpeg'),
-            public_path('images/service_professional.png') => storage_path('app/public/services/service_professional.png'),
-            public_path('images/service_partnerships.png') => storage_path('app/public/services/service_partnerships.png'),
-            public_path('images/testimonial-avatar.png') => storage_path('app/public/testimonials/testimonial-avatar.png'),
-            public_path('images/hero-consultant.webp') => storage_path('app/public/site_contents/hero-consultant.webp'),
-            public_path('images/hero-ftl-consultant.webp') => storage_path('app/public/site_contents/hero-ftl-consultant.webp'),
-            public_path('images/hero-ftl-consultant.webp') => storage_path('app/public/services/hero-ftl-consultant.webp'),
-            public_path('images/blog_post_01.png') => storage_path('app/public/blogs/blog_post_01.png'),
-            public_path('images/blog_post_02.jpg') => storage_path('app/public/blogs/blog_post_02.jpg'),
+            public_path('images/service-digital-transformation.webp') => $publicDiskRoot . '/services/service-digital-transformation.webp',
+            public_path('images/service-hr.webp') => $publicDiskRoot . '/services/service-hr.webp',
+            public_path('images/service-dashboard.webp') => $publicDiskRoot . '/services/service-dashboard.webp',
+            public_path('images/about-expertise.jpeg') => $publicDiskRoot . '/services/about-expertise.jpeg',
+            public_path('images/about-saas.jpeg') => $publicDiskRoot . '/services/about-saas.jpeg',
+            public_path('images/service_professional.png') => $publicDiskRoot . '/services/service_professional.png',
+            public_path('images/service_partnerships.png') => $publicDiskRoot . '/services/service_partnerships.png',
+            public_path('images/testimonial-avatar.png') => $publicDiskRoot . '/testimonials/testimonial-avatar.png',
+            public_path('images/hero-consultant.webp') => $publicDiskRoot . '/site_contents/hero-consultant.webp',
+            public_path('images/hero-ftl-consultant.webp') => $publicDiskRoot . '/site_contents/hero-ftl-consultant.webp',
+            public_path('images/hero-ftl-consultant.webp') => $publicDiskRoot . '/services/hero-ftl-consultant.webp',
+            public_path('images/blog_post_01.png') => $publicDiskRoot . '/blogs/blog_post_01.png',
+            public_path('images/blog_post_02.jpg') => $publicDiskRoot . '/blogs/blog_post_02.jpg',
         ];
 
         foreach ($imageMappings as $src => $dest) {
