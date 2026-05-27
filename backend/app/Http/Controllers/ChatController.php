@@ -178,21 +178,21 @@ class ChatController extends Controller
         if ($isNewlyQualified || ($response['send_ack_email'] ?? false && !$chatSession->is_qualified)) {
             $chatSession->update(['is_qualified' => true]);
 
-            // Queue acknowledgment email to qualified user
+            // Send acknowledgment email to qualified user synchronously
             if ($lead->email && filter_var($lead->email, FILTER_VALIDATE_EMAIL)) {
                 try {
-                    Mail::to($lead->email)->queue(new \App\Mail\ChatAcknowledgementMail($lead));
-                    $lead->update(['email_queued_at' => now(), 'email_status' => 'queued']);
+                    Mail::to($lead->email)->send(new \App\Mail\ChatAcknowledgementMail($lead));
+                    $lead->update(['email_queued_at' => now(), 'email_status' => 'sent']);
                 } catch (\Exception $e) {
                     $lead->update(['email_status' => 'failed']);
                     report($e);
                 }
             }
 
-            // Queue notification email to internal team
+            // Send notification email to internal team synchronously
             try {
                 $adminEmail = config('mail.admin_recipient', 'sales@climbsphere.ai');
-                Mail::to($adminEmail)->queue(new \App\Mail\LeadCapturedMail($lead));
+                Mail::to($adminEmail)->send(new \App\Mail\LeadCapturedMail($lead));
                 $lead->update(['admin_notified_at' => now()]);
             } catch (\Exception $e) {
                 report($e);

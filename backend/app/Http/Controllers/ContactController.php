@@ -69,9 +69,9 @@ class ContactController extends Controller
             'notes' => 'Received via Contact Us Form submission.',
         ]);
 
-        // Queue transactional emails
+        // Send transactional emails synchronously
         try {
-            Mail::to($validated['email'])->queue(new ContactThankYouMail($submission));
+            Mail::to($validated['email'])->send(new ContactThankYouMail($submission));
             $submission->update(['thank_you_sent' => true]);
         } catch (\Exception $e) {
             report($e);
@@ -79,7 +79,7 @@ class ContactController extends Controller
 
         try {
             $adminEmail = config('mail.admin_recipient', 'sales@climbsphere.ai');
-            Mail::to($adminEmail)->queue(new NewContactReceivedMail($submission));
+            Mail::to($adminEmail)->send(new NewContactReceivedMail($submission));
             $submission->update(['admin_notified' => true]);
         } catch (\Exception $e) {
             report($e);

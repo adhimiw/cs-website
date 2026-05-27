@@ -592,6 +592,20 @@ class SiteContentSeeder extends Seeder
                     'Joint solution design and integration planning',
                 ],
             ],
+            [
+                'title' => 'Fractional Technology Leadership',
+                'description' => "Scaling your business shouldn't mean compromising on strategic expertise. ClimbSphere provides an on-demand leadership duo that bridges the gap between your business objectives and your technology ecosystem.",
+                'image' => 'services/hero-ftl-consultant.webp',
+                'tags' => ['Fractional CTO', 'On-Demand Leadership', 'Technology Strategy'],
+                'type' => 'business',
+                'order' => 7,
+                'bullet_points' => [
+                    'On-demand leadership duo (functional expert + technology leader) thinking and acting as one.',
+                    'Direct alignment of business objectives with technology infrastructure.',
+                    'Strategic expertise at a fraction of the cost of a full-time executive hire.',
+                    'Agile Growth Model implementation: Diagnose, Map, Climb, Sustain.',
+                ],
+            ],
         ];
 
         // Clean up deleted services
@@ -782,6 +796,7 @@ HTML
             public_path('images/testimonial-avatar.png') => storage_path('app/public/testimonials/testimonial-avatar.png'),
             public_path('images/hero-consultant.webp') => storage_path('app/public/site_contents/hero-consultant.webp'),
             public_path('images/hero-ftl-consultant.webp') => storage_path('app/public/site_contents/hero-ftl-consultant.webp'),
+            public_path('images/hero-ftl-consultant.webp') => storage_path('app/public/services/hero-ftl-consultant.webp'),
             public_path('images/blog_post_01.png') => storage_path('app/public/blogs/blog_post_01.png'),
             public_path('images/blog_post_02.jpg') => storage_path('app/public/blogs/blog_post_02.jpg'),
         ];
