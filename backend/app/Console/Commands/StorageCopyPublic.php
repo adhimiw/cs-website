@@ -16,7 +16,7 @@ class StorageCopyPublic extends Command
     public function handle(): int
     {
         $from = $this->option('from') ?: storage_path('app/public');
-        $to   = $this->option('to')   ?: env('PUBLIC_STORAGE_PATH', public_path('storage'));
+        $to   = $this->option('to')   ?: config('filesystems.disks.public.root', public_path('storage'));
 
         if (!is_dir($from)) {
             $this->error("Source directory does not exist: $from");
