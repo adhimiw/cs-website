@@ -15,6 +15,7 @@ import BlogPage from './pages/BlogPage';
 import BlogReadingPage from './pages/BlogReadingPage';
 import BlogEditorPage from './pages/BlogEditorPage';
 import ContactPage from './pages/ContactPage';
+import FTLPage from './pages/FTLPage';
 
 import './App.css';
 
@@ -54,6 +55,8 @@ function App() {
           <Route path="/about-us" element={<AboutPage />} />
           <Route path="/services" element={<ServicesPage />} />
           <Route path="/our-services" element={<ServicesPage />} />
+          <Route path="/ftl" element={<FTLPage />} />
+          <Route path="/fractional-technology-leadership" element={<FTLPage />} />
           <Route path="/blog" element={<BlogPage />} />
           <Route path="/blog/:slug" element={<BlogReadingPage />} />
           <Route path="/blog-editor" element={<BlogEditorPage />} />
