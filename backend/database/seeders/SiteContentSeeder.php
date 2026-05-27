@@ -592,25 +592,12 @@ class SiteContentSeeder extends Seeder
                     'Joint solution design and integration planning',
                 ],
             ],
-            [
-                'title' => 'Fractional Technology Leadership',
-                'description' => "Scaling your business shouldn't mean compromising on strategic expertise. ClimbSphere provides an on-demand leadership duo that bridges the gap between your business objectives and your technology ecosystem.",
-                'image' => 'services/hero-ftl-consultant.webp',
-                'tags' => ['Fractional CTO', 'On-Demand Leadership', 'Technology Strategy'],
-                'type' => 'business',
-                'order' => 7,
-                'bullet_points' => [
-                    'On-demand leadership duo (functional expert + technology leader) thinking and acting as one.',
-                    'Direct alignment of business objectives with technology infrastructure.',
-                    'Strategic expertise at a fraction of the cost of a full-time executive hire.',
-                    'Agile Growth Model implementation: Diagnose, Map, Climb, Sustain.',
-                ],
-            ],
         ];
 
         // Clean up deleted services
         Service::where('title', 'Digital Maturity Assessment')->delete();
         Service::where('type', 'design')->delete();
+        Service::where('title', 'Fractional Technology Leadership')->delete();
 
         foreach ($services as $service) {
             Service::updateOrCreate(
