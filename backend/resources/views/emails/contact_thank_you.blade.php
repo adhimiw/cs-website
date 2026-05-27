@@ -52,7 +52,7 @@
             <p>&copy; {{ date('Y') }} ClimbSphere. All rights reserved.</p>
             <p>Need immediate support? Email us at <a href="mailto:{{ config('mail.admin_recipient', 'sales@climbsphere.ai') }}">{{ config('mail.admin_recipient', 'sales@climbsphere.ai') }}</a>.</p>
             <div class="social-links">
-                <a href="https://linkedin.com/company/climbsphere">LinkedIn</a> &bull;
+                <a href="https://www.linkedin.com/company/climbsphere-technologies/">LinkedIn</a> &bull;
                 <a href="https://twitter.com/climbsphere">Twitter</a>
             </div>
         </div>
