@@ -8,6 +8,7 @@ use Filament\Actions;
 use Filament\Forms;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -28,9 +29,9 @@ class LeadResource extends Resource
             ->components([
                 Section::make('CRM Lead Profile')
                     ->schema([
-                        Forms\Components\Tabs::make('Lead Information')
+                        Tabs::make('Lead Information')
                             ->tabs([
-                                Forms\Components\Tabs\Tab::make('Contact Details')
+                                Tabs\Tab::make('Contact Details')
                                     ->schema([
                                         Forms\Components\TextInput::make('name')
                                             ->required(),
@@ -42,7 +43,7 @@ class LeadResource extends Resource
                                     ])
                                     ->columns(2),
 
-                                Forms\Components\Tabs\Tab::make('Project Context')
+                                Tabs\Tab::make('Project Context')
                                     ->schema([
                                         Forms\Components\TextInput::make('project_type')
                                             ->placeholder('e.g., Web App / CRM Integration'),
@@ -56,7 +57,7 @@ class LeadResource extends Resource
                                     ])
                                     ->columns(3),
 
-                                Forms\Components\Tabs\Tab::make('Marketing & Attribution')
+                                Tabs\Tab::make('Marketing & Attribution')
                                     ->schema([
                                         Forms\Components\TextInput::make('source_type')
                                             ->disabled()
@@ -89,7 +90,7 @@ class LeadResource extends Resource
                                     ])
                                     ->columns(3),
 
-                                Forms\Components\Tabs\Tab::make('CRM Logs & System Status')
+                                Tabs\Tab::make('CRM Logs & System Status')
                                     ->schema([
                                         Forms\Components\Select::make('lead_status')
                                             ->options([

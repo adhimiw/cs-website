@@ -49,25 +49,45 @@ class ContactController extends Controller
             'utm_campaign' => $utmCampaign,
         ]);
 
-        // Create CRM Lead
-        $lead = Lead::create([
-            'source_type' => 'contact_form',
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'phone' => $validated['phone'] ?? null,
-            'project_type' => $validated['subject'] ?? null,
-            'plan_or_idea' => $validated['message'],
-            'lead_status' => 'new',
-            'ip_address' => $ip,
-            'country' => $country,
-            'city' => $city,
-            'referrer_url' => $referrerUrl,
-            'referrer_source' => $referrerSource,
-            'utm_source' => $utmSource,
-            'utm_medium' => $utmMedium,
-            'utm_campaign' => $utmCampaign,
-            'notes' => 'Received via Contact Us Form submission.',
-        ]);
+        // Create or update CRM Lead
+        $lead = Lead::where('email', $validated['email'])->first();
+        if ($lead) {
+            $lead->update([
+                'name' => $validated['name'],
+                'phone' => $validated['phone'] ?? $lead->phone,
+                'project_type' => $validated['subject'] ?? $lead->project_type,
+                'plan_or_idea' => $validated['message'],
+                'lead_status' => 'new',
+                'ip_address' => $ip,
+                'country' => $country,
+                'city' => $city,
+                'referrer_url' => $referrerUrl,
+                'referrer_source' => $referrerSource,
+                'utm_source' => $utmSource,
+                'utm_medium' => $utmMedium,
+                'utm_campaign' => $utmCampaign,
+                'notes' => trim('Updated via Contact Us Form submission. ' . ($lead->notes ?? '')),
+            ]);
+        } else {
+            $lead = Lead::create([
+                'source_type' => 'contact_form',
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'phone' => $validated['phone'] ?? null,
+                'project_type' => $validated['subject'] ?? null,
+                'plan_or_idea' => $validated['message'],
+                'lead_status' => 'new',
+                'ip_address' => $ip,
+                'country' => $country,
+                'city' => $city,
+                'referrer_url' => $referrerUrl,
+                'referrer_source' => $referrerSource,
+                'utm_source' => $utmSource,
+                'utm_medium' => $utmMedium,
+                'utm_campaign' => $utmCampaign,
+                'notes' => 'Received via Contact Us Form submission.',
+            ]);
+        }
 
         // Send transactional emails synchronously
         try {

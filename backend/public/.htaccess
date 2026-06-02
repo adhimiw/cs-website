@@ -15,15 +15,15 @@
     RewriteCond %{HTTP:x-xsrf-token} .
     RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:X-XSRF-Token}]
 
-    # Serve existing public files/folders directly.
+    # Serve existing public files/folders directly
     RewriteCond %{REQUEST_FILENAME} -f [OR]
     RewriteCond %{REQUEST_FILENAME} -d
     RewriteRule ^ - [L]
 
-    # Route Laravel and Filament/Livewire endpoints through Laravel.
+    # Route backend modules to Laravel router
     RewriteCond %{REQUEST_URI} ^/(api|admin|sanctum|storage|livewire|livewire-[^/]+|filament|analytics)(/|$) [NC]
     RewriteRule ^ index.php [L]
 
-    # Fallback to React SPA router for client routes.
+    # Fallback to React SPA router for all other client routes
     RewriteRule ^ index.html [L]
 </IfModule>

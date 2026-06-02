@@ -111,13 +111,10 @@ class SystemLogs extends Page
         $this->aiAnalysis = '';
 
         try {
-            $logContent = $this->logContent;
-            if (strlen($logContent) > 8000) {
-                $logContent = substr($logContent, -8000);
-            }
+            $logContent = $this->getLastCompleteLogEntries(5);
 
             $apiKey = config('ai.providers.groq.key') ?: env('GROQ_API_KEY');
-            $model = config('ai.providers.groq.models.text.default', 'llama-3.1-8b-instant');
+            $model = config('ai.providers.groq.models.text.smartest', 'llama-3.3-70b-versatile');
 
             if (!$apiKey || $apiKey === 'placeholder') {
                 $this->aiAnalysis = 'Groq API key not configured. Set AI_PROVIDER=groq and GROQ_API_KEY in .env';
@@ -133,17 +130,36 @@ class SystemLogs extends Page
                 'messages' => [
                     [
                         'role' => 'system',
-                        'content' => 'You are a Laravel DevOps expert. Analyze the following Laravel application logs and identify:
-1. ERROR/WARNING count and categories
-2. Root cause of each distinct error
-3. Specific fix commands or code changes needed
-4. Severity (critical/high/medium/low)
+                        'content' => 'You are an expert Laravel DevOps engineer and senior PHP developer.
+Analyze the provided log stream from a Laravel application (laravel.log).
 
-Format your response in clear sections with bullet points. Be concise and actionable.',
+Identify:
+1. Active Error/Warning Count and Categories:
+   - Carefully count the number of DISTINCT error occurrences.
+   - Ignore stacktrace lines when counting errors; a single stacktrace is part of one error/exception.
+   - Do NOT count common framework middlewares or pipeline wrapper frames (e.g., StartSession.php, SetUpPanel.php, TransformsRequest.php, Pipeline.php, TrimStrings.php, ConvertEmptyStringsToNull.php) as individual errors. They are just routing handlers carrying the request.
+
+2. Root Cause of Each Distinct Error:
+   - Identify the actual underlying exception or error class (e.g. `Class "Filament\Forms\Components\Tabs" not found`).
+   - Extract the exact file and line number where the issue actually originated (look at the start of the error message or the first non-vendor stack frame).
+   - EXTREMELY IMPORTANT: Do NOT claim that middleware classes (like `StartSession.php` or `SetUpPanel.php`) are "throwing exceptions" or are "broken" simply because they appear in the middle of a PHP stacktrace. Only report the root exception that triggered the trace.
+
+3. Specific Fix Commands or Code Changes:
+   - Provide direct, concrete instructions to resolve the actual root cause (e.g. correct namespaces, file paths, permissions, etc.).
+   - Only suggest commands like `php artisan config:clear` or session fixes if the root cause is explicitly config or session-related. Do not use them as generic catch-all suggestions.
+
+4. Severity:
+   - Rank the severity as:
+     * CRITICAL: Outage, database connection failed, or app completely crashed.
+     * HIGH: Major features failing, 500 server errors on core resources/controllers.
+     * MEDIUM: Isolated errors or warnings that don\'t block the main application.
+     * LOW: Deprecation warnings, notices, or minor logs.
+
+Format your response using clean, semantic markdown with clear headings, bold texts, and bullet points. Be precise, highly technical, and strictly accurate. Avoid any hallucinations.',
                     ],
                     [
                         'role' => 'user',
-                        'content' => "Here are the last 200 lines of laravel.log:\n\n```\n$logContent\n```",
+                        'content' => "Here are the last 5 complete log entries from laravel.log:\n\n```\n$logContent\n```",
                     ],
                 ],
                 'temperature' => 0.3,
@@ -161,6 +177,57 @@ Format your response in clear sections with bullet points. Be concise and action
         }
 
         $this->isAnalyzing = false;
+    }
+
+    protected function getLastCompleteLogEntries(int $limit = 3): string
+    {
+        $logPath = storage_path('logs/laravel.log');
+        if (!File::exists($logPath)) {
+            return 'No logs found.';
+        }
+
+        $content = File::get($logPath);
+        
+        // Regex to split by Laravel log entries starting with [YYYY-MM-DD HH:MM:SS]
+        $pattern = '/(?=\[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\])/';
+        $entries = preg_split($pattern, $content);
+        
+        // Filter empty entries and trim
+        $entries = array_filter(array_map('trim', $entries));
+        
+        // Take the last $limit entries
+        $lastEntries = array_slice($entries, -$limit);
+        
+        // Clean each entry to keep only the first 15 lines of stacktrace
+        $cleanedEntries = [];
+        foreach ($lastEntries as $entry) {
+            $lines = explode("\n", $entry);
+            $cleanedLines = [];
+            $stackFrameCount = 0;
+            $truncated = false;
+            
+            foreach ($lines as $line) {
+                // If it looks like a stack frame (starts with #digit)
+                if (preg_match('/^#\d+\s+/', trim($line))) {
+                    if ($stackFrameCount < 15) {
+                        $cleanedLines[] = $line;
+                        $stackFrameCount++;
+                    } else {
+                        $truncated = true;
+                    }
+                } else {
+                    $cleanedLines[] = $line;
+                }
+            }
+            
+            if ($truncated) {
+                $cleanedLines[] = '      ... [rest of stacktrace truncated to save tokens] ...';
+            }
+            
+            $cleanedEntries[] = implode("\n", $cleanedLines);
+        }
+        
+        return implode("\n\n" . str_repeat('-', 40) . "\n\n", $cleanedEntries);
     }
 
     protected function formatBytes($bytes, $precision = 2)

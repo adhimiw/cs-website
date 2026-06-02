@@ -149,6 +149,29 @@ class ChatController extends Controller
                 $lead->{$field} = $extracted[$field];
             }
         }
+
+        // Deduplicate lead by email if another lead with the same email already exists
+        if (!empty($lead->email) && filter_var($lead->email, FILTER_VALIDATE_EMAIL)) {
+            $existingLead = Lead::where('email', $lead->email)
+                                ->where('id', '!=', $lead->id)
+                                ->first();
+            if ($existingLead) {
+                // Merge progressive details from current lead into existing lead
+                foreach (['name', 'phone', 'company', 'project_type', 'plan_or_idea', 'budget', 'timeline'] as $field) {
+                    if (!empty($lead->{$field})) {
+                        $existingLead->{$field} = $lead->{$field};
+                    }
+                }
+                $existingLead->chat_session_id = $chatSession->id;
+                $existingLead->source_type = 'chat';
+                
+                // If it was already saved in DB, delete the duplicate temporary lead
+                if ($lead->exists) {
+                    $lead->delete();
+                }
+                $lead = $existingLead;
+            }
+        }
         
         // Status resolution (keep qualified if already qualified)
         // Safety gate: never mark qualified without an email — the team needs it to follow up
