@@ -55,8 +55,7 @@
             <p style="margin: 0 0 8px;">&copy; {{ date('Y') }} ClimbSphere. All rights reserved.</p>
             <p style="margin: 0 0 16px;">Need to add more details? Reply directly to this email or contact us at <a href="mailto:{{ config('mail.admin_recipient', 'sales@climbsphere.ai') }}" style="color: #0055ff; text-decoration: none; font-weight: 600;">{{ config('mail.admin_recipient', 'sales@climbsphere.ai') }}</a>.</p>
             <div style="margin-top: 16px;">
-                <a href="https://www.linkedin.com/company/climbsphere-technologies/" style="color: #9ca3af; text-decoration: none; margin: 0 8px; font-size: 13px;">LinkedIn</a> &bull;
-                <a href="https://twitter.com/climbsphere" style="color: #9ca3af; text-decoration: none; margin: 0 8px; font-size: 13px;">Twitter</a>
+                <a href="https://www.linkedin.com/company/climbsphere-technologies/" style="color: #9ca3af; text-decoration: none; margin: 0 8px; font-size: 13px;">LinkedIn</a>
             </div>
         </div>
     </div>
