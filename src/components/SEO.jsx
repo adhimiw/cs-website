@@ -41,6 +41,35 @@ export default function SEO({ pageKey, defaultTitle = 'ClimbSphere Technologies'
       metaKeywords.setAttribute('content', keywords);
     }
 
+    // 4b. Update Canonical URL
+    let canonicalLink = document.querySelector('link[rel="canonical"]');
+    const currentUrl = `https://climbsphere.ai${window.location.pathname}`;
+    if (!canonicalLink) {
+      canonicalLink = document.createElement('link');
+      canonicalLink.setAttribute('rel', 'canonical');
+      document.head.appendChild(canonicalLink);
+    }
+    canonicalLink.setAttribute('href', currentUrl);
+
+    // 4c. Update Open Graph Tags
+    const updateOgTag = (property, content) => {
+      let tag = document.querySelector(`meta[property="${property}"]`);
+      if (content) {
+        if (!tag) {
+          tag = document.createElement('meta');
+          tag.setAttribute('property', property);
+          document.head.appendChild(tag);
+        }
+        tag.setAttribute('content', content);
+      }
+    };
+
+    updateOgTag('og:title', title);
+    updateOgTag('og:description', description);
+    updateOgTag('og:url', currentUrl);
+    updateOgTag('og:type', 'website');
+    updateOgTag('og:image', 'https://climbsphere.ai/images/favicon-192.png');
+
     // 5. Inject JSON-LD AEO FAQ Schema if present
     let scriptTag = document.getElementById(`aeo-faq-schema-${pageKey}`);
     if (faqsRaw) {
@@ -148,6 +177,15 @@ export default function SEO({ pageKey, defaultTitle = 'ClimbSphere Technologies'
           metaKeywords.remove();
         }
       }
+
+      if (canonicalLink) {
+        canonicalLink.remove();
+      }
+      const ogProps = ['og:title', 'og:description', 'og:url', 'og:type', 'og:image'];
+      ogProps.forEach(prop => {
+        const tag = document.querySelector(`meta[property="${prop}"]`);
+        if (tag) tag.remove();
+      });
       
       const faqScript = document.getElementById(`aeo-faq-schema-${pageKey}`);
       if (faqScript) {
