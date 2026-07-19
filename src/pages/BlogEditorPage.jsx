@@ -1,52 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { getApiUrl } from '../context/CMSContext';
+import { getApiUrl, renderMarkdownContent } from '../context/CMSContext';
 import './BlogEditorPage.css';
-
-// Simple custom renderer to match the BlogReadingPage preview
-function renderPreviewMarkdown(content) {
-  if (!content) return <p className="preview-empty">Start typing to see live preview...</p>;
-
-  const lines = content.split('\n');
-  let currentList = [];
-  const renderedElements = [];
-
-  const flushList = (key) => {
-    if (currentList.length > 0) {
-      renderedElements.push(
-        <ul key={`list-${key}`} className="blog-body-list">
-          {currentList.map((li, idx) => <li key={`li-${idx}`}>{li}</li>)}
-        </ul>
-      );
-      currentList = [];
-    }
-  };
-
-  lines.forEach((line, index) => {
-    const trimmed = line.trim();
-
-    if (trimmed.startsWith('### ')) {
-      flushList(index);
-      renderedElements.push(<h4 key={index} className="blog-body-h4">{trimmed.substring(4)}</h4>);
-    } else if (trimmed.startsWith('## ')) {
-      flushList(index);
-      renderedElements.push(<h3 key={index} className="blog-body-h3">{trimmed.substring(3)}</h3>);
-    } else if (trimmed.startsWith('# ')) {
-      flushList(index);
-      renderedElements.push(<h2 key={index} className="blog-body-h2">{trimmed.substring(2)}</h2>);
-    } else if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
-      currentList.push(trimmed.substring(2));
-    } else if (trimmed.length > 0) {
-      flushList(index);
-      renderedElements.push(<p key={index} className="blog-body-p">{trimmed}</p>);
-    } else {
-      flushList(index);
-    }
-  });
-
-  flushList(lines.length);
-  return renderedElements;
-}
 
 export default function BlogEditorPage() {
   const navigate = useNavigate();
@@ -379,7 +334,7 @@ export default function BlogEditorPage() {
                     {content && /<[a-z/][^>]*>/i.test(content) ? (
                       <div dangerouslySetInnerHTML={{ __html: content }} />
                     ) : (
-                      renderPreviewMarkdown(content)
+                      renderMarkdownContent(content, <p className="preview-empty">Start typing to see live preview...</p>)
                     )}
                   </div>
                   {faqs && faqs.length > 0 && (

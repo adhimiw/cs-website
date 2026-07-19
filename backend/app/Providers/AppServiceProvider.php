@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Transport\MicrosoftGraphTransport;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +21,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Mail::extend('microsoft-graph', function (array $config) {
+            return new MicrosoftGraphTransport(
+                $config['client_id'] ?? '',
+                $config['client_secret'] ?? '',
+                $config['refresh_token'] ?? '',
+                $config['username'] ?? ''
+            );
+        });
+
         try {
             if (\Illuminate\Support\Facades\Schema::hasTable('settings')) {
                 $dbSettings = \App\Models\Setting::all()->pluck('value', 'key')->toArray();

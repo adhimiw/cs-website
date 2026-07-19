@@ -1,7 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { useCMS, getApiUrl } from '../context/CMSContext';
+import { useCMS } from '../context/CMSContext';
 import './Services.css';
+import ServiceCard from './ServiceCard';
+import MaturityAssessmentForm from './MaturityAssessmentForm';
+import { ArrowIcon, ChevronIcon, ChevronLeftIcon, ChevronRightIcon } from './Icons';
 
 const serviceIcons = {
   'Digital Transformation': (
@@ -99,144 +102,12 @@ const defaultServices = [
   },
 ];
 
-function ArrowIcon() {
-  return (
-    <span className="btn-arrow" aria-hidden="true">
-      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
-        <path d="M8 0 6.59 1.41 12.17 7H0v2h12.17l-5.58 5.59L8 16l8-8-8-8Z" />
-      </svg>
-    </span>
-  );
-}
-
-function ChevronIcon() {
-  return (
-    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M4.5 9l3-3-3-3" />
-    </svg>
-  );
-}
-
-function ChevronLeftIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M15 18l-6-6 6-6" />
-    </svg>
-  );
-}
-
-function ChevronRightIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M9 18l6-6-6-6" />
-    </svg>
-  );
-}
-
-function ServiceCard({ service, index }) {
-  const [imgUrl, setImgUrl] = useState(service.image);
-
-  useEffect(() => {
-    if (!service.image) {
-      setImgUrl('/images/service-digital-transformation.webp');
-      return;
-    }
-
-    const img = new Image();
-    img.src = service.image;
-    img.onerror = () => {
-      if (service.image && !service.image.includes('/images/')) {
-        const filename = service.image.substring(service.image.lastIndexOf('/') + 1);
-        if (filename) {
-          setImgUrl(`/images/${filename}`);
-          return;
-        }
-      }
-      setImgUrl('/images/service-digital-transformation.webp');
-    };
-    img.onload = () => {
-      setImgUrl(service.image);
-    };
-  }, [service.image]);
-
-  return (
-    <article
-      className="service-card"
-      style={{ '--service-image': `url(${imgUrl})` }}
-      data-aos="fade-up"
-      data-aos-delay={100 + index * 100}
-    >
-      <div className="service-overlay">
-        <div className="service-icon">{service.icon}</div>
-        <h3>{service.title}</h3>
-        <p className="service-card-desc">{service.description}</p>
-      </div>
-    </article>
-  );
-}
-
 export default function Services() {
   const { services: cmsServices } = useCMS();
   const [isVisible, setIsVisible] = useState(false);
   const [autoplay, setAutoplay] = useState(true);
   const sectionRef = useRef(null);
   const carouselRef = useRef(null);
-
-  const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    email: '',
-    message: ''
-  });
-  const [submitted, setSubmitted] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState(null);
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setSubmitting(true);
-    setError(null);
-    try {
-      const response = await fetch(getApiUrl('/api/contact'), {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          subject: 'Digital Maturity Assessment Form',
-          message: formData.message || 'No additional details provided.'
-        })
-      });
-
-      const resData = await response.json();
-      if (!response.ok) {
-        throw new Error(resData.message || 'Failed to submit digital maturity assessment form.');
-      }
-
-      setSubmitted(true);
-      setFormData({ name: '', phone: '', email: '', message: '' });
-      setTimeout(() => {
-        setSubmitted(false);
-      }, 5000);
-    } catch (err) {
-      console.error('Digital Maturity Assessment form error:', err);
-      setError(err.message || 'An error occurred. Please try again.');
-    } finally {
-      setSubmitting(false);
-    }
-  };
 
   const apiHost = window.location.hostname === 'localhost' ? 'http://localhost:8000' : '';
 
@@ -383,78 +254,7 @@ export default function Services() {
             </Link>
           </div>
 
-          <form className="overview-form" onSubmit={handleSubmit}>
-            {submitted && (
-              <div className="submission-success-alert" style={{ background: '#d1e7dd', color: '#0f5132', padding: '15px 20px', borderRadius: 'var(--radius-md)', marginBottom: '20px', fontSize: '15px', fontWeight: '600', border: '1px solid #badbcc', width: '100%' }}>
-                Thank you! Your request has been sent successfully. We will get back to you shortly.
-              </div>
-            )}
-            {error && (
-              <div className="submission-error-alert" style={{ background: '#f8d7da', color: '#842029', padding: '15px 20px', borderRadius: 'var(--radius-md)', marginBottom: '20px', fontSize: '15px', fontWeight: '600', border: '1px solid #f5c2c7', width: '100%' }}>
-                {error}
-              </div>
-            )}
-            <div className="overview-form-group">
-              <label htmlFor="maturity-name">
-                Name <span className="required">*</span>
-              </label>
-              <input 
-                id="maturity-name"
-                type="text" 
-                name="name" 
-                value={formData.name} 
-                onChange={handleInputChange} 
-                placeholder="e.g. Jane Doe"
-                autoComplete="name"
-                required 
-              />
-            </div>
-            <div className="overview-form-group">
-              <label htmlFor="maturity-phone">
-                Phone <span className="required">*</span>
-              </label>
-              <input 
-                id="maturity-phone"
-                type="tel" 
-                name="phone" 
-                value={formData.phone} 
-                onChange={handleInputChange} 
-                placeholder="e.g. +1 (555) 000-0000"
-                autoComplete="tel"
-                required 
-              />
-            </div>
-            <div className="overview-form-group">
-              <label htmlFor="maturity-email">
-                Email <span className="required">*</span>
-              </label>
-              <input 
-                id="maturity-email"
-                type="email" 
-                name="email" 
-                value={formData.email} 
-                onChange={handleInputChange} 
-                placeholder="e.g. jane@example.com"
-                autoComplete="email"
-                spellCheck={false}
-                required 
-              />
-            </div>
-            <div className="overview-form-group">
-              <label htmlFor="maturity-message">Message</label>
-              <textarea 
-                id="maturity-message"
-                name="message" 
-                value={formData.message} 
-                onChange={handleInputChange} 
-                placeholder="e.g. Tell us about your digital goals…"
-                rows="3" 
-              />
-            </div>
-            <button type="submit" className="overview-form-submit" disabled={submitting}>
-              {submitting ? 'Submitting…' : 'Submit'}
-            </button>
-          </form>
+          <MaturityAssessmentForm />
         </div>
       </section>
     </>

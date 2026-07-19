@@ -50,6 +50,14 @@ return [
             'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url((string) env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
         ],
 
+        'microsoft-graph' => [
+            'transport' => 'microsoft-graph',
+            'client_id' => env('MICROSOFT_CLIENT_ID'),
+            'client_secret' => env('MICROSOFT_CLIENT_SECRET'),
+            'refresh_token' => env('MICROSOFT_REFRESH_TOKEN'),
+            'username' => env('MAIL_USERNAME'),
+        ],
+
         'ses' => [
             'transport' => 'ses',
         ],
