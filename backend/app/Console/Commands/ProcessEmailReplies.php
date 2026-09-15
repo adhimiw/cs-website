@@ -5,44 +5,65 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 use App\Models\Lead;
 use App\Models\Meeting;
-use App\Models\ChatSession;
-use App\Models\ChatMessage;
+use App\Services\Mail\EmailReplyAnalyzer;
 
 class ProcessEmailReplies extends Command
 {
-    protected $signature = 'mail:process-replies {--limit=5 : Max emails to process}';
-    protected $description = 'Fetch unread customer email replies via IMAP, converse with AI, and send responses';
+    protected $signature = 'mail:process-replies 
+                            {--limit=10 : Max emails to process per cycle} 
+                            {--watch : Run continuously as an automated listener} 
+                            {--sleep=10 : Sleep seconds between poll cycles in watch mode}';
+
+    protected $description = 'Fetch unread customer emails via IMAP, verify if they are reply mails using pure function logic, and dispatch automated AI responses';
 
     public function handle(): int
     {
+        $isWatch = (bool) $this->option('watch');
+        $sleepSeconds = max(5, (int) $this->option('sleep'));
+
+        $this->info("╔════════════════════════════════════════════════════════════════╗");
+        $this->info("║     ClimbSphere Autonomous Email Reply Processing Engine       ║");
+        $this->info("╚════════════════════════════════════════════════════════════════╝");
+        $this->line("Mode: " . ($isWatch ? "Continuous Watcher (auto-poll every {$sleepSeconds}s)" : "Single Run"));
+
+        do {
+            $this->processMailboxCycle();
+
+            if ($isWatch) {
+                sleep($sleepSeconds);
+            }
+        } while ($isWatch);
+
+        return Command::SUCCESS;
+    }
+
+    private function processMailboxCycle(): void
+    {
         $username = config('mail.mailers.smtp.username', env('MAIL_USERNAME', 'devloper@adhithanr.space'));
         $password = config('mail.mailers.smtp.password', env('MAIL_PASSWORD', 'idlypoDa@12'));
-        $host = 'imap.hostinger.com';
-        $port = 993;
-
-        $this->info("Connecting to IMAP {$host}:{$port} as {$username}...");
+        $host = env('IMAP_HOST', 'imap.hostinger.com');
+        $port = (int) env('IMAP_PORT', 993);
 
         $fp = @stream_socket_client("ssl://{$host}:{$port}", $errno, $errstr, 15);
         if (!$fp) {
-            $this->error("Failed to connect to IMAP socket: {$errstr} ({$errno})");
-            return Command::FAILURE;
+            $this->error("[" . date('H:i:s') . "] Failed to connect to IMAP socket: {$errstr} ({$errno})");
+            return;
         }
 
         // Read greeting
-        $greeting = fgets($fp);
-        $this->line("IMAP Greeting: " . trim($greeting));
+        fgets($fp);
 
         // Login
         fputs($fp, "A01 LOGIN \"{$username}\" \"{$password}\"\r\n");
         $loginResp = fgets($fp);
         if (!str_contains($loginResp, 'A01 OK')) {
-            $this->error("IMAP Login failed: {$loginResp}");
+            $this->error("[" . date('H:i:s') . "] IMAP Login failed: {$loginResp}");
             fclose($fp);
-            return Command::FAILURE;
+            return;
         }
-        $this->info("IMAP Login successful!");
 
         // Select INBOX
         fputs($fp, "A02 SELECT INBOX\r\n");
@@ -62,14 +83,15 @@ class ProcessEmailReplies extends Command
 
         $idsStr = trim(str_replace('* SEARCH', '', $searchLine));
         if (empty($idsStr)) {
-            $this->info("No new unread customer replies in INBOX.");
+            $this->line("[" . date('H:i:s') . "] Inbox clean — no unread messages.");
             fputs($fp, "A04 LOGOUT\r\n");
             fclose($fp);
-            return Command::SUCCESS;
+            return;
         }
 
         $msgIds = array_filter(explode(' ', $idsStr));
-        $this->info("Found " . count($msgIds) . " unread message(s).");
+        $count = count($msgIds);
+        $this->info("[" . date('H:i:s') . "] Detected {$count} unread email(s) in {$username}.");
 
         $limit = (int) $this->option('limit');
         $processed = 0;
@@ -77,75 +99,110 @@ class ProcessEmailReplies extends Command
         foreach ($msgIds as $msgId) {
             if ($processed >= $limit) break;
 
-            // Fetch headers and body snippet
-            fputs($fp, "A05 FETCH {$msgId} (BODY[HEADER.FIELDS (FROM SUBJECT DATE)] BODY[TEXT]<0.2000>)\r\n");
-            $emailContent = '';
+            // Fetch comprehensive headers + body text
+            fputs($fp, "A05 FETCH {$msgId} (BODY[HEADER.FIELDS (FROM TO SUBJECT DATE IN-REPLY-TO REFERENCES AUTO-SUBMITTED PRECEDENCE X-AUTO-RESPONSE-SUPPRESS MESSAGE-ID)] BODY[TEXT]<0.4000>)\r\n");
+            $rawEmail = '';
             while ($line = fgets($fp)) {
-                $emailContent .= $line;
+                $rawEmail .= $line;
                 if (str_starts_with($line, 'A05 OK') || str_starts_with($line, 'A05 NO')) break;
             }
 
-            // Parse From
-            preg_match('/From:\s*([^<\r\n]+<([^>]+)>|([^\r\n]+))/i', $emailContent, $fromMatches);
-            $rawSender = $fromMatches[1] ?? '';
-            $senderEmail = !empty($fromMatches[2]) ? $fromMatches[2] : (!empty($fromMatches[3]) ? trim($fromMatches[3]) : '');
+            // Extract headers and body
+            $headerPart = '';
+            $bodyPart = '';
+            if (preg_match('/BODY\[HEADER\.FIELDS[^\]]*\]\s*\{[0-9]+\}\r?\n(.*?)\r?\n\)\r?\n/s', $rawEmail, $hMatches)) {
+                $headerPart = $hMatches[1];
+            } else {
+                $headerPart = $rawEmail;
+            }
 
-            // Parse Subject
-            preg_match('/Subject:\s*([^\r\n]+)/i', $emailContent, $subjectMatches);
-            $subject = trim($subjectMatches[1] ?? 'Follow-up');
+            // Subject parsing
+            preg_match('/Subject:\s*([^\r\n]+)/i', $rawEmail, $subjectMatches);
+            $subject = trim($subjectMatches[1] ?? 'Inquiry');
 
-            if (empty($senderEmail) 
-                || stripos($senderEmail, 'mailer-daemon') !== false 
-                || stripos($senderEmail, 'noreply') !== false 
-                || stripos($senderEmail, 'no-reply') !== false 
-                || stripos($senderEmail, 'hostinger') !== false
-                || stripos($senderEmail, $username) !== false) {
-                // Skip system or self messages and mark as read
+            // From email parsing
+            $senderEmail = EmailReplyAnalyzer::extractSenderFromHeaders($rawEmail);
+
+            // Strip IMAP framing to get pure body
+            $bodyLines = explode("\n", $rawEmail);
+            $cleanBodyLines = [];
+            $inBody = false;
+            foreach ($bodyLines as $bLine) {
+                if (str_contains($bLine, 'BODY[TEXT]')) {
+                    $inBody = true;
+                    continue;
+                }
+                if ($inBody) {
+                    if (str_starts_with($bLine, 'A05 OK') || str_starts_with($bLine, ')')) break;
+                    $cleanBodyLines[] = $bLine;
+                }
+            }
+            $bodyPart = !empty($cleanBodyLines) ? implode("\n", $cleanBodyLines) : strip_tags($rawEmail);
+
+            // ─────────────────────────────────────────────────────────────
+            // PURE FUNCTION LOGIC EVALUATION
+            // ─────────────────────────────────────────────────────────────
+            $analysis = EmailReplyAnalyzer::analyze(
+                $rawEmail,
+                $subject,
+                $bodyPart,
+                $senderEmail,
+                $username
+            );
+
+            // 1. Filter Automated / Loop / System Emails
+            if ($analysis['is_automated_or_loop']) {
+                $this->warn("[" . date('H:i:s') . "] [LOOP SUPPRESSED] Skipping auto-responder/daemon from: {$senderEmail}");
                 fputs($fp, "A06 STORE {$msgId} +FLAGS (\\Seen)\r\n");
                 fgets($fp);
                 continue;
             }
 
-            $this->info("Processing reply from: {$senderEmail} | Subject: {$subject}");
+            // 2. Check if this is verified as a Reply Mail
+            $this->info("┌────────────────────────────────────────────────────────────────┐");
+            $this->info("│ SENDER: {$senderEmail}");
+            $this->info("│ SUBJECT: {$subject}");
+            $this->info("│ IS_REPLY (Pure Function): " . ($analysis['is_reply'] ? "TRUE [CONFIDENCE: {$analysis['confidence_score']}]" : "FALSE (Fresh Inbound)"));
+            $this->info("│ INTENT: " . strtoupper($analysis['intent']));
+            $this->info("│ SIGNALS: " . implode(', ', $analysis['signals']));
+            $this->info("│ CLEAN BODY: " . substr(str_replace(["\r", "\n"], ' ', $analysis['clean_reply_body']), 0, 100) . "...");
+            $this->info("└────────────────────────────────────────────────────────────────┘");
 
-            // Find associated Lead or Meeting
+            // Look up associated CRM records
             $lead = Lead::where('email', $senderEmail)->latest()->first();
             $meeting = Meeting::where('email', $senderEmail)->latest()->first();
 
-            // Extract body text (basic strip)
-            $body = trim(strip_tags($emailContent));
-            if (strlen($body) > 1000) {
-                $body = substr($body, 0, 1000);
-            }
+            // Generate contextual AI response
+            $replyMessage = $this->generateIntelligentResponse($senderEmail, $analysis, $lead, $meeting);
 
-            // Generate AI response
-            $replyMessage = $this->generateAIReply($senderEmail, $subject, $body, $lead, $meeting);
-
-            // Send reply email to customer
+            // Dispatch response via authenticated SMTP
             try {
-                Mail::raw($replyMessage, function ($message) use ($senderEmail, $subject, $username) {
-                    $replySubject = str_starts_with(strtolower($subject), 're:') ? $subject : "Re: {$subject}";
+                Mail::raw($replyMessage, function ($message) use ($senderEmail, $analysis, $username) {
                     $message->to($senderEmail)
                             ->from($username, 'ClimbSphere Advisory Team')
-                            ->subject($replySubject);
+                            ->subject($analysis['reply_subject']);
                 });
 
-                $this->info("AI Reply sent to {$senderEmail}!");
+                $this->info("[" . date('H:i:s') . "] ✓ Automated reply successfully sent to {$senderEmail}!");
 
-                // Also notify admin of the exchange
+                // Notify admin of the interaction
                 $adminEmail = config('mail.admin_recipient', 'devloper@adhithanr.space');
-                Mail::raw("Customer {$senderEmail} sent an email:\n\n\"{$body}\"\n\nAI automatically replied with:\n\n\"{$replyMessage}\"", function ($message) use ($adminEmail, $senderEmail) {
-                    $message->to($adminEmail)
-                            ->subject("[Email Interaction] Reply from {$senderEmail}");
-                });
+                if ($adminEmail !== $senderEmail) {
+                    $summary = "From: {$senderEmail}\nSubject: {$subject}\nIs Reply: " . ($analysis['is_reply'] ? 'YES' : 'NO') . " (Intent: {$analysis['intent']})\n\nUser Message:\n\"{$analysis['clean_reply_body']}\"\n\nAutomated AI Response:\n\"{$replyMessage}\"";
+                    Mail::raw($summary, function ($message) use ($adminEmail, $senderEmail, $username) {
+                        $message->to($adminEmail)
+                                ->from($username, 'ClimbSphere Bot')
+                                ->subject("[ClimbSphere AI Mail Interaction] {$senderEmail}");
+                    });
+                }
 
-                // Mark email as seen
+                // Mark email as Seen in IMAP
                 fputs($fp, "A07 STORE {$msgId} +FLAGS (\\Seen)\r\n");
                 fgets($fp);
 
                 $processed++;
             } catch (\Throwable $e) {
-                $this->error("Failed to send email reply: " . $e->getMessage());
+                $this->error("[" . date('H:i:s') . "] Failed to dispatch email reply: " . $e->getMessage());
                 Log::error("Email reply dispatch failed: " . $e->getMessage());
             }
         }
@@ -153,19 +210,75 @@ class ProcessEmailReplies extends Command
         fputs($fp, "A08 LOGOUT\r\n");
         fclose($fp);
 
-        $this->info("Finished processing email replies. ({$processed} handled).");
-        return Command::SUCCESS;
+        if ($processed > 0) {
+            $this->info("[" . date('H:i:s') . "] Completed cycle. {$processed} email(s) analyzed and answered.");
+        }
     }
 
-    private function generateAIReply(string $senderEmail, string $subject, string $body, ?Lead $lead, ?Meeting $meeting): string
+    /**
+     * Generate an intelligent, contextual AI response based on pure function analysis.
+     */
+    private function generateIntelligentResponse(string $senderEmail, array $analysis, ?Lead $lead, ?Meeting $meeting): string
     {
         $name = $lead?->name ?: ($meeting?->name ?: 'there');
+        $intent = $analysis['intent'];
+        $cleanBody = $analysis['clean_reply_body'];
 
-        // Check if reply is about meeting confirmation / rescheduling
-        if ($meeting && (str_contains(strtolower($body), 'reschedule') || str_contains(strtolower($body), 'postpone') || str_contains(strtolower($body), 'time'))) {
-            return "Hi {$name},\n\nThank you for reaching out regarding our scheduled session on " . $meeting->scheduled_date->format('M j, Y') . " at {$meeting->scheduled_time} ({$meeting->timezone}).\n\nWe would be happy to accommodate your schedule. Please let us know your preferred alternative date and time, and our team will update the calendar invite right away.\n\nWarm regards,\nClimbSphere Advisory Team\nhttps://climbsphere.ai/";
+        // Try Groq API for hyper-personalized AI reply if available
+        $groqKey = config('ai.providers.groq.key', env('GROQ_API_KEY'));
+        if (!empty($groqKey)) {
+            try {
+                $groqModel = env('GROQ_MODEL', 'openai/gpt-oss-120b');
+                $prompt = "You are the executive assistant and AI consultant at ClimbSphere (https://climbsphere.ai).
+Customer Name: {$name}
+Customer Email: {$senderEmail}
+User Message / Reply: \"{$cleanBody}\"
+Detected Intent: {$intent}
+Existing Meeting: " . ($meeting ? "Scheduled for {$meeting->scheduled_date->format('M j, Y')} at {$meeting->scheduled_time} {$meeting->timezone}" : "None") . "
+Existing Lead: " . ($lead ? "Company: {$lead->company}, Budget: {$lead->budget}" : "New Contact") . "
+
+Write a warm, highly professional, concise email response (maximum 100-150 words).
+- If confirming a meeting: Acknowledge with enthusiasm, re-confirm the exact date/time, and mention a calendar invite is active.
+- If rescheduling: Express warm flexibility, offer alternative slots, and ask for their best availability.
+- If inquiring about pricing/services: Outline ClimbSphere's custom AI agent systems, voice workflows, and enterprise automation, offering a 30-min discovery call.
+- Sign off as:
+Warm regards,
+ClimbSphere Advisory Team
+https://climbsphere.ai/";
+
+                $res = Http::withHeaders([
+                    'Authorization' => "Bearer {$groqKey}",
+                    'Content-Type'  => 'application/json',
+                ])->timeout(12)->post('https://api.groq.com/openai/v1/chat/completions', [
+                    'model' => $groqModel,
+                    'messages' => [
+                        ['role' => 'system', 'content' => 'You are ClimbSphere Advisory Team. Keep responses concise, warm and professional.'],
+                        ['role' => 'user', 'content' => $prompt],
+                    ],
+                    'temperature' => 0.4,
+                    'max_tokens' => 300,
+                ]);
+
+                if ($res->successful()) {
+                    $reply = trim($res->json('choices.0.message.content') ?? '');
+                    if (!empty($reply)) {
+                        return $reply;
+                    }
+                }
+            } catch (\Throwable $e) {
+                Log::warning("Groq email reply fallback triggered: " . $e->getMessage());
+            }
         }
 
-        return "Hi {$name},\n\nThank you for your response regarding ClimbSphere's technology consulting services.\n\nWe have received your message and noted your comments. A senior consultant from our leadership team (Manoj Cheruvathoor or Ranjit Kumar) will review your project requirements and follow up with further details shortly.\n\nIf you would like to book a direct 30-minute discovery call in the meantime, please let us know your preferred day and time.\n\nBest regards,\nClimbSphere Advisory Team\nhttps://climbsphere.ai/";
+        // Fallback domain logic based on pure intent
+        if ($intent === 'reschedule' && $meeting) {
+            return "Hi {$name},\n\nThank you for reaching out regarding our scheduled session on " . $meeting->scheduled_date->format('M j, Y') . " at {$meeting->scheduled_time} ({$meeting->timezone}).\n\nWe would be happy to accommodate your schedule. Please reply with your preferred alternative date and time, and our team will update your calendar invitation right away.\n\nWarm regards,\nClimbSphere Advisory Team\nhttps://climbsphere.ai/";
+        }
+
+        if ($intent === 'confirmation' && $meeting) {
+            return "Hi {$name},\n\nThank you for confirming! We have your session locked in for " . $meeting->scheduled_date->format('M j, Y') . " at {$meeting->scheduled_time} ({$meeting->timezone}).\n\nOur team is preparing tailored demonstrations and architecture blueprints for our discussion. We look forward to speaking with you!\n\nBest regards,\nClimbSphere Advisory Team\nhttps://climbsphere.ai/";
+        }
+
+        return "Hi {$name},\n\nThank you for your response regarding ClimbSphere's autonomous AI solutions.\n\nWe have received your message and noted your feedback. A senior consultant from our engineering leadership will review your requirements and follow up with you shortly.\n\nIf you would like to schedule a direct 30-minute discovery session in the meantime, feel free to reply with your preferred day and time.\n\nWarm regards,\nClimbSphere Advisory Team\nhttps://climbsphere.ai/";
     }
 }
