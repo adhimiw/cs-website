@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use App\Models\ChatSession;
 use App\Models\Lead;
+use App\Models\Meeting;
+use App\Mail\MeetingConfirmationMail;
+use App\Mail\NewMeetingAlertMail;
 use App\AI\Agents\LeadChatAgent;
 
 class ChatController extends Controller
@@ -195,6 +198,65 @@ class ChatController extends Controller
         
         $lead->save();
 
+        // Handle Meeting / Call Scheduler
+        $meetingData = $response['meeting'] ?? null;
+        $isMeetingRequested = !empty($meetingData['is_scheduled']) 
+            || (!empty($meetingData['preferred_date']) && !empty($meetingData['preferred_time']));
+
+        $meetingRecord = null;
+        if ($isMeetingRequested && !empty($lead->email)) {
+            try {
+                $rawDate = $meetingData['preferred_date'] ?? 'tomorrow';
+                try {
+                    $scheduledDate = \Carbon\Carbon::parse($rawDate)->toDateString();
+                } catch (\Throwable $e) {
+                    $scheduledDate = now()->addDay()->toDateString();
+                }
+
+                $scheduledTime = $meetingData['preferred_time'] ?? '15:00';
+                $meetingType = $meetingData['meeting_type'] ?? 'strategy_session';
+                $topic = $meetingData['topic'] ?? ($lead->project_type ?: 'Business System Transformation');
+
+                $meetingRecord = Meeting::updateOrCreate(
+                    [
+                        'chat_session_id' => $chatSession->id,
+                    ],
+                    [
+                        'lead_id' => $lead->id,
+                        'name' => $lead->name ?: 'Prospective Client',
+                        'email' => $lead->email,
+                        'phone' => $lead->phone,
+                        'company' => $lead->company,
+                        'meeting_type' => $meetingType,
+                        'scheduled_date' => $scheduledDate,
+                        'scheduled_time' => $scheduledTime,
+                        'timezone' => 'UTC',
+                        'topic' => $topic,
+                        'status' => 'confirmed',
+                    ]
+                );
+
+                if (!$meetingRecord->customer_notified_at) {
+                    try {
+                        Mail::to($meetingRecord->email)->send(new MeetingConfirmationMail($meetingRecord));
+                        $meetingRecord->update(['customer_notified_at' => now()]);
+                    } catch (\Throwable $e) {
+                        report($e);
+                    }
+
+                    try {
+                        $adminEmail = config('mail.admin_recipient', 'devloper@adhithanr.space');
+                        Mail::to($adminEmail)->send(new NewMeetingAlertMail($meetingRecord));
+                        $meetingRecord->update(['team_notified_at' => now()]);
+                    } catch (\Throwable $e) {
+                        report($e);
+                    }
+                }
+            } catch (\Throwable $e) {
+                Log::warning('Failed to process meeting booking from chat: ' . $e->getMessage());
+            }
+        }
+
         // Handle notifications if qualified
         $isNewlyQualified = ($response['lead_status'] ?? 'new') === 'qualified' && !$chatSession->is_qualified;
 
@@ -229,6 +291,13 @@ class ChatController extends Controller
             'reply' => $replyText,
             'lead_status' => $leadStatus,
             'is_qualified' => $chatSession->is_qualified,
+            'meeting' => $meetingRecord ? [
+                'id' => $meetingRecord->id,
+                'scheduled_date' => $meetingRecord->scheduled_date ? $meetingRecord->scheduled_date->format('Y-m-d') : null,
+                'scheduled_time' => $meetingRecord->scheduled_time,
+                'meeting_type' => $meetingRecord->meeting_type,
+                'status' => $meetingRecord->status,
+            ] : null,
         ]);
     }
 

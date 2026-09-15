@@ -18,6 +18,9 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
+use Filament\View\PanelsRenderHook;
+use Illuminate\Contracts\View\View;
+
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -28,11 +31,44 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->brandName('ClimbSphere Control Center')
-            ->font('Outfit')
+            ->brandLogo(fn (): View => view('filament.components.brand-logo'))
+            ->font('Chakra Petch')
             ->colors([
-                'primary' => Color::Indigo,
-                'gray' => Color::Slate,
+                'primary' => [
+                    50 => '#fdf6ee',
+                    100 => '#fbe8d5',
+                    200 => '#f6cfa9',
+                    300 => '#f0ad73',
+                    400 => '#e8833e',
+                    500 => '#c25e2e', // Burnt Orange
+                    600 => '#a84d20',
+                    700 => '#873a17',
+                    800 => '#6d2f14',
+                    900 => '#592713',
+                    950 => '#301107',
+                ],
+                'gray' => [
+                    50 => '#faf7f0', // Paper cream
+                    100 => '#f4eedc', // Parchment
+                    200 => '#e8deca', // Manila paper
+                    300 => '#d6c8ad', // Warm sand
+                    400 => '#a89a7f', // Muted ink
+                    500 => '#786e58', // Deep sepia
+                    600 => '#544c3c', // Ink charcoal
+                    700 => '#3a3428', // Dark ink
+                    800 => '#26221a', // Rich ink
+                    900 => '#1a1711', // True ink
+                    950 => '#100e0b',
+                ],
+                'warning' => Color::Amber,
+                'success' => Color::Emerald,
+                'danger' => Color::Rose,
+                'info' => Color::Sky,
             ])
+            ->renderHook(
+                PanelsRenderHook::HEAD_END,
+                fn (): View => view('filament.retro-paper-theme')
+            )
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([

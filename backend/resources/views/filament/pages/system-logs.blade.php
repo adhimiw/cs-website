@@ -1,19 +1,19 @@
 <x-filament-panels::page>
     @php
-        // Dynamic terminal syntax highlighting for laravel.log
+        // Vintage telegraph/terminal syntax highlighting for laravel.log
         $formattedLogs = e($logContent);
         
-        // Highlight ERROR / CRITICAL / Exceptions in vibrant red
-        $formattedLogs = preg_replace('/(\b(?:local\.ERROR|ERROR|CRITICAL|FATAL|Exception|Error|failed|Stack trace:)\b)/i', '<span class="text-rose-500 font-bold">$1</span>', $formattedLogs);
+        // Highlight ERROR / CRITICAL / Exceptions in vintage stamp red
+        $formattedLogs = preg_replace('/(\b(?:local\.ERROR|ERROR|CRITICAL|FATAL|Exception|Error|failed|Stack trace:)\b)/i', '<span class="text-rose-400 font-bold bg-rose-950/40 px-1 rounded">$1</span>', $formattedLogs);
         
-        // Highlight WARNING in amber
-        $formattedLogs = preg_replace('/(\b(?:local\.WARNING|WARNING|WARN)\b)/i', '<span class="text-amber-500 font-semibold">$1</span>', $formattedLogs);
+        // Highlight WARNING in warm burnt amber
+        $formattedLogs = preg_replace('/(\b(?:local\.WARNING|WARNING|WARN)\b)/i', '<span class="text-amber-400 font-semibold">$1</span>', $formattedLogs);
         
-        // Highlight INFO / SUCCESS in emerald green
+        // Highlight INFO / SUCCESS in vintage phosphor emerald
         $formattedLogs = preg_replace('/(\b(?:local\.INFO|INFO|SUCCESS|OK)\b)/i', '<span class="text-emerald-400 font-medium">$1</span>', $formattedLogs);
         
-        // Highlight dates/timestamps in indigo blue
-        $formattedLogs = preg_replace('/(\[\d{4}-\d{2}-\d{2}[T\s]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[\+\-]\d{2}:?\d{2})?\])/', '<span class="text-indigo-400 font-mono font-medium">$1</span>', $formattedLogs);
+        // Highlight dates/timestamps in typewriter cyan
+        $formattedLogs = preg_replace('/(\[\d{4}-\d{2}-\d{2}[T\s]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[\+\-]\d{2}:?\d{2})?\])/', '<span class="text-sky-300 font-mono">$1</span>', $formattedLogs);
     @endphp
 
     <style>
@@ -21,7 +21,7 @@
             display: grid;
             grid-template-columns: repeat(5, minmax(0, 1fr));
             gap: 16px;
-            margin-bottom: 24px;
+            margin-bottom: 28px;
         }
         @media (max-width: 1200px) {
             .info-grid {
@@ -39,38 +39,42 @@
             }
         }
         .info-card {
-            background-color: #111827;
-            border: 1px solid #1f2937;
-            border-radius: 12px;
-            padding: 20px 16px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s, box-shadow 0.2s;
+            background-color: #fffdf7;
+            border: 2px solid #211e1b;
+            border-radius: 10px;
+            padding: 18px 16px;
+            box-shadow: 3px 3px 0px #211e1b;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            position: relative;
         }
         .info-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+            transform: translate(-1px, -1px);
+            box-shadow: 4px 4px 0px #211e1b;
         }
         .info-label {
-            font-size: 0.725rem;
-            font-weight: 600;
-            color: #9ca3af;
+            font-family: 'Silkscreen', monospace;
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: #574e44;
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }
         .info-value {
-            font-size: 0.95rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.05rem;
             font-weight: 700;
-            color: #ffffff;
-            margin-top: 8px;
+            color: #211e1b;
+            margin-top: 6px;
             line-height: 1.25;
             word-break: break-all;
         }
         .info-sub {
-            font-size: 0.7rem;
-            color: #6b7280;
+            font-family: 'Delius', cursive;
+            font-size: 0.75rem;
+            color: #827667;
             margin-top: 4px;
         }
         
@@ -96,47 +100,37 @@
         }
 
         .terminal-window {
-            background-color: #0b0f19;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
-            border: 1px solid #1e293b;
-            border-radius: 12px;
+            background-color: #171513;
+            box-shadow: 4px 4px 0px #211e1b;
+            border: 2px solid #211e1b;
+            border-radius: 10px;
             overflow: hidden;
+            position: relative;
         }
         .terminal-header {
-            background: linear-gradient(to bottom, #1e293b, #0f172a);
-            border-bottom: 1px solid #1e293b;
-            padding: 12px 16px;
+            background-color: #26221d;
+            border-bottom: 2px solid #211e1b;
+            padding: 12px 18px;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
         .terminal-dot {
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
             display: inline-block;
+            border: 1px solid rgba(0,0,0,0.3);
         }
-        .terminal-dot.red { background-color: #ef4444; }
-        .terminal-dot.yellow { background-color: #f59e0b; }
-        .terminal-dot.green { background-color: #10b981; }
+        .terminal-dot.red { background-color: #a83526; }
+        .terminal-dot.yellow { background-color: #d97706; }
+        .terminal-dot.green { background-color: #536c53; }
         
-        .pulse-log-indicator {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .pulse-log-indicator::before {
-            content: '';
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: #10b981;
-            box-shadow: 0 0 8px #10b981;
-            animation: blink 2s infinite;
-        }
-        @keyframes blink {
-            0%, 100% { opacity: 0.4; }
-            50% { opacity: 1; }
+        .terminal-title {
+            font-family: 'Silkscreen', monospace;
+            font-size: 0.72rem;
+            letter-spacing: 0.08em;
+            color: #d5c7ad;
         }
 
         /* Custom scrollbar for log viewer */
@@ -145,39 +139,54 @@
             height: 8px;
         }
         .terminal-pre::-webkit-scrollbar-track {
-            background: #0f172a;
+            background: #171513;
         }
         .terminal-pre::-webkit-scrollbar-thumb {
-            background: #334155;
+            background: #3c3730;
             border-radius: 4px;
         }
         .terminal-pre::-webkit-scrollbar-thumb:hover {
-            background: #475569;
+            background: #c25e2e;
         }
 
         .ai-report {
-            background-color: #111827;
-            border: 1px solid #1f2937;
+            background-color: #fffdf7;
+            border: 2px solid #211e1b;
             border-radius: 12px;
             overflow: hidden;
-            margin-top: 24px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-top: 28px;
+            box-shadow: 4px 4px 0px #211e1b;
+            position: relative;
+        }
+        .ai-report::before {
+            content: '';
+            position: absolute;
+            top: -7px;
+            left: 28px;
+            width: 76px;
+            height: 15px;
+            background: rgba(194, 94, 46, 0.4);
+            border-left: 2px dashed rgba(33, 30, 27, 0.25);
+            border-right: 2px dashed rgba(33, 30, 27, 0.25);
+            transform: rotate(-1.5deg);
+            z-index: 10;
         }
         .ai-report-header {
-            background-color: #1f2937;
+            background-color: #f5eedf;
             padding: 16px 24px;
-            border-bottom: 1px solid #374151;
+            border-bottom: 2px solid #211e1b;
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: space-between;
         }
         .ai-report-body {
             padding: 24px;
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-family: 'JetBrains Mono', monospace;
             font-size: 0.85rem;
-            line-height: 1.6;
-            color: #e5e7eb;
+            line-height: 1.65;
+            color: #211e1b;
             white-space: pre-wrap;
+            background-color: #fffdf7;
         }
     </style>
 
@@ -186,31 +195,31 @@
         {{-- System info cards grid --}}
         <div class="info-grid">
             <div class="info-card">
-                <div class="info-label">Server Time</div>
+                <div class="info-label">Server Chrono</div>
                 <div class="info-value">{{ $systemInfo['server_time'] ?? 'N/A' }}</div>
                 <div class="info-sub">{{ $systemInfo['server_timezone'] ?? '' }}</div>
             </div>
             
             <div class="info-card">
-                <div class="info-label">Uptime</div>
+                <div class="info-label">Host Status</div>
                 <div class="info-value">{{ $systemInfo['uptime'] ?? 'N/A' }}</div>
-                <div class="info-sub font-semibold text-emerald-500">Live Host Status</div>
+                <div class="info-sub font-semibold text-emerald-700">Production Node Active</div>
             </div>
             
             <div class="info-card">
-                <div class="info-label">PHP Version</div>
+                <div class="info-label">PHP Engine</div>
                 <div class="info-value">{{ $systemInfo['php_version'] ?? 'N/A' }}</div>
                 <div class="info-sub">{{ $systemInfo['laravel_env'] ?? '' }} (debug: {{ $systemInfo['app_debug'] ?? '' }})</div>
             </div>
             
             <div class="info-card">
-                <div class="info-label">Memory Usage</div>
+                <div class="info-label">Memory Footprint</div>
                 <div class="info-value">{{ $systemInfo['memory_usage'] ?? 'N/A' }}</div>
                 <div class="info-sub">Peak: {{ $systemInfo['memory_peak'] ?? '' }}</div>
             </div>
             
             <div class="info-card">
-                <div class="info-label">Disk Capacity</div>
+                <div class="info-label">Storage Capacity</div>
                 <div class="info-value">{{ $systemInfo['disk_free'] ?? 'N/A' }} free</div>
                 <div class="info-sub">of {{ $systemInfo['disk_total'] ?? '' }} total</div>
             </div>
@@ -218,19 +227,21 @@
 
         {{-- Log viewer header & action buttons --}}
         <div class="action-header">
-            <h2 class="text-xs font-medium text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
-                <span class="pulse-log-indicator text-emerald-500 font-semibold uppercase tracking-wider text-2xs">System Active</span>
-                <span>• Showing last 200 log entries</span>
-            </h2>
+            <div class="flex items-center gap-2">
+                <span class="stamp stamp-sage">STREAM ACTIVE</span>
+                <span style="font-family: 'Delius', cursive; color: #574e44; font-size: 0.88rem;">
+                    &bull; Displaying last 200 system log entries
+                </span>
+            </div>
             <div class="btn-group">
-                <x-filament::button wire:click="readLogs" color="gray" icon="heroicon-m-arrow-path" size="sm" class="hover:bg-gray-50 dark:hover:bg-gray-800">
-                    Refresh Logs
+                <x-filament::button wire:click="readLogs" color="gray" icon="heroicon-m-arrow-path" size="sm">
+                    Refresh Stream
                 </x-filament::button>
                 <x-filament::button wire:click="analyzeWithAI" color="primary" icon="heroicon-m-sparkles" size="sm" loading="isAnalyzing">
-                    AI Log Analysis
+                    ⚡ AI Diagnostic Review
                 </x-filament::button>
                 <x-filament::button wire:click="clearLogs" color="danger" icon="heroicon-m-trash" size="sm">
-                    Clear Log File
+                    Purge Logs
                 </x-filament::button>
             </div>
         </div>
@@ -243,11 +254,11 @@
                     <span class="terminal-dot yellow"></span>
                     <span class="terminal-dot green"></span>
                 </div>
-                <div class="text-xs font-mono text-gray-400">laravel.log — Live Console Stream</div>
-                <div class="w-16"></div> {{-- Spacer --}}
+                <div class="terminal-title">laravel.log &mdash; TELETYPE / CONSOLE STREAM</div>
+                <span class="stamp stamp-orange" style="font-size: 0.55rem; padding: 1px 4px;">RAW</span>
             </div>
-            <div class="p-6 bg-slate-950">
-                <pre class="terminal-pre max-h-[450px] overflow-y-auto whitespace-pre-wrap font-mono text-2xs text-slate-300 leading-relaxed scrollbar-thin select-all">{!! $formattedLogs !!}</pre>
+            <div class="p-6 bg-[#12100e]">
+                <pre class="terminal-pre max-h-[460px] overflow-y-auto whitespace-pre-wrap font-mono text-xs text-[#ded1b8] leading-relaxed select-all">{!! $formattedLogs !!}</pre>
             </div>
         </div>
 
@@ -255,8 +266,13 @@
         @if($aiAnalysis)
             <div class="ai-report">
                 <div class="ai-report-header">
-                    <x-filament::icon name="heroicon-m-sparkles" class="h-5 w-5 text-primary-500 animate-pulse" />
-                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white">AI Diagnostic Report</h3>
+                    <div class="flex items-center gap-2">
+                        <x-filament::icon name="heroicon-m-sparkles" class="h-5 w-5 text-primary-600 animate-pulse" />
+                        <h3 class="font-bold text-gray-900" style="font-family: 'Macondo', cursive; font-size: 1.3rem;">
+                            AI Diagnostic Dispatch
+                        </h3>
+                    </div>
+                    <span class="stamp stamp-orange">VERIFIED DISPATCH</span>
                 </div>
                 <div class="ai-report-body">{!! $aiAnalysis !!}</div>
             </div>

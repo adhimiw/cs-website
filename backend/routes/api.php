@@ -5,6 +5,7 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ContentController;
 use App\Http\Controllers\BlogPostController;
+use App\Http\Controllers\EmailInboundController;
 
 Route::middleware([
     \Illuminate\Session\Middleware\StartSession::class,
@@ -16,6 +17,7 @@ Route::middleware([
 });
 
 Route::post('/track-visit', [ContentController::class, 'trackVisit']);
+Route::post('/mail/inbound', [EmailInboundController::class, 'handle']);
 
 // Blog CRUD and AI Optimization routes
 Route::get('/blogs', [BlogPostController::class, 'index']);
@@ -24,4 +26,5 @@ Route::post('/blogs', [BlogPostController::class, 'store']);
 Route::put('/blogs/{slug}', [BlogPostController::class, 'update']);
 Route::delete('/blogs/{slug}', [BlogPostController::class, 'destroy']);
 Route::post('/blogs/optimize', [BlogPostController::class, 'optimize']);
+
 
