@@ -23,7 +23,7 @@ class EmailReplyAnalyzer
         $sender = $senderEmail ? trim(strtolower($senderEmail)) : self::extractSenderFromHeaders($headers);
         $system = $systemEmail ? trim(strtolower($systemEmail)) : 'devloper@adhithanr.space';
 
-        $isLoop = self::isAutomatedOrLoop($headers, $sender, $system);
+        $isLoop = self::isAutomatedOrLoop($headers, $sender, $system, $body);
         $signals = self::detectReplySignals($headers, $subject, $body);
         $isReply = count($signals) > 0;
         $confidence = self::calculateConfidence($signals);
@@ -135,17 +135,25 @@ class EmailReplyAnalyzer
      * Detect if the incoming email is an automated mail, bounce, or self-loop.
      * Pure function.
      */
-    public static function isAutomatedOrLoop(string $headers, string $senderEmail, ?string $systemEmail = null): bool
+    public static function isAutomatedOrLoop(string $headers, string $senderEmail, ?string $systemEmail = null, string $body = ''): bool
     {
         $sender = strtolower(trim($senderEmail));
         $system = $systemEmail ? strtolower(trim($systemEmail)) : 'devloper@adhithanr.space';
 
-        // 1. Self Loop Prevention
-        if ($sender !== '' && $system !== '' && $sender === $system) {
+        // 1. Bot Loop Prevention - Outgoing bot emails are marked with X-ClimbSphere-Bot header
+        if (preg_match('/^X-ClimbSphere-Bot:\s*true/mi', $headers) 
+            || preg_match('/^X-Mailer:\s*ClimbSphere/mi', $headers)) {
             return true;
         }
 
-        // 2. Postmaster / Daemon / Noreply
+        // 2. Prevent infinite loops from system notification broadcasts
+        if (str_contains($headers, '[ClimbSphere AI Mail Interaction]')
+            || str_contains($body, 'ClimbSphere Advisory Team')
+            || str_contains($body, 'ClimbSphere Bot')) {
+            return true;
+        }
+
+        // 3. Postmaster / Daemon / Noreply
         $blacklistedPatterns = [
             'mailer-daemon@',
             'postmaster@',
@@ -162,17 +170,17 @@ class EmailReplyAnalyzer
             }
         }
 
-        // 3. RFC 3834 Auto-Submitted Header
+        // 4. RFC 3834 Auto-Submitted Header
         if (preg_match('/^Auto-Submitted:\s*(?!no)(.+)$/mi', $headers)) {
             return true;
         }
 
-        // 4. Precedence: bulk, junk, auto_reply
+        // 5. Precedence: bulk, junk, auto_reply
         if (preg_match('/^Precedence:\s*(?:bulk|junk|auto_reply)/mi', $headers)) {
             return true;
         }
 
-        // 5. Microsoft Exchange Auto-Response-Suppress
+        // 6. Microsoft Exchange Auto-Response-Suppress
         if (preg_match('/^X-Auto-Response-Suppress:\s*(?:All|DR|RN|NRN|OOF|AutoReply)/mi', $headers)) {
             return true;
         }
@@ -188,6 +196,27 @@ class EmailReplyAnalyzer
     public static function extractCleanReply(string $body): string
     {
         $text = $body;
+
+        // 0. Clean HTML and entities if present
+        $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $text = str_replace(["\xc2\xa0", '&nbsp;'], ' ', $text);
+
+        // Strip HTML style blocks
+        $text = preg_replace('/<style\b[^>]*>(.*?)<\/style>/is', '', $text);
+
+        // Strip Hostinger / webmail blockquotes and quote containers
+        $text = preg_replace('/<div[^>]*class="[^"]*hmail-quote[^"]*"[^>]*>.*?<\/div>/is', '', $text);
+        $text = preg_replace('/<div[^>]*class="[^"]*hmail-attr[^"]*"[^>]*>.*?<\/div>/is', '', $text);
+        $text = preg_replace('/<div[^>]*class="[^"]*hmail-free-plan-footer[^"]*"[^>]*>.*?<\/div>/is', '', $text);
+        $text = preg_replace('/<blockquote\b[^>]*>(.*?)<\/blockquote>/is', '', $text);
+
+        // Convert breaks/divs to newlines and strip remaining tags
+        $text = preg_replace('/<br\s*\/?>/i', "\n", $text);
+        $text = preg_replace('/<\/div>/i', "\n", $text);
+        $text = strip_tags($text);
+
+        // Strip webmail footers
+        $text = preg_replace('/Sent with\s+Hostinger Mail/i', '', $text);
 
         // 1. Cut at Outlook "-----Original Message-----"
         $outlookSplit = preg_split('/-----Original Message-----/i', $text, 2);
@@ -239,6 +268,10 @@ class EmailReplyAnalyzer
         }
 
         $clean = trim($text);
+        // Normalize multiple spaces and multiple newlines
+        $clean = preg_replace('/[ \t]+/', ' ', $clean);
+        $clean = preg_replace('/\n{3,}/', "\n\n", $clean);
+
         // If everything was stripped (e.g. quote-only reply), return original body trimmed
         return $clean !== '' ? $clean : trim($body);
     }
@@ -286,7 +319,8 @@ class EmailReplyAnalyzer
         $rescheduleKeywords = [
             'reschedule', 'postpone', 'change the time', 'move the call', 'different day',
             'cannot make it', "can't make it", 'push back', 'another time', 'conflict',
-            'busy at that time', 'delay'
+            'busy at that time', 'delay', 'update date', 'change date', 'new date',
+            'same timing', 'move date', 'different date'
         ];
         foreach ($rescheduleKeywords as $kw) {
             if (str_contains($lower, $kw)) {

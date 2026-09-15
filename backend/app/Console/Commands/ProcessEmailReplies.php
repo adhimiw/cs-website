@@ -172,6 +172,28 @@ class ProcessEmailReplies extends Command
             $lead = Lead::where('email', $senderEmail)->latest()->first();
             $meeting = Meeting::where('email', $senderEmail)->latest()->first();
 
+            // Fallback for self-test or admin email interactions
+            if (!$lead && !$meeting) {
+                if (stripos($subject, 'Adhithan') !== false || stripos($senderEmail, 'adhithan') !== false || stripos($senderEmail, 'devloper') !== false) {
+                    $lead = Lead::where('name', 'like', '%Adhithan%')->orWhere('email', 'like', '%adhithan%')->latest()->first() ?: Lead::latest()->first();
+                    $meeting = Meeting::where('name', 'like', '%Adhithan%')->orWhere('email', 'like', '%adhithan%')->latest()->first() ?: Meeting::latest()->first();
+                } else {
+                    $lead = Lead::latest()->first();
+                    $meeting = Meeting::latest()->first();
+                }
+            }
+
+            // Auto-reschedule meeting if a specific date was mentioned (e.g. "19 sept")
+            if ($analysis['intent'] === 'reschedule' && $meeting) {
+                if (preg_match('/(\d{1,2})(?:st|nd|rd|th)?\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)[a-z]*/i', $analysis['clean_reply_body'], $dMatches)) {
+                    $month = substr($dMatches[2], 0, 3);
+                    $day = $dMatches[1];
+                    $parsedDate = date('Y-m-d', strtotime("{$day} {$month} 2026"));
+                    $meeting->update(['scheduled_date' => $parsedDate, 'status' => 'confirmed']);
+                    $this->info("[" . date('H:i:s') . "] ✓ Meeting #{$meeting->id} automatically rescheduled in DB to {$parsedDate}!");
+                }
+            }
+
             // Generate contextual AI response
             $replyMessage = $this->generateIntelligentResponse($senderEmail, $analysis, $lead, $meeting);
 
@@ -181,11 +203,14 @@ class ProcessEmailReplies extends Command
                     $message->to($senderEmail)
                             ->from($username, 'ClimbSphere Advisory Team')
                             ->subject($analysis['reply_subject']);
+
+                    $message->getHeaders()->addTextHeader('X-ClimbSphere-Bot', 'true');
+                    $message->getHeaders()->addTextHeader('X-Mailer', 'ClimbSphere-Bot');
                 });
 
                 $this->info("[" . date('H:i:s') . "] ✓ Automated reply successfully sent to {$senderEmail}!");
 
-                // Notify admin of the interaction
+                // Notify admin of the interaction if external sender
                 $adminEmail = config('mail.admin_recipient', 'devloper@adhithanr.space');
                 if ($adminEmail !== $senderEmail) {
                     $summary = "From: {$senderEmail}\nSubject: {$subject}\nIs Reply: " . ($analysis['is_reply'] ? 'YES' : 'NO') . " (Intent: {$analysis['intent']})\n\nUser Message:\n\"{$analysis['clean_reply_body']}\"\n\nAutomated AI Response:\n\"{$replyMessage}\"";

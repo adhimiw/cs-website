@@ -57,16 +57,29 @@ class EmailReplyAnalyzerTest extends TestCase
 
     public function test_it_detects_automated_mailer_daemon_and_self_loops()
     {
-        // Test 1: Self-loop
-        $selfAnalysis = EmailReplyAnalyzer::analyze(
-            "From: devloper@adhithanr.space\r\nSubject: Re: Auto Alert\r\n",
+        // Test 1: Bot-generated loop with X-ClimbSphere-Bot header
+        $botLoopAnalysis = EmailReplyAnalyzer::analyze(
+            "From: devloper@adhithanr.space\r\nX-ClimbSphere-Bot: true\r\nSubject: Re: Auto Alert\r\n",
             "Re: Auto Alert",
-            "Sample text",
+            "ClimbSphere Advisory Team response",
             "devloper@adhithanr.space",
             "devloper@adhithanr.space"
         );
-        $this->assertTrue($selfAnalysis['is_automated_or_loop']);
-        $this->assertFalse($selfAnalysis['is_reply']);
+        $this->assertTrue($botLoopAnalysis['is_automated_or_loop']);
+        $this->assertFalse($botLoopAnalysis['is_reply']);
+
+        // Test 1b: Human webmail reply from devloper@ is allowed and detected as reply
+        $humanWebmail = EmailReplyAnalyzer::analyze(
+            "From: devloper@adhithanr.space\r\nSubject: Re: New Qualified Chat Lead: Adhithan\r\n",
+            "Re: New Qualified Chat Lead: Adhithan",
+            "<div>hey can you update date to 19 sept same timing</div><blockquote class=\"hmail-quote\">lead</blockquote>",
+            "devloper@adhithanr.space",
+            "devloper@adhithanr.space"
+        );
+        $this->assertFalse($humanWebmail['is_automated_or_loop']);
+        $this->assertTrue($humanWebmail['is_reply']);
+        $this->assertEquals("reschedule", $humanWebmail['intent']);
+        $this->assertEquals("hey can you update date to 19 sept same timing", $humanWebmail['clean_reply_body']);
 
         // Test 2: Mailer-Daemon bounce
         $daemonAnalysis = EmailReplyAnalyzer::analyze(
