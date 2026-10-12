@@ -14,15 +14,15 @@
         
         <!-- Hero Banner Section -->
         <div style="background: linear-gradient(135deg, #001f5f 0%, #c25e2e 100%); color: #ffffff; padding: 36px 32px; text-align: center;">
-            <div style="display: inline-block; background-color: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.05em;">Session Confirmed</div>
-            <h1 style="margin: 0; font-size: 24px; font-weight: 800; color: #ffffff; line-height: 1.2;">Your Strategy Call Is Scheduled</h1>
+            <div style="display: inline-block; background-color: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.05em;">{{ !empty($isRescheduled) ? 'Session Rescheduled' : 'Session Confirmed' }}</div>
+            <h1 style="margin: 0; font-size: 24px; font-weight: 800; color: #ffffff; line-height: 1.2;">{{ !empty($isRescheduled) ? 'Your Strategy Call Has Been Rescheduled' : 'Your Strategy Call Is Scheduled' }}</h1>
             <p style="margin: 8px 0 0; font-size: 14px; color: #fdfbf7; font-weight: 500; opacity: 0.95;">{{ $meeting->scheduled_date->format('l, F j, Y') }} at {{ $meeting->scheduled_time }} ({{ $meeting->timezone }})</p>
         </div>
         
         <!-- Main Body -->
         <div style="padding: 36px 32px; line-height: 1.7; font-size: 15px;">
             <p style="margin: 0 0 16px; color: #374151;">Hi {{ $meeting->name }},</p>
-            <p style="margin: 0 0 20px; color: #4b5563;">Thank you for scheduling a strategy consultation with ClimbSphere! Your appointment has been reserved on our calendar.</p>
+            <p style="margin: 0 0 20px; color: #4b5563;">{{ !empty($isRescheduled) ? 'Thank you for updating your consultation slot with ClimbSphere! Your appointment has been successfully rescheduled on our calendar.' : 'Thank you for scheduling a strategy consultation with ClimbSphere! Your appointment has been reserved on our calendar.' }}</p>
             
             <!-- Appointment Card -->
             <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #fbf8f1; border: 2px dashed #d5cfbf; border-radius: 12px; padding: 20px; margin: 20px 0; font-family: inherit;">

@@ -1,6 +1,10 @@
 <?php
 
-echo "=== Test: Actual LeadChatAgent ===\n";
+require __DIR__ . '/vendor/autoload.php';
+$app = require_once __DIR__ . '/bootstrap/app.php';
+$app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+
+echo "=== Test: Actual LeadChatAgent with Local Gemma ===\n";
 
 try {
     $agent = new \App\AI\Agents\LeadChatAgent();

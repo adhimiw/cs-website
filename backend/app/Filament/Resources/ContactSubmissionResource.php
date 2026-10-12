@@ -8,6 +8,7 @@ use Filament\Actions;
 use Filament\Forms;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -28,9 +29,9 @@ class ContactSubmissionResource extends Resource
             ->components([
                 Section::make('Form Submission Details')
                     ->schema([
-                        Forms\Components\Tabs::make('Submission Info')
+                        Tabs::make('Submission Info')
                             ->tabs([
-                                Forms\Components\Tabs\Tab::make('Message Details')
+                                Tabs\Tab::make('Message Details')
                                     ->schema([
                                         Forms\Components\TextInput::make('form_name')
                                             ->disabled()
@@ -54,7 +55,7 @@ class ContactSubmissionResource extends Resource
                                     ])
                                     ->columns(2),
 
-                                Forms\Components\Tabs\Tab::make('Marketing & Attribution')
+                                Tabs\Tab::make('Marketing & Attribution')
                                     ->schema([
                                         Forms\Components\TextInput::make('referrer_source')
                                             ->disabled()

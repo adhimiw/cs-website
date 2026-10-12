@@ -20,6 +20,7 @@ class SystemSettings extends Page
 
     // Settings fields
     public $ai_provider;
+    public $ai_model;
     public $groq_api_key;
     public $groq_base_url;
     public $gemini_api_key;
@@ -55,6 +56,7 @@ class SystemSettings extends Page
         $settings = Setting::all()->pluck('value', 'key')->toArray();
 
         $this->ai_provider = $settings['ai_provider'] ?? '';
+        $this->ai_model = $settings['ai_model'] ?? '';
         $this->groq_api_key = $settings['groq_api_key'] ?? '';
         $this->groq_base_url = $settings['groq_base_url'] ?? '';
         $this->gemini_api_key = $settings['gemini_api_key'] ?? '';
@@ -78,8 +80,9 @@ class SystemSettings extends Page
 
         $this->fallbacks = [
             'ai_provider' => env('AI_PROVIDER', 'openai'),
-            'groq_api_key' => env('GROQ_API_KEY') ? '********' : 'Not configured',
-            'groq_base_url' => env('GROQ_BASE_URL', 'https://api.groq.com/openai/v1'),
+            'ai_model' => env('AI_MODEL', 'google/gemma-4-e4b'),
+            'groq_api_key' => (env('OPENAI_API_KEY') ?: env('GROQ_API_KEY')) ? '********' : 'Not configured',
+            'groq_base_url' => env('OPENAI_BASE_URL', env('GROQ_BASE_URL', 'http://host.containers.internal:1234/v1')),
             'gemini_api_key' => env('GEMINI_API_KEY') ? '********' : 'Not configured',
             
             'mail_mailer' => env('MAIL_MAILER', 'log'),
@@ -97,7 +100,7 @@ class SystemSettings extends Page
     public function save()
     {
         $fields = [
-            'ai_provider', 'groq_api_key', 'groq_base_url', 'gemini_api_key',
+            'ai_provider', 'ai_model', 'groq_api_key', 'groq_base_url', 'gemini_api_key',
             'mail_mailer', 'mail_host', 'mail_port', 'mail_username', 'mail_password',
             'mail_encryption', 'mail_from_address', 'mail_from_name', 'mail_admin_recipient',
             'contact_email', 'contact_phone', 'address', 'social_linkedin', 'social_twitter', 'website_url'

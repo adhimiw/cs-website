@@ -14,16 +14,19 @@ class MeetingConfirmationMail extends Mailable
     use Queueable, SerializesModels;
 
     public $meeting;
+    public $isRescheduled;
 
-    public function __construct(Meeting $meeting)
+    public function __construct(Meeting $meeting, bool $isRescheduled = false)
     {
         $this->meeting = $meeting;
+        $this->isRescheduled = $isRescheduled;
     }
 
     public function envelope(): Envelope
     {
+        $statusPrefix = $this->isRescheduled ? 'Meeting Rescheduled: ' : 'Meeting Confirmed: ';
         return new Envelope(
-            subject: 'Meeting Confirmed: ClimbSphere Strategy Session on ' . $this->meeting->scheduled_date->format('M d, Y'),
+            subject: $statusPrefix . 'ClimbSphere Strategy Session on ' . $this->meeting->scheduled_date->format('M d, Y'),
         );
     }
 
@@ -31,6 +34,9 @@ class MeetingConfirmationMail extends Mailable
     {
         return new Content(
             view: 'emails.meeting_confirmation',
+            with: [
+                'isRescheduled' => $this->isRescheduled,
+            ],
         );
     }
 }

@@ -30,13 +30,6 @@ export default function BlogEditorPage() {
   const [successMsg, setSuccessMsg] = useState(null);
   const [previewTab, setPreviewTab] = useState('edit-split'); // 'edit-split' or 'preview-only'
 
-  // Real-time analysis metrics
-  const [metrics, setMetrics] = useState({
-    wordCount: 0,
-    hasQuestionHeader: false,
-    hasFactualBullets: false,
-    hasStats: false,
-  });
 
   useEffect(() => {
     if (!editSlug) return;
@@ -71,20 +64,17 @@ export default function BlogEditorPage() {
     fetchPost();
   }, [editSlug]);
 
-  // Real-time content analyzer hook
-  useEffect(() => {
-    const words = content.trim() ? content.trim().split(/\s+/).length : 0;
-    const hasQuestion = /\#+\s.*\?\s*$/m.test(content) || /\#+\s.*\?$/m.test(content);
-    const hasBullets = content.includes('\n- ') || content.includes('\n* ');
-    const hasNumbersOrStats = /\d+\%|\d+\s/g.test(content);
-
-    setMetrics({
-      wordCount: words,
-      hasQuestionHeader: hasQuestion,
-      hasFactualBullets: hasBullets,
-      hasStats: hasNumbersOrStats,
-    });
-  }, [content]);
+  // Real-time content analyzer metrics
+  const words = content.trim() ? content.trim().split(/\s+/).length : 0;
+  const hasQuestion = /#+\s.*\?\s*$/m.test(content) || /#+\s.*\?$/m.test(content);
+  const hasBullets = content.includes('\n- ') || content.includes('\n* ');
+  const hasNumbersOrStats = /\d+%|\d+\s/g.test(content);
+  const metrics = {
+    wordCount: words,
+    hasQuestionHeader: hasQuestion,
+    hasFactualBullets: hasBullets,
+    hasStats: hasNumbersOrStats,
+  };
 
   // Quick insertion helpers for toolbar
   const insertText = (before, after = '') => {

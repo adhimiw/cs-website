@@ -14,16 +14,19 @@ class NewMeetingAlertMail extends Mailable
     use Queueable, SerializesModels;
 
     public $meeting;
+    public $isRescheduled;
 
-    public function __construct(Meeting $meeting)
+    public function __construct(Meeting $meeting, bool $isRescheduled = false)
     {
         $this->meeting = $meeting;
+        $this->isRescheduled = $isRescheduled;
     }
 
     public function envelope(): Envelope
     {
+        $prefix = $this->isRescheduled ? 'Meeting Rescheduled via Chat: ' : 'New Meeting Booked via Chat: ';
         return new Envelope(
-            subject: 'New Meeting Booked via Chat: ' . $this->meeting->name . ' (' . ($this->meeting->company ?: 'Client') . ')',
+            subject: $prefix . $this->meeting->name . ' (' . ($this->meeting->company ?: 'Client') . ')',
         );
     }
 
@@ -31,6 +34,9 @@ class NewMeetingAlertMail extends Mailable
     {
         return new Content(
             view: 'emails.new_meeting_alert',
+            with: [
+                'isRescheduled' => $this->isRescheduled,
+            ],
         );
     }
 }

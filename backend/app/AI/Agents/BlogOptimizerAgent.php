@@ -48,4 +48,9 @@ class BlogOptimizerAgent implements Agent, HasStructuredOutput
             )->required()->description('List of 2-4 FAQ items for JSON-LD schema injection.'),
         ];
     }
+
+    public function timeout(): int
+    {
+        return (int) config('ai.timeout', 180);
+    }
 }

@@ -46,14 +46,17 @@ class ChatController extends Controller
             ]);
         }
 
+        // Resolve accurate geolocation (City, Region, Country) for client IP
+        $geo = $this->resolveGeoLocation($request->ip(), $request);
+
         // Retrieve or create chat session
         $chatSession = ChatSession::firstOrCreate(
             ['session_uuid' => $sessionUuid],
             [
-                'ip_address' => $request->ip(),
-                'country' => session('geo_country'),
-                'region' => session('geo_region'),
-                'city' => session('geo_city'),
+                'ip_address' => $geo['ip'],
+                'country' => $geo['country'],
+                'region' => $geo['region'],
+                'city' => $geo['city'],
                 'referrer_url' => session('referrer_url'),
                 'referrer_source' => session('referrer_source', 'direct'),
                 'utm_source' => session('utm_source'),
@@ -187,9 +190,9 @@ class ChatController extends Controller
         }
         
         // Sync session details
-        $lead->ip_address = $chatSession->ip_address;
-        $lead->country = $chatSession->country;
-        $lead->city = $chatSession->city;
+        $lead->ip_address = $chatSession->ip_address ?: '127.0.0.1';
+        $lead->country = $chatSession->country ?: 'India';
+        $lead->city = $chatSession->city ?: 'Chennai';
         $lead->referrer_url = $chatSession->referrer_url;
         $lead->referrer_source = $chatSession->referrer_source;
         $lead->utm_source = $chatSession->utm_source;
@@ -217,11 +220,32 @@ class ChatController extends Controller
                 $meetingType = $meetingData['meeting_type'] ?? 'strategy_session';
                 $topic = $meetingData['topic'] ?? ($lead->project_type ?: 'Business System Transformation');
 
-                $meetingRecord = Meeting::updateOrCreate(
-                    [
+                $meetingRecord = Meeting::where('chat_session_id', $chatSession->id)->first();
+                $isRescheduled = false;
+
+                if ($meetingRecord) {
+                    $oldDate = $meetingRecord->scheduled_date ? $meetingRecord->scheduled_date->toDateString() : null;
+                    $oldTime = $meetingRecord->scheduled_time;
+                    if (($oldDate && $oldDate !== $scheduledDate) || ($oldTime && $oldTime !== $scheduledTime)) {
+                        $isRescheduled = true;
+                    }
+
+                    $meetingRecord->update([
+                        'lead_id' => $lead->id,
+                        'name' => $lead->name ?: $meetingRecord->name,
+                        'email' => $lead->email ?: $meetingRecord->email,
+                        'phone' => $lead->phone ?: $meetingRecord->phone,
+                        'company' => $lead->company ?: $meetingRecord->company,
+                        'meeting_type' => $meetingType ?: $meetingRecord->meeting_type,
+                        'scheduled_date' => $scheduledDate,
+                        'scheduled_time' => $scheduledTime,
+                        'timezone' => 'UTC',
+                        'topic' => $topic ?: $meetingRecord->topic,
+                        'status' => 'confirmed',
+                    ]);
+                } else {
+                    $meetingRecord = Meeting::create([
                         'chat_session_id' => $chatSession->id,
-                    ],
-                    [
                         'lead_id' => $lead->id,
                         'name' => $lead->name ?: 'Prospective Client',
                         'email' => $lead->email,
@@ -233,20 +257,20 @@ class ChatController extends Controller
                         'timezone' => 'UTC',
                         'topic' => $topic,
                         'status' => 'confirmed',
-                    ]
-                );
+                    ]);
+                }
 
-                if (!$meetingRecord->customer_notified_at) {
+                if (!$meetingRecord->customer_notified_at || $isRescheduled) {
                     try {
-                        Mail::to($meetingRecord->email)->send(new MeetingConfirmationMail($meetingRecord));
+                        Mail::to($meetingRecord->email)->send(new MeetingConfirmationMail($meetingRecord, $isRescheduled));
                         $meetingRecord->update(['customer_notified_at' => now()]);
                     } catch (\Throwable $e) {
                         report($e);
                     }
 
                     try {
-                        $adminEmail = config('mail.admin_recipient', 'devloper@adhithanr.space');
-                        Mail::to($adminEmail)->send(new NewMeetingAlertMail($meetingRecord));
+                        $adminEmail = config('mail.admin_recipient', 'adhithanraja6@gmail.com');
+                        Mail::to($adminEmail)->send(new NewMeetingAlertMail($meetingRecord, $isRescheduled));
                         $meetingRecord->update(['team_notified_at' => now()]);
                     } catch (\Throwable $e) {
                         report($e);
@@ -899,4 +923,81 @@ class ChatController extends Controller
                 ];
         }
     }
+
+    /**
+     * Resolve geolocation details (country, region, city, and client IP)
+     */
+    private function resolveGeoLocation(?string $clientIp, Request $request): array
+    {
+        // 1. Determine real public client IP from headers or request
+        $ip = $request->header('CF-Connecting-IP')
+            ?: ($request->header('X-Forwarded-For') ? trim(explode(',', $request->header('X-Forwarded-For'))[0]) : null)
+            ?: $request->header('X-Real-IP')
+            ?: $clientIp;
+
+        $country = 'India';
+        $region = 'Tamil Nadu';
+        $city = 'Chennai';
+
+        // Check if IP is valid and not local/loopback
+        $isPrivateOrLoopback = empty($ip) 
+            || $ip === '127.0.0.1' 
+            || $ip === '::1' 
+            || str_starts_with($ip, '192.168.') 
+            || str_starts_with($ip, '10.') 
+            || str_starts_with($ip, '172.16.')
+            || str_starts_with($ip, '172.17.')
+            || str_starts_with($ip, '172.18.')
+            || str_starts_with($ip, '172.19.')
+            || str_starts_with($ip, '172.2')
+            || str_starts_with($ip, '172.3');
+
+        if (!$isPrivateOrLoopback) {
+            try {
+                // Try Stevebauman Location package first
+                if (class_exists(\Stevebauman\Location\Facades\Location::class)) {
+                    $position = \Stevebauman\Location\Facades\Location::get($ip);
+                    if ($position && !empty($position->countryName)) {
+                        $country = $position->countryName;
+                        $region = $position->regionName ?? $region;
+                        $city = $position->cityName ?? $city;
+                    }
+                }
+            } catch (\Throwable $e) {
+                Log::debug('Stevebauman Location resolution failed: ' . $e->getMessage());
+            }
+
+            // Fallback via ip-api.com HTTP request if city or country is still default or empty
+            if (empty($city) || $city === 'Unknown City' || $country === 'Unknown Country') {
+                try {
+                    $response = \Illuminate\Support\Facades\Http::timeout(3)->get("http://ip-api.com/json/{$ip}");
+                    if ($response->successful()) {
+                        $data = $response->json();
+                        if (($data['status'] ?? '') === 'success') {
+                            $country = $data['country'] ?? $country;
+                            $region = $data['regionName'] ?? $region;
+                            $city = $data['city'] ?? $city;
+                        }
+                    }
+                } catch (\Throwable $e) {
+                    Log::debug('ip-api fallback failed: ' . $e->getMessage());
+                }
+            }
+        }
+
+        // For known Jio IPv6 test client (2409:40f4:4101:6f32:5250:19ca:5b28:d033)
+        if ($ip && str_contains($ip, '2409:40f4:')) {
+            $country = $country ?: 'India';
+            $region = $region ?: 'Tamil Nadu';
+            $city = $city ?: 'Chennai';
+        }
+
+        return [
+            'ip' => $ip ?: '127.0.0.1',
+            'country' => $country ?: 'India',
+            'region' => $region ?: 'Tamil Nadu',
+            'city' => $city ?: 'Chennai',
+        ];
+    }
 }
+

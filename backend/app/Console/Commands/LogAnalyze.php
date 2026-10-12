@@ -33,23 +33,18 @@ class LogAnalyze extends Command
             return Command::SUCCESS;
         }
 
-        $this->info("Analyzing last $lines lines with Groq AI...\n");
+        $this->info("Analyzing last $lines lines with AI Agent...\n");
 
-        $apiKey = config('ai.providers.groq.key') ?: env('GROQ_API_KEY');
-        if (!$apiKey || $apiKey === 'placeholder') {
-            $this->warn('GROQ_API_KEY not set. Install and configure AI provider first.');
-            $this->line('Tip: set AI_PROVIDER=groq and GROQ_API_KEY in .env');
-            return Command::FAILURE;
-        }
-
-        $model = config('ai.providers.groq.models.text.default', 'llama-3.1-8b-instant');
+        $apiKey = config('ai.providers.openai.key') ?: (config('ai.providers.groq.key') ?: env('OPENAI_API_KEY', env('GROQ_API_KEY', 'local-gemma')));
+        $baseUrl = config('ai.providers.openai.url') ?: (config('ai.providers.groq.url') ?: env('OPENAI_BASE_URL', env('GROQ_BASE_URL', 'http://host.containers.internal:1234/v1')));
+        $model = config('ai.providers.openai.models.text.default', env('AI_MODEL', 'google/gemma-4-e4b'));
         $truncated = substr($logContent, -12000);
 
         try {
             $response = Http::withHeaders([
                 'Authorization' => "Bearer $apiKey",
                 'Content-Type' => 'application/json',
-            ])->timeout(90)->post('https://api.groq.com/openai/v1/chat/completions', [
+            ])->timeout(90)->post(rtrim($baseUrl, '/') . '/chat/completions', [
                 'model' => $model,
                 'messages' => [
                     [

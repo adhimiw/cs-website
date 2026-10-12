@@ -1,17 +1,16 @@
 import { useState, useEffect } from 'react';
 
 export default function ServiceCard({ service, index }) {
-  const [imgUrl, setImgUrl] = useState(service.image);
+  const [imgUrl, setImgUrl] = useState(service.image || '/images/service-digital-transformation.webp');
 
   useEffect(() => {
-    if (!service.image) {
-      setImgUrl('/images/service-digital-transformation.webp');
-      return;
-    }
+    if (!service.image) return;
 
+    let isMounted = true;
     const img = new Image();
     img.src = service.image;
     img.onerror = () => {
+      if (!isMounted) return;
       if (service.image && !service.image.includes('/images/')) {
         const filename = service.image.substring(service.image.lastIndexOf('/') + 1);
         if (filename) {
@@ -22,7 +21,12 @@ export default function ServiceCard({ service, index }) {
       setImgUrl('/images/service-digital-transformation.webp');
     };
     img.onload = () => {
-      setImgUrl(service.image);
+      if (isMounted) {
+        setImgUrl(service.image);
+      }
+    };
+    return () => {
+      isMounted = false;
     };
   }, [service.image]);
 

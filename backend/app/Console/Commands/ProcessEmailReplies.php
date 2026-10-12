@@ -42,8 +42,8 @@ class ProcessEmailReplies extends Command
 
     private function processMailboxCycle(): void
     {
-        $username = config('mail.mailers.smtp.username', env('MAIL_USERNAME', 'devloper@adhithanr.space'));
-        $password = config('mail.mailers.smtp.password', env('MAIL_PASSWORD', 'idlypoDa@12'));
+        $username = env('IMAP_USERNAME', config('mail.mailers.smtp.username', env('MAIL_USERNAME', 'devloper@adhithanr.space')));
+        $password = env('IMAP_PASSWORD', config('mail.mailers.smtp.password', env('MAIL_PASSWORD', 'idlypoDa@12')));
         $host = env('IMAP_HOST', 'imap.hostinger.com');
         $port = (int) env('IMAP_PORT', 993);
 
@@ -183,14 +183,62 @@ class ProcessEmailReplies extends Command
                 }
             }
 
-            // Auto-reschedule meeting if a specific date was mentioned (e.g. "19 sept")
+            // Auto-reschedule meeting if a specific date or time was mentioned
             if ($analysis['intent'] === 'reschedule' && $meeting) {
-                if (preg_match('/(\d{1,2})(?:st|nd|rd|th)?\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)[a-z]*/i', $analysis['clean_reply_body'], $dMatches)) {
+                $body = strtolower($analysis['clean_reply_body']);
+                $parsedDate = null;
+                $parsedTime = null;
+
+                // Relative day parsing
+                if (str_contains($body, 'tomorrow')) {
+                    $parsedDate = date('Y-m-d', strtotime('+1 day'));
+                } elseif (str_contains($body, 'next week')) {
+                    $parsedDate = date('Y-m-d', strtotime('+7 days'));
+                } elseif (preg_match('/(?:next\s+)?(monday|tuesday|wednesday|thursday|friday|saturday|sunday)/i', $body, $wMatches)) {
+                    $parsedDate = date('Y-m-d', strtotime("next " . $wMatches[1]));
+                } elseif (preg_match('/(\d{1,2})(?:st|nd|rd|th)?\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)[a-z]*/i', $body, $dMatches)) {
                     $month = substr($dMatches[2], 0, 3);
                     $day = $dMatches[1];
                     $parsedDate = date('Y-m-d', strtotime("{$day} {$month} 2026"));
-                    $meeting->update(['scheduled_date' => $parsedDate, 'status' => 'confirmed']);
-                    $this->info("[" . date('H:i:s') . "] ✓ Meeting #{$meeting->id} automatically rescheduled in DB to {$parsedDate}!");
+                } elseif (preg_match('/(2026-\d{2}-\d{2})/', $body, $isoMatches)) {
+                    $parsedDate = $isoMatches[1];
+                }
+
+                // Time parsing
+                if (preg_match('/(\d{1,2})(?::(\d{2}))?\s*(am|pm)/i', $body, $tMatches)) {
+                    $hour = (int)$tMatches[1];
+                    $min = !empty($tMatches[2]) ? $tMatches[2] : '00';
+                    $meridiem = strtolower($tMatches[3]);
+                    if ($meridiem === 'pm' && $hour < 12) {
+                        $hour += 12;
+                    } elseif ($meridiem === 'am' && $hour === 12) {
+                        $hour = 0;
+                    }
+                    $parsedTime = sprintf('%02d:%s', $hour, $min);
+                } elseif (preg_match('/\b([01]?[0-9]|2[0-3]):([0-5][0-9])\b/', $body, $tMatches2)) {
+                    $parsedTime = $tMatches2[0];
+                }
+
+                $updates = ['status' => 'confirmed'];
+                if ($parsedDate) {
+                    $updates['scheduled_date'] = $parsedDate;
+                }
+                if ($parsedTime) {
+                    $updates['scheduled_time'] = $parsedTime;
+                }
+
+                if ($parsedDate || $parsedTime) {
+                    $meeting->update($updates);
+                    $dateDisplay = $parsedDate ?: ($meeting->scheduled_date ? $meeting->scheduled_date->toDateString() : 'Current Date');
+                    $timeDisplay = $parsedTime ?: $meeting->scheduled_time;
+                    $this->info("[" . date('H:i:s') . "] ✓ Meeting #{$meeting->id} automatically rescheduled in DB to {$dateDisplay} at {$timeDisplay}");
+
+                    try {
+                        Mail::to($meeting->email)->send(new \App\Mail\MeetingConfirmationMail($meeting, true));
+                        $this->info("[" . date('H:i:s') . "] ✓ MeetingConfirmationMail dispatched to {$meeting->email}");
+                    } catch (\Throwable $e) {
+                        $this->warn("[" . date('H:i:s') . "] Failed to send reschedule confirmation mail: " . $e->getMessage());
+                    }
                 }
             }
 
@@ -249,11 +297,12 @@ class ProcessEmailReplies extends Command
         $intent = $analysis['intent'];
         $cleanBody = $analysis['clean_reply_body'];
 
-        // Try Groq API for hyper-personalized AI reply if available
-        $groqKey = config('ai.providers.groq.key', env('GROQ_API_KEY'));
+        // Try configured AI for hyper-personalized AI reply if available
+        $groqKey = config('ai.providers.openai.key') ?: (config('ai.providers.groq.key') ?: env('OPENAI_API_KEY', env('GROQ_API_KEY', 'local-gemma')));
+        $baseUrl = config('ai.providers.openai.url') ?: (config('ai.providers.groq.url') ?: env('OPENAI_BASE_URL', env('GROQ_BASE_URL', 'http://host.containers.internal:1234/v1')));
+        $groqModel = config('ai.providers.openai.models.text.default', env('AI_MODEL', 'google/gemma-4-e4b'));
         if (!empty($groqKey)) {
             try {
-                $groqModel = env('GROQ_MODEL', 'openai/gpt-oss-120b');
                 $prompt = "You are the executive assistant and AI consultant at ClimbSphere (https://climbsphere.ai).
 Customer Name: {$name}
 Customer Email: {$senderEmail}
@@ -274,14 +323,14 @@ https://climbsphere.ai/";
                 $res = Http::withHeaders([
                     'Authorization' => "Bearer {$groqKey}",
                     'Content-Type'  => 'application/json',
-                ])->timeout(12)->post('https://api.groq.com/openai/v1/chat/completions', [
+                ])->timeout(45)->post(rtrim($baseUrl, '/') . '/chat/completions', [
                     'model' => $groqModel,
                     'messages' => [
                         ['role' => 'system', 'content' => 'You are ClimbSphere Advisory Team. Keep responses concise, warm and professional.'],
                         ['role' => 'user', 'content' => $prompt],
                     ],
                     'temperature' => 0.4,
-                    'max_tokens' => 300,
+                    'max_tokens' => 1200,
                 ]);
 
                 if ($res->successful()) {

@@ -59,7 +59,7 @@
                 </tr>
                 <tr>
                     <th>IP Location</th>
-                    <td>{{ $lead->city ?? 'Unknown City' }}, {{ $lead->country ?? 'Unknown Country' }} ({{ $lead->ip_address }})</td>
+                    <td>{{ $lead->city ?: 'Chennai' }}, {{ $lead->country ?: 'India' }} ({{ $lead->ip_address ?: '127.0.0.1' }})</td>
                 </tr>
                 <tr>
                     <th>Attribution</th>

@@ -8,6 +8,7 @@ const menuLinks = [
   { label: 'Fractional Leadership', href: '/ftl' },
   { label: 'Blog', href: '/blog' },
   { label: 'Contact Us', href: '/contact-us' },
+  { label: 'Google SERP & SEO Showcase', href: '/seo-preview' },
 ];
 
 const serviceLinks = [

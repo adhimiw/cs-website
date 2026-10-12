@@ -1,5 +1,9 @@
 <?php
 
+$defaultUrl = env('AI_BASE_URL', env('OPENAI_BASE_URL', env('GROQ_BASE_URL', 'http://host.containers.internal:1234/v1')));
+$defaultKey = env('AI_API_KEY', env('OPENAI_API_KEY', env('GROQ_API_KEY', 'local-gemma')));
+$defaultModel = env('AI_MODEL', 'google/gemma-4-e4b');
+
 return [
 
     /*
@@ -28,26 +32,26 @@ return [
 
         'openai' => [
             'driver' => 'openai',
-            'key' => env('GROQ_API_KEY'),
-            'url' => env('GROQ_BASE_URL', 'https://api.groq.com/openai/v1'),
+            'key' => $defaultKey,
+            'url' => $defaultUrl,
             'models' => [
                 'text' => [
-                    'default' => 'openai/gpt-oss-120b',
-                    'cheapest' => 'openai/gpt-oss-20b',
-                    'smartest' => 'openai/gpt-oss-120b',
+                    'default' => $defaultModel,
+                    'cheapest' => $defaultModel,
+                    'smartest' => $defaultModel,
                 ],
             ],
         ],
 
         'groq' => [
-            'driver' => 'groq',
-            'key' => env('GROQ_API_KEY'),
-            'url' => env('GROQ_BASE_URL', 'https://api.groq.com/openai/v1'),
+            'driver' => 'openai',
+            'key' => $defaultKey,
+            'url' => $defaultUrl,
             'models' => [
                 'text' => [
-                    'default' => 'openai/gpt-oss-120b',
-                    'cheapest' => 'openai/gpt-oss-20b',
-                    'smartest' => 'openai/gpt-oss-120b',
+                    'default' => $defaultModel,
+                    'cheapest' => $defaultModel,
+                    'smartest' => $defaultModel,
                 ],
             ],
         ],
@@ -60,3 +64,4 @@ return [
     ],
 
 ];
+

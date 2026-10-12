@@ -38,13 +38,25 @@ class AppServiceProvider extends ServiceProvider
                 if (!empty($dbSettings['ai_provider'])) {
                     config(['ai.default' => $dbSettings['ai_provider']]);
                 }
-                if (!empty($dbSettings['groq_api_key'])) {
-                    config(['ai.providers.openai.key' => $dbSettings['groq_api_key']]);
-                    config(['ai.providers.groq.key' => $dbSettings['groq_api_key']]);
+                $aiKey = $dbSettings['openai_api_key'] ?? ($dbSettings['groq_api_key'] ?? null);
+                if (!empty($aiKey)) {
+                    config(['ai.providers.openai.key' => $aiKey]);
+                    config(['ai.providers.groq.key' => $aiKey]);
                 }
-                if (!empty($dbSettings['groq_base_url'])) {
-                    config(['ai.providers.openai.url' => $dbSettings['groq_base_url']]);
-                    config(['ai.providers.groq.url' => $dbSettings['groq_base_url']]);
+                $aiUrl = $dbSettings['openai_base_url'] ?? ($dbSettings['groq_base_url'] ?? null);
+                if (!empty($aiUrl)) {
+                    config(['ai.providers.openai.url' => $aiUrl]);
+                    config(['ai.providers.groq.url' => $aiUrl]);
+                }
+                if (!empty($dbSettings['ai_model'])) {
+                    config([
+                        'ai.providers.openai.models.text.default' => $dbSettings['ai_model'],
+                        'ai.providers.openai.models.text.cheapest' => $dbSettings['ai_model'],
+                        'ai.providers.openai.models.text.smartest' => $dbSettings['ai_model'],
+                        'ai.providers.groq.models.text.default' => $dbSettings['ai_model'],
+                        'ai.providers.groq.models.text.cheapest' => $dbSettings['ai_model'],
+                        'ai.providers.groq.models.text.smartest' => $dbSettings['ai_model'],
+                    ]);
                 }
                 if (!empty($dbSettings['gemini_api_key'])) {
                     config(['ai.providers.gemini.key' => $dbSettings['gemini_api_key']]);

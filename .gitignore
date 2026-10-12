@@ -43,3 +43,5 @@ pastguiderefernce.md
 # One-off public test files and helper scripts
 public/test_referrer.html
 public/images/*.py
+__pycache__/
+*.pyc

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { getApiUrl } from '../context/CMSContext';
 import './ChatbotWidget.css';
 
@@ -17,7 +17,23 @@ export default function ChatbotWidget() {
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [sessionUuid, setSessionUuid] = useState(() => {
-    return sessionStorage.getItem('climbsphere_chat_session_uuid') || null;
+    let saved = null;
+    try {
+      saved = sessionStorage.getItem('climbsphere_chat_session_uuid');
+    } catch {
+      // ignore
+    }
+    if (!saved) {
+      saved = (typeof crypto !== 'undefined' && crypto.randomUUID)
+        ? crypto.randomUUID()
+        : ('cs_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9));
+      try {
+        sessionStorage.setItem('climbsphere_chat_session_uuid', saved);
+      } catch {
+        // ignore
+      }
+    }
+    return saved;
   });
   const [hasNewMessage, setHasNewMessage] = useState(false);
 
@@ -31,13 +47,41 @@ export default function ChatbotWidget() {
   }, [messages, isTyping]);
 
   useEffect(() => {
-    // Save messages to sessionStorage
-    sessionStorage.setItem('climbsphere_chat_messages', JSON.stringify(messages));
+    // Save messages to client-sandboxed sessionStorage only
+    try {
+      sessionStorage.setItem('climbsphere_chat_messages', JSON.stringify(messages));
+    } catch {
+      // ignore storage quota issues
+    }
   }, [messages]);
 
   const toggleChat = () => {
     setIsOpen(!isOpen);
     setHasNewMessage(false);
+  };
+
+  const closeChat = () => {
+    setIsOpen(false);
+    setHasNewMessage(false);
+  };
+
+  const resetSession = () => {
+    try {
+      sessionStorage.removeItem('climbsphere_chat_messages');
+      sessionStorage.removeItem('climbsphere_chat_session_uuid');
+    } catch {
+      // ignore
+    }
+    const newUuid = (typeof crypto !== 'undefined' && crypto.randomUUID)
+      ? crypto.randomUUID()
+      : ('cs_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9));
+    setSessionUuid(newUuid);
+    try {
+      sessionStorage.setItem('climbsphere_chat_session_uuid', newUuid);
+    } catch {
+      // ignore
+    }
+    setMessages([{ role: 'assistant', content: DEFAULT_WELCOME }]);
   };
 
   const handleSend = async (e) => {
@@ -130,12 +174,25 @@ export default function ChatbotWidget() {
               <p>Digital chatbot interface.</p>
             </div>
           </div>
-          <button className="chatbot-close" onClick={toggleChat} aria-label="Close chat">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
+          <div className="chatbot-header-actions">
+            <button
+              className="chatbot-reset-btn"
+              onClick={resetSession}
+              title="Reset conversation and clear memory"
+              aria-label="Reset conversation"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                <path d="M3 3v5h5" />
+              </svg>
+            </button>
+            <button className="chatbot-close" onClick={closeChat} aria-label="Close chat" title="Close chat">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
         </div>
 
         {/* Message Area */}

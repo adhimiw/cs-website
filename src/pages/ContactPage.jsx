@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { getApiUrl, useCMS } from '../context/CMSContext';
+import { getApiUrl } from '../context/CMSContext';
 import SEO from '../components/SEO';
 import './ContactPage.css';
 

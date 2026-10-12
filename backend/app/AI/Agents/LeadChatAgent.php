@@ -33,9 +33,10 @@ class LeadChatAgent implements Agent, HasStructuredOutput, Conversational
                "Your objectives:\n" .
                "1. Engage in professional, helpful conversation, answering questions about ClimbSphere's core services (Digital Maturity Assessments, Digital Transformation strategy, HR Technology selection and adoption, Service Desk automation, Project Management governance, and Fractional Technology Leadership (FTL)).\n" .
                "2. Qualify the visitor as a potential lead by progressively collecting: name, email, phone, company, project need or business transformation idea, budget category, and timeline.\n" .
-               "3. SCHEDULER & MEETING MANAGER: You have the direct capability to schedule meetings, discovery calls, demos, and strategy sessions with our senior leadership team (Manoj Cheruvathoor, Ranjit Kumar, Barath Silvester).\n" .
+               "3. SCHEDULER & MEETING MANAGER: You have the direct capability to schedule and reschedule meetings, discovery calls, demos, and strategy sessions with our senior leadership team (Manoj Cheruvathoor, Ranjit Kumar, Barath Silvester).\n" .
                "   - If the visitor asks to book a meeting, schedule a call, speak with someone, or check availability, invite them warmly to pick a preferred day and time (e.g. tomorrow at 3:00 PM or next Tuesday morning).\n" .
                "   - When they give a date and time, confirm it enthusiastically in your reply, mentioning that a calendar invite has been reserved. Populate the 'meeting' object with is_scheduled=true, preferred_date (formatted as YYYY-MM-DD if recognizable relative to today, or clear text), preferred_time (e.g. 15:00 or 3:00 PM), and topic.\n" .
+               "   - RESCHEDULING / RESLOTTING: If the visitor asks to change, reschedule, or reslot their meeting to a new day or time, warmly accept the new slot, update the 'meeting' object with is_scheduled=true, the new preferred_date, and new preferred_time, and confirm that an updated calendar notification is dispatched to their email.\n" .
                "   - Remind them that a confirmation email with calendar link will be sent to their email.\n" .
                "4. CRITICAL: You MUST collect the visitor's email before marking the lead as qualified or finalizing a meeting. Do NOT set lead_status to 'qualified' until you have the email. Once you have name, email, and a basic description of their need, mark the lead as qualified.\n\n" .
                "Conversation behavior:\n" .
@@ -53,8 +54,10 @@ class LeadChatAgent implements Agent, HasStructuredOutput, Conversational
 
         // Retrieve existing lead details from DB to keep the conversation stateful
         $existingLead = null;
+        $existingMeeting = null;
         if ($this->chatSession) {
             $existingLead = \App\Models\Lead::where('chat_session_id', $this->chatSession->id)->first();
+            $existingMeeting = \App\Models\Meeting::where('chat_session_id', $this->chatSession->id)->first();
         }
 
         if ($existingLead) {
@@ -67,6 +70,11 @@ class LeadChatAgent implements Agent, HasStructuredOutput, Conversational
             if (!empty($knownDetails)) {
                 $instructions .= "\n\nAlready captured details about this visitor (DO NOT ask for these again. Keep returning these same values in the 'extracted' output to prevent losing them):\n" . implode("\n", $knownDetails);
             }
+        }
+
+        if ($existingMeeting) {
+            $meetingDate = $existingMeeting->scheduled_date ? $existingMeeting->scheduled_date->toDateString() : 'Pending';
+            $instructions .= "\n\nCurrently Reserved Meeting: Date: {$meetingDate}, Time: {$existingMeeting->scheduled_time}. If visitor asks to reschedule or reslot, cheerfully update the booking to their new date/time.";
         }
 
         if ($this->chatSession) {
@@ -128,5 +136,10 @@ class LeadChatAgent implements Agent, HasStructuredOutput, Conversational
             'lead_status' => $schema->string()->enum(['new', 'qualified'])->required()->description('Status of the lead. Set to "qualified" ONLY if name, email, and a basic project description are all present.'),
             'send_ack_email' => $schema->boolean()->required()->description('Set to true ONLY in the exact turn where the lead status becomes qualified, indicating we should trigger the acknowledgement email dispatch.'),
         ];
+    }
+
+    public function timeout(): int
+    {
+        return (int) config('ai.timeout', 180);
     }
 }

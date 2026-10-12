@@ -16,6 +16,7 @@ import BlogReadingPage from './pages/BlogReadingPage';
 import BlogEditorPage from './pages/BlogEditorPage';
 import ContactPage from './pages/ContactPage';
 import FTLPage from './pages/FTLPage';
+import SEOShowcasePage from './pages/SEOShowcasePage';
 
 import './App.css';
 
@@ -62,6 +63,8 @@ function App() {
           <Route path="/blog-editor" element={<BlogEditorPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/contact-us" element={<ContactPage />} />
+          <Route path="/seo-preview" element={<SEOShowcasePage />} />
+          <Route path="/seo-showcase" element={<SEOShowcasePage />} />
         </Routes>
       </main>
       <Footer />

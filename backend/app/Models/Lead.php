@@ -37,4 +37,9 @@ class Lead extends Model
     {
         return $this->belongsTo(ChatSession::class, 'chat_session_id');
     }
+
+    public function chatSession(): BelongsTo
+    {
+        return $this->session();
+    }
 }
