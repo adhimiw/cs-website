@@ -3,10 +3,22 @@ import { createContext, useContext, useState, useEffect } from 'react';
 const CMSContext = createContext(null);
 
 export const getApiUrl = (path) => {
+  if (typeof window === 'undefined') return path;
+  if (!path) return '';
+  if (path.startsWith('http://') || path.startsWith('https://')) return path;
+
   const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  if (!isLocal) {
+    const configuredOrigin = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, '');
+    if (configuredOrigin && !configuredOrigin.includes('localhost') && !configuredOrigin.includes('127.0.0.1')) {
+      return `${configuredOrigin}${path}`;
+    }
+    return path;
+  }
+
   const configuredOrigin = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, '');
   const localOrigin = `${window.location.protocol}//${window.location.hostname}:8000`;
-  const origin = configuredOrigin || (isLocal ? localOrigin : '');
+  const origin = configuredOrigin || localOrigin;
   return `${origin}${path}`;
 };
 
